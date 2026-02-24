@@ -151,7 +151,7 @@ app.post('/mc/data', async (req, res) => {
 app.get('/mc/weather', async (req, res) => {
     try {
         const city = req.query.city || 'Gold+Coast';
-        const url = `https://wttr.in/${encodeURIComponent(city)}?format=j1`;
+        const url = `https://wttr.in/${city.replace(/\s+/g, '_')}?format=j1`;
         
         const response = await axios.get(url, {
             timeout: 5000,

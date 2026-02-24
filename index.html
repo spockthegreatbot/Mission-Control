@@ -2454,7 +2454,12 @@
 
         // Initialize App
         document.addEventListener('DOMContentLoaded', function() {
-            initializeApp();
+            // Only auto-init if already authenticated
+            const token = localStorage.getItem('mc_token');
+            if (token && IS_LOCAL) {
+                initializeApp();
+            }
+            // On Vercel, initializeApp is called after auth gate unlocks
         });
 
         async function initializeApp() {
@@ -4715,6 +4720,7 @@
         function unlock() {
             gate.style.display = 'none';
             app.style.display = 'block';
+            if (typeof initializeApp === 'function') initializeApp();
         }
 
         // Check existing token

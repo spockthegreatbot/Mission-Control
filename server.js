@@ -340,7 +340,9 @@ app.get('/mc/openclaw/agents', async (req, res) => {
         
         // Parse agent configs
         const configRaw = execSync(`cat /home/linuxuser/.openclaw/openclaw.json`, { timeout: 5000 }).toString();
-        const config = JSON.parse(configRaw);
+        // Fix potential trailing commas in JSON
+        const cleanConfig = configRaw.replace(/,(\s*[}\]])/g, '$1');
+        const config = JSON.parse(cleanConfig);
         const agentList = config.agents?.list || [];
         const defaultModel = config.agents?.defaults?.model?.primary || 'gpt-4o-mini';
         

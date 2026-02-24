@@ -1,1 +1,37 @@
-{}
+{
+  "agents": [
+    {
+      "name": "Spock",
+      "role": "Unified AI Operator",
+      "model": "gpt-4o-mini",
+      "status": "offline",
+      "lastActive": "2026-02-24T08:23:48.229Z",
+      "heartbeat": {
+        "enabled": true,
+        "every": "30m"
+      }
+    },
+    {
+      "name": "Dev",
+      "role": "Full Stack Developer",
+      "model": "claude-opus-4-6",
+      "status": "online",
+      "lastActive": "2026-02-24T09:05:07.313Z",
+      "heartbeat": {
+        "enabled": false,
+        "every": "disabled"
+      }
+    },
+    {
+      "name": "Research",
+      "role": "Intelligence & Research",
+      "model": "gpt-4o-mini",
+      "status": "offline",
+      "lastActive": "2026-02-24T08:24:10.639Z",
+      "heartbeat": {
+        "enabled": false,
+        "every": "disabled"
+      }
+    }
+  ]
+}

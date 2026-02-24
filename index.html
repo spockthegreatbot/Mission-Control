@@ -18,11 +18,6 @@
     <meta name="msapplication-TileColor" content="#6C63FF">
     <meta name="msapplication-tap-highlight" content="no">
     
-    <!-- PWA Links -->
-    <link rel="manifest" href="/manifest.json">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E🚀%3C/text%3E%3C/svg%3E">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%236C63FF;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23050508;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='200' height='200' fill='url(%23grad)' rx='40'/%3E%3Ctext x='100' y='120' font-family='serif' font-size='80' text-anchor='middle' fill='white'%3E🚀%3C/text%3E%3C/svg%3E">
-    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* CSS Variables for theming */
@@ -233,215 +228,6 @@
             transform: translateY(-1px);
         }
 
-        .notification-bell {
-            position: relative;
-            padding: var(--spacing-sm);
-            background: var(--glass-bg);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius-md);
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 1rem;
-        }
-
-        .notification-bell:hover {
-            background: var(--glass-bg-hover);
-            transform: translateY(-1px);
-        }
-
-        .notification-badge {
-            position: absolute;
-            top: -2px;
-            right: -2px;
-            background: var(--error-color);
-            color: white;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .settings-btn {
-            padding: var(--spacing-sm);
-            background: var(--glass-bg);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius-md);
-            color: var(--text-primary);
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 1rem;
-            border: none;
-        }
-
-        .settings-btn:hover {
-            background: var(--glass-bg-hover);
-            transform: translateY(-1px);
-        }
-
-        /* Pomodoro Timer Widget */
-        .pomodoro-timer {
-            position: fixed;
-            top: 100px;
-            right: 20px;
-            z-index: 1500;
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius-lg);
-            padding: var(--spacing-md);
-            min-width: 200px;
-            box-shadow: var(--shadow-lg);
-            transition: transform 0.3s ease;
-        }
-
-        .pomodoro-timer.minimized {
-            transform: translateX(calc(100% - 60px));
-        }
-
-        .pomodoro-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--spacing-md);
-        }
-
-        .pomodoro-title {
-            font-size: 0.875rem;
-            font-weight: 600;
-        }
-
-        .pomodoro-minimize {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 1rem;
-        }
-
-        .pomodoro-display {
-            text-align: center;
-            margin-bottom: var(--spacing-md);
-        }
-
-        .pomodoro-time {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: var(--spacing-xs);
-        }
-
-        .pomodoro-session {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        .pomodoro-controls {
-            display: flex;
-            gap: var(--spacing-sm);
-            justify-content: center;
-            margin-bottom: var(--spacing-md);
-        }
-
-        .pomodoro-btn {
-            background: var(--accent-color);
-            color: white;
-            border: none;
-            border-radius: var(--border-radius-sm);
-            padding: var(--spacing-xs) var(--spacing-sm);
-            cursor: pointer;
-            font-size: 0.75rem;
-            transition: var(--transition);
-        }
-
-        .pomodoro-btn:hover {
-            opacity: 0.8;
-        }
-
-        .pomodoro-btn.secondary {
-            background: var(--glass-bg);
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-        }
-
-        .pomodoro-stats {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            text-align: center;
-        }
-
-        /* PWA Install Banner */
-        .install-banner {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--accent-color);
-            color: white;
-            padding: var(--spacing-md);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
-            z-index: 2000;
-        }
-
-        .install-banner.show {
-            transform: translateY(0);
-        }
-
-        .install-banner-content {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-md);
-        }
-
-        .install-banner-icon {
-            font-size: 1.5rem;
-        }
-
-        .install-banner-text {
-            flex: 1;
-        }
-
-        .install-banner-title {
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-
-        .install-banner-subtitle {
-            font-size: 0.875rem;
-            opacity: 0.9;
-        }
-
-        .install-banner-actions {
-            display: flex;
-            gap: var(--spacing-md);
-        }
-
-        .install-btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: none;
-            border-radius: var(--border-radius-md);
-            padding: var(--spacing-sm) var(--spacing-md);
-            cursor: pointer;
-            font-size: 0.875rem;
-            font-weight: 500;
-            transition: var(--transition);
-        }
-
-        .install-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .install-btn.dismiss {
-            background: transparent;
-        }
-
         /* Main Content */
         .main-content {
             max-width: 1600px;
@@ -533,10 +319,6 @@
             box-shadow: var(--shadow-md);
         }
 
-        .btn:active {
-            transform: translateY(0);
-        }
-
         .btn-secondary {
             background: var(--glass-bg);
             color: var(--text-primary);
@@ -546,23 +328,6 @@
         .btn-secondary:hover {
             background: var(--glass-bg-hover);
             border-color: var(--border-hover);
-        }
-
-        .btn-danger {
-            background: var(--error-color);
-        }
-
-        .btn-danger:hover {
-            background: #cc3333;
-        }
-
-        .btn-success {
-            background: var(--success-color);
-            color: var(--bg-primary);
-        }
-
-        .btn-success:hover {
-            background: #00cc66;
         }
 
         /* Form Styles */
@@ -594,11 +359,6 @@
             border-color: var(--accent-color);
             background: var(--glass-bg-hover);
             box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
-        }
-
-        .form-textarea {
-            min-height: 100px;
-            resize: vertical;
         }
 
         /* Dashboard Specific */
@@ -660,326 +420,70 @@
             color: var(--success-color);
         }
 
-        /* Habit Tracker */
-        .habit-tracker {
-            margin-bottom: var(--spacing-xl);
-        }
-
-        .habit-grid {
-            display: grid;
-            gap: var(--spacing-md);
-        }
-
-        .habit-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: var(--spacing-md);
-            background: var(--glass-bg);
+        /* Live Activity Feed */
+        .activity-feed {
+            max-height: 400px;
+            overflow-y: auto;
+            background: var(--bg-primary);
             border: 1px solid var(--border-color);
-            border-radius: var(--border-radius-lg);
-            transition: var(--transition);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-sm);
+            font-family: 'Courier New', monospace;
         }
 
-        .habit-item:hover {
-            background: var(--glass-bg-hover);
+        .activity-entry {
+            padding: var(--spacing-xs) 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.8rem;
+            line-height: 1.4;
         }
 
-        .habit-info {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-md);
+        .activity-entry:last-child {
+            border-bottom: none;
         }
 
-        .habit-icon {
-            font-size: 1.5rem;
-        }
-
-        .habit-details h4 {
-            margin-bottom: var(--spacing-xs);
-        }
-
-        .habit-streak {
-            font-size: 0.75rem;
+        .activity-timestamp {
             color: var(--text-muted);
+            margin-right: var(--spacing-sm);
         }
 
-        .habit-checkbox {
-            width: 24px;
-            height: 24px;
-            accent-color: var(--accent-color);
+        .activity-level {
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            margin-right: var(--spacing-sm);
         }
 
-        /* System Monitor Widget */
-        .system-monitor {
-            margin-bottom: var(--spacing-xl);
-        }
+        .activity-level.info { background: rgba(108, 99, 255, 0.2); color: var(--accent-color); }
+        .activity-level.warn { background: rgba(255, 184, 0, 0.2); color: var(--warning-color); }
+        .activity-level.error { background: rgba(255, 68, 68, 0.2); color: var(--error-color); }
 
-        .system-stats {
+        /* Cost Tracker */
+        .cost-overview {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
         }
 
-        .stat-item {
+        .cost-stat {
             text-align: center;
             padding: var(--spacing-md);
             background: var(--glass-bg);
             border: 1px solid var(--border-color);
             border-radius: var(--border-radius-lg);
-            transition: var(--transition);
         }
 
-        .stat-item:hover {
-            background: var(--glass-bg-hover);
-        }
-
-        .stat-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-bottom: var(--spacing-xs);
-        }
-
-        .stat-value {
+        .cost-value {
             font-size: 1.5rem;
             font-weight: 600;
+            color: var(--accent-color);
             margin-bottom: var(--spacing-xs);
         }
 
-        .stat-bar {
-            width: 100%;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
-            overflow: hidden;
-        }
-
-        .stat-progress {
-            height: 100%;
-            border-radius: 2px;
-            transition: var(--transition-slow);
-        }
-
-        .stat-progress.green {
-            background: var(--success-color);
-        }
-
-        .stat-progress.yellow {
-            background: var(--warning-color);
-        }
-
-        .stat-progress.red {
-            background: var(--error-color);
-        }
-
-        /* Activity and Priority Lists */
-        .activity-feed, .priority-list {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .activity-item, .priority-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem 0;
-            border-bottom: 1px solid var(--border-color);
-            transition: var(--transition);
-        }
-
-        .activity-item:hover, .priority-item:hover {
-            background: rgba(255, 255, 255, 0.02);
-            margin: 0 -var(--spacing-md);
-            padding-left: var(--spacing-md);
-            padding-right: var(--spacing-md);
-            border-radius: var(--border-radius-md);
-        }
-
-        .activity-item:last-child, .priority-item:last-child {
-            border-bottom: none;
-        }
-
-        .priority-checkbox {
-            width: 18px;
-            height: 18px;
-            accent-color: var(--accent-color);
-        }
-
-        /* GitHub Integration */
-        .github-section {
-            margin-bottom: var(--spacing-xl);
-        }
-
-        .repo-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: var(--spacing-md);
-            margin-bottom: var(--spacing-lg);
-        }
-
-        .repo-card {
-            padding: var(--spacing-md);
-            background: var(--glass-bg);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius-lg);
-            transition: var(--transition);
-        }
-
-        .repo-card:hover {
-            background: var(--glass-bg-hover);
-            transform: translateY(-2px);
-        }
-
-        .repo-header {
-            display: flex;
-            justify-content: between;
-            align-items: flex-start;
-            margin-bottom: var(--spacing-sm);
-        }
-
-        .repo-name {
-            font-weight: 600;
-            color: var(--accent-color);
-            text-decoration: none;
-            font-size: 1rem;
-        }
-
-        .repo-name:hover {
-            text-decoration: underline;
-        }
-
-        .repo-meta {
-            display: flex;
-            gap: var(--spacing-md);
+        .cost-label {
             font-size: 0.75rem;
             color: var(--text-muted);
-        }
-
-        .commits-feed {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .commit-item {
-            padding: var(--spacing-sm);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .commit-item:last-child {
-            border-bottom: none;
-        }
-
-        /* Kanban Board with Drag & Drop */
-        .kanban-board {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: var(--spacing-lg);
-        }
-
-        .kanban-column {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius-lg);
-            padding: var(--spacing-md);
-            min-height: 500px;
-        }
-
-        .kanban-column.drag-over {
-            background: rgba(108, 99, 255, 0.1);
-            border-color: var(--accent-color);
-        }
-
-        .kanban-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--spacing-md);
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .kanban-title {
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-
-        .task-count {
-            background: rgba(108, 99, 255, 0.2);
-            color: var(--accent-color);
-            padding: var(--spacing-xs) var(--spacing-sm);
-            border-radius: var(--border-radius-lg);
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .task-card {
-            background: var(--glass-bg);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius-md);
-            padding: var(--spacing-md);
-            margin-bottom: 0.75rem;
-            cursor: move;
-            transition: var(--transition);
-            position: relative;
-        }
-
-        .task-card:hover {
-            background: var(--glass-bg-hover);
-            border-color: var(--border-hover);
-            transform: translateY(-2px);
-        }
-
-        .task-card.dragging {
-            opacity: 0.5;
-            transform: rotate(5deg);
-        }
-
-        .task-card.drag-ghost {
-            position: absolute;
-            pointer-events: none;
-            z-index: 1000;
-            transform: rotate(5deg);
-        }
-
-        .task-title {
-            font-weight: 600;
-            margin-bottom: var(--spacing-sm);
-        }
-
-        .task-description {
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .task-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        .priority-badge {
-            padding: var(--spacing-xs) var(--spacing-sm);
-            border-radius: var(--border-radius-sm);
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .priority-high {
-            background: rgba(255, 68, 68, 0.2);
-            color: var(--error-color);
-        }
-
-        .priority-medium {
-            background: rgba(255, 184, 0, 0.2);
-            color: var(--warning-color);
-        }
-
-        .priority-low {
-            background: rgba(0, 255, 136, 0.2);
-            color: var(--success-color);
         }
 
         /* Agent Cards */
@@ -1036,7 +540,7 @@
             animation: pulse 2s infinite;
         }
 
-        .status-busy {
+        .status-idle {
             background: var(--warning-color);
         }
 
@@ -1060,6 +564,74 @@
             font-size: 0.75rem;
         }
 
+        /* Agent Detail Slide-out */
+        .agent-detail-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-left: 1px solid var(--border-color);
+            z-index: 2000;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+            padding: var(--spacing-lg);
+        }
+
+        .agent-detail-panel.open {
+            right: 0;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .panel-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .panel-close:hover {
+            color: var(--text-primary);
+        }
+
+        .session-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .session-item {
+            padding: var(--spacing-sm);
+            background: var(--glass-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .session-key {
+            font-weight: 600;
+            color: var(--accent-color);
+            font-size: 0.875rem;
+        }
+
+        .session-meta {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: var(--spacing-xs);
+        }
+
+        /* Chat Panel */
         .chat-mini-panel {
             background: var(--glass-bg);
             border: 1px solid var(--border-color);
@@ -1075,11 +647,15 @@
             border: 1px solid var(--border-color);
             border-radius: var(--border-radius-md);
             padding: var(--spacing-sm);
+            background: var(--bg-primary);
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
         }
 
         .chat-message {
             padding: var(--spacing-xs) 0;
             border-bottom: 1px solid var(--border-color);
+            line-height: 1.4;
         }
 
         .chat-message:last-child {
@@ -1101,419 +677,11 @@
             font-size: 0.875rem;
         }
 
-        /* Quick Actions Bar */
-        .quick-actions {
-            position: fixed;
-            bottom: var(--spacing-xl);
-            right: var(--spacing-xl);
-            z-index: 1500;
-        }
-
-        .quick-actions-fab {
-            width: 56px;
-            height: 56px;
-            background: var(--accent-color);
-            border: none;
-            border-radius: 50%;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: var(--transition-slow);
-            box-shadow: var(--shadow-lg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .quick-actions-fab:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 25px rgba(108, 99, 255, 0.3);
-        }
-
-        .quick-actions-menu {
-            position: absolute;
-            bottom: 70px;
-            right: 0;
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius-lg);
-            padding: var(--spacing-sm);
-            min-width: 200px;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(10px);
-            transition: var(--transition-slow);
-        }
-
-        .quick-actions-menu.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        .quick-action-item {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-            padding: var(--spacing-sm) var(--spacing-md);
-            border-radius: var(--border-radius-md);
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 0.875rem;
-        }
-
-        .quick-action-item:hover {
-            background: var(--glass-bg-hover);
-        }
-
-        /* Search Modal */
-        .search-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            z-index: 2000;
-            opacity: 0;
-            pointer-events: none;
-            transition: var(--transition-slow);
-            padding-top: 20vh;
-        }
-
-        .search-modal.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .search-content {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius-xl);
-            width: 90%;
-            max-width: 600px;
-            max-height: 70vh;
-            overflow: hidden;
-            transform: translateY(-20px);
-            transition: var(--transition-slow);
-        }
-
-        .search-modal.active .search-content {
-            transform: translateY(0);
-        }
-
-        .search-input-container {
-            padding: var(--spacing-lg);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .search-input {
-            width: 100%;
-            background: transparent;
-            border: none;
-            color: var(--text-primary);
-            font-size: 1.25rem;
-            font-weight: 500;
-            outline: none;
-        }
-
-        .search-input::placeholder {
-            color: var(--text-muted);
-        }
-
-        .search-results {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .search-section {
-            padding: var(--spacing-md) var(--spacing-lg);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .search-section:last-child {
-            border-bottom: none;
-        }
-
-        .search-section-title {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            margin-bottom: var(--spacing-sm);
-        }
-
-        .search-result-item {
-            padding: var(--spacing-sm);
-            border-radius: var(--border-radius-md);
-            cursor: pointer;
-            transition: var(--transition);
-            margin-bottom: var(--spacing-xs);
-        }
-
-        .search-result-item:hover {
-            background: var(--glass-bg-hover);
-        }
-
-        /* Toast Notifications */
-        .toast-container {
-            position: fixed;
-            bottom: var(--spacing-xl);
-            right: var(--spacing-xl);
-            z-index: 3000;
-            pointer-events: none;
-        }
-
-        .toast {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius-lg);
-            padding: var(--spacing-md);
-            margin-bottom: var(--spacing-sm);
-            min-width: 300px;
-            max-width: 400px;
-            pointer-events: all;
-            transform: translateX(100%);
-            transition: var(--transition-slow);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .toast.show {
-            transform: translateX(0);
-        }
-
-        .toast.success {
-            border-left: 4px solid var(--success-color);
-        }
-
-        .toast.warning {
-            border-left: 4px solid var(--warning-color);
-        }
-
-        .toast.error {
-            border-left: 4px solid var(--error-color);
-        }
-
-        .toast-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--spacing-sm);
-        }
-
-        .toast-title {
-            font-weight: 600;
-            font-size: 0.875rem;
-        }
-
-        .toast-close {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 1rem;
-        }
-
-        .toast-message {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            line-height: 1.4;
-        }
-
-        /* Modal */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            opacity: 0;
-            pointer-events: none;
-            transition: var(--transition-slow);
-        }
-
-        .modal.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .modal-content {
-            background: rgba(20, 20, 30, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius-xl);
-            padding: var(--spacing-xl);
-            max-width: 600px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            transform: translateY(20px);
-            transition: var(--transition-slow);
-        }
-
-        [data-theme="light"] .modal-content {
-            background: rgba(248, 249, 250, 0.95);
-        }
-
-        .modal.active .modal-content {
-            transform: translateY(0);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--spacing-lg);
-            padding-bottom: var(--spacing-md);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .modal-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .modal-close:hover {
-            color: var(--text-primary);
-        }
-
-        /* Additional component styles */
-        .timeline {
-            position: relative;
-            padding-left: 2rem;
-        }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 1rem;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: linear-gradient(to bottom, var(--accent-color), rgba(108, 99, 255, 0.2));
-        }
-
-        .timeline-phase {
-            position: relative;
-            margin-bottom: 2rem;
-            padding: var(--spacing-lg);
-            background: var(--glass-bg);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius-lg);
-            margin-left: var(--spacing-md);
-            transition: var(--transition);
-        }
-
-        .timeline-phase:hover {
-            background: var(--glass-bg-hover);
-            transform: translateY(-2px);
-        }
-
-        .timeline-phase.current {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 20px rgba(108, 99, 255, 0.3);
-        }
-
-        .timeline-phase::before {
-            content: '';
-            position: absolute;
-            left: -1.75rem;
-            top: var(--spacing-lg);
-            width: 12px;
-            height: 12px;
-            background: var(--accent-color);
-            border-radius: 50%;
-            border: 3px solid var(--bg-primary);
-        }
-
-        .notes-editor {
-            background: var(--glass-bg);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius-lg);
-            padding: var(--spacing-lg);
-            min-height: 500px;
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem;
-            line-height: 1.6;
-            color: var(--text-primary);
-            resize: none;
-            outline: none;
-            transition: var(--transition);
-            width: 100%;
-        }
-
-        .notes-editor:focus {
-            border-color: var(--accent-color);
-            background: var(--glass-bg-hover);
-            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
-        }
-
-        .notes-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: var(--spacing-md);
-            color: var(--text-muted);
-            font-size: 0.875rem;
-        }
-
-        .revenue-gauge {
-            position: relative;
-            width: 200px;
-            height: 200px;
-            margin: 0 auto 2rem;
-        }
-
-        .gauge-bg {
-            stroke: rgba(255, 255, 255, 0.1);
-            stroke-width: 10;
-            fill: none;
-        }
-
-        .gauge-fill {
-            stroke: var(--accent-color);
-            stroke-width: 10;
-            fill: none;
-            stroke-linecap: round;
-            transition: var(--transition-slow);
-        }
-
-        .gauge-text {
-            text-anchor: middle;
-            dominant-baseline: central;
-            font-size: 1.5rem;
-            font-weight: 700;
-            fill: var(--text-primary);
-        }
-
         /* Utility Classes */
         .text-center { text-align: center; }
-        .text-right { text-align: right; }
         .mb-1 { margin-bottom: var(--spacing-sm); }
         .mb-2 { margin-bottom: var(--spacing-md); }
         .mb-3 { margin-bottom: var(--spacing-lg); }
-        .mt-2 { margin-top: var(--spacing-md); }
         .flex { display: flex; }
         .justify-between { justify-content: space-between; }
         .items-center { align-items: center; }
@@ -1544,135 +712,14 @@
                 grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             }
 
-            .kanban-board {
-                grid-template-columns: 1fr;
-            }
-
             .agent-grid {
                 grid-template-columns: 1fr;
             }
 
-            .modal-content {
-                width: 95%;
-                margin: var(--spacing-md);
+            .agent-detail-panel {
+                width: 100vw;
+                right: -100vw;
             }
-
-            .quick-actions {
-                bottom: var(--spacing-md);
-                right: var(--spacing-md);
-            }
-
-            .toast-container {
-                bottom: var(--spacing-md);
-                right: var(--spacing-md);
-                left: var(--spacing-md);
-            }
-
-            .toast {
-                min-width: auto;
-            }
-
-            .pomodoro-timer {
-                top: 80px;
-                right: 10px;
-                min-width: 180px;
-            }
-        }
-
-        /* Revenue Chart and Additional Styles */
-        .revenue-chart {
-            height: 300px;
-            background: var(--glass-bg);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius-lg);
-            padding: var(--spacing-md);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .chart-bars {
-            display: flex;
-            align-items: end;
-            height: 240px;
-            gap: var(--spacing-md);
-            margin-top: var(--spacing-md);
-        }
-
-        .chart-bar {
-            flex: 1;
-            background: linear-gradient(to top, var(--accent-color), rgba(108, 99, 255, 0.3));
-            border-radius: var(--border-radius-sm);
-            min-height: 20px;
-            position: relative;
-            transition: var(--transition-slow);
-        }
-
-        .chart-bar:hover {
-            transform: translateY(-2px);
-            filter: brightness(1.1);
-        }
-
-        .chart-labels {
-            display: flex;
-            justify-content: space-between;
-            margin-top: var(--spacing-sm);
-            color: var(--text-muted);
-            font-size: 0.75rem;
-        }
-
-        .client-list {
-            background: var(--glass-bg);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius-lg);
-            overflow: hidden;
-        }
-
-        .client-header {
-            background: rgba(255, 255, 255, 0.05);
-            padding: var(--spacing-md);
-            font-weight: 600;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .client-row {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
-            gap: var(--spacing-md);
-            padding: var(--spacing-md);
-            border-bottom: 1px solid var(--border-color);
-            align-items: center;
-            transition: var(--transition);
-        }
-
-        .client-row:hover {
-            background: var(--glass-bg-hover);
-        }
-
-        .client-row:last-child {
-            border-bottom: none;
-        }
-
-        .client-status {
-            padding: var(--spacing-xs) var(--spacing-sm);
-            border-radius: var(--border-radius-sm);
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-align: center;
-        }
-
-        .status-active {
-            background: rgba(0, 255, 136, 0.2);
-            color: var(--success-color);
-        }
-
-        .status-pending {
-            background: rgba(255, 184, 0, 0.2);
-            color: var(--warning-color);
-        }
-
-        .status-churned {
-            background: rgba(255, 68, 68, 0.2);
-            color: var(--error-color);
         }
     </style>
 </head>
@@ -1695,9 +742,6 @@
     </div>
     <div id="appContent" style="display:none;">
 
-    <!-- PWA Install Banner (hidden) -->
-    <div class="install-banner" id="installBanner" style="display:none !important;"></div>
-
     <header class="header">
         <a href="#" class="logo">
             🚀 Mission Control
@@ -1710,8 +754,6 @@
             <a href="#" class="nav-tab" data-tab="notes" onclick="event.preventDefault();switchTab('notes')">📝 Notes</a>
             <a href="#" class="nav-tab" data-tab="revenue" onclick="event.preventDefault();switchTab('revenue')">💰 Revenue</a>
             <a href="#" class="nav-tab" data-tab="command-center" onclick="event.preventDefault();switchTab('command-center')">🏢 Command Center</a>
-            <a href="#" class="nav-tab" data-tab="meetings" onclick="event.preventDefault();switchTab('meetings')">📞 Meetings</a>
-            <a href="#" class="nav-tab" data-tab="intel" onclick="event.preventDefault();switchTab('intel')">📡 Intel</a>
         </nav>
         <div class="header-right">
             <div class="weather-info" id="weatherInfo">
@@ -1723,11 +765,6 @@
             </div>
             <div class="header-actions">
                 <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">🌙</button>
-                <div class="notification-bell" id="notificationBell" onclick="toggleNotifications()">
-                    🔔
-                    <span class="notification-badge hidden" id="notificationBadge">0</span>
-                </div>
-                <button class="settings-btn" onclick="openSettings()">⚙️</button>
             </div>
         </div>
     </header>
@@ -1740,136 +777,93 @@
                 <div class="welcome-date" id="welcomeDate"></div>
             </div>
 
-            <!-- System Monitor Widget -->
-            <div class="card system-monitor">
+            <!-- Cost Overview Widget -->
+            <div class="card">
                 <div class="flex justify-between items-center mb-2">
-                    <h3>System Monitor</h3>
-                    <button class="btn-secondary" onclick="generateDigest()">Generate Digest</button>
+                    <h3>💰 Cost Overview</h3>
+                    <button class="btn-secondary" onclick="refreshCosts()">Refresh</button>
                 </div>
-                <div class="system-stats" id="systemStats">
-                    <!-- System stats will be loaded here -->
+                <div class="cost-overview" id="costOverview">
+                    <div class="cost-stat">
+                        <div class="cost-value" id="totalCostToday">$0.00</div>
+                        <div class="cost-label">Today's Cost</div>
+                    </div>
+                    <div class="cost-stat">
+                        <div class="cost-value" id="totalTokensToday">0</div>
+                        <div class="cost-label">Total Tokens</div>
+                    </div>
+                    <div class="cost-stat">
+                        <div class="cost-value" id="activeAgents">0</div>
+                        <div class="cost-label">Active Agents</div>
+                    </div>
+                    <div class="cost-stat">
+                        <div class="cost-value" id="estimatedMonthly">$0.00</div>
+                        <div class="cost-label">Est. Monthly</div>
+                    </div>
+                </div>
+                <div id="agentCostBreakdown" class="mb-2">
+                    <!-- Agent cost breakdown will be loaded here -->
                 </div>
             </div>
 
-            <!-- Habit Tracker -->
-            <div class="card habit-tracker">
-                <h3 class="mb-2">Daily Habits</h3>
-                <div class="habit-grid" id="habitGrid">
-                    <!-- Habits will be loaded here -->
+            <!-- Live Activity Feed -->
+            <div class="card">
+                <div class="flex justify-between items-center mb-2">
+                    <h3>📊 Live Activity Feed</h3>
+                    <button class="btn-secondary" onclick="refreshActivityFeed()">Refresh</button>
+                </div>
+                <div class="activity-feed" id="liveActivityFeed">
+                    <div class="activity-entry">
+                        <span class="activity-timestamp">Loading...</span>
+                        <span>Connecting to OpenClaw gateway...</span>
+                    </div>
                 </div>
             </div>
 
             <!-- Dashboard Metric Cards -->
             <div class="grid-4 mb-3">
-                <div class="card accent-top metric-card" onclick="editMetricCard(0)">
-                    <div class="metric-icon" id="metric0Icon">💰</div>
+                <div class="card accent-top metric-card">
+                    <div class="metric-icon">💰</div>
                     <div class="metric-value" id="metric0Value">$0</div>
-                    <div class="metric-label" id="metric0Label">MRR Progress ($10K Goal)</div>
+                    <div class="metric-label">MRR Progress ($10K Goal)</div>
                     <div class="trend-indicator">+0%</div>
                 </div>
-                <div class="card accent-top metric-card" onclick="editMetricCard(1)">
-                    <div class="metric-icon" id="metric1Icon">👥</div>
+                <div class="card accent-top metric-card">
+                    <div class="metric-icon">👥</div>
                     <div class="metric-value" id="metric1Value">0</div>
-                    <div class="metric-label" id="metric1Label">Active Clients</div>
+                    <div class="metric-label">Active Clients</div>
                     <div class="trend-indicator">+0</div>
                 </div>
-                <div class="card accent-top metric-card" onclick="editMetricCard(2)">
-                    <div class="metric-icon" id="metric2Icon">🐛</div>
+                <div class="card accent-top metric-card">
+                    <div class="metric-icon">🐛</div>
                     <div class="metric-value" id="metric2Value">0</div>
-                    <div class="metric-label" id="metric2Label">Open Issues</div>
+                    <div class="metric-label">Open Issues</div>
                     <div class="trend-indicator">+0</div>
                 </div>
-                <div class="card accent-top metric-card" onclick="editMetricCard(3)">
-                    <div class="metric-icon" id="metric3Icon">🤖</div>
+                <div class="card accent-top metric-card">
+                    <div class="metric-icon">🤖</div>
                     <div class="metric-value" id="metric3Value">0</div>
-                    <div class="metric-label" id="metric3Label">Agent Tasks</div>
+                    <div class="metric-label">Agent Tasks</div>
                     <div class="trend-indicator">⏰</div>
-                </div>
-            </div>
-
-            <!-- GitHub Recent Commits -->
-            <div class="card github-section">
-                <h3 class="mb-2">Recent Commits</h3>
-                <div class="commits-feed" id="recentCommits">
-                    <!-- Recent commits will be loaded here -->
-                </div>
-            </div>
-
-            <div class="grid-2">
-                <div class="card">
-                    <div class="flex justify-between items-center mb-2">
-                        <h3>Activity Feed</h3>
-                        <button class="btn-secondary" onclick="addActivity()">Add Activity</button>
-                    </div>
-                    <div class="activity-feed" id="activityFeed">
-                        <!-- Activities will be loaded here -->
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="flex justify-between items-center mb-2">
-                        <h3>Top Priorities</h3>
-                        <button class="btn-secondary" onclick="addPriority()">Add Priority</button>
-                    </div>
-                    <ul class="priority-list" id="priorityList">
-                        <!-- Priorities will be loaded here -->
-                    </ul>
                 </div>
             </div>
         </div>
 
         <!-- Projects Tab -->
         <div id="projects" class="tab-content">
-            <!-- GitHub Repositories -->
-            <div class="card github-section">
-                <h3 class="mb-2">GitHub Repositories</h3>
-                <div class="repo-grid" id="repoGrid">
-                    <!-- GitHub repos will be loaded here -->
-                </div>
-            </div>
-
-            <div class="kanban-board">
-                <div class="kanban-column" data-status="backlog">
-                    <div class="kanban-header">
-                        <div class="kanban-title">📥 Backlog</div>
-                        <div class="task-count" id="backlogCount">0</div>
-                    </div>
-                    <div class="kanban-tasks" id="backlogTasks"></div>
-                    <button class="btn w-100" onclick="addTask('backlog')">Add Task</button>
-                </div>
-
-                <div class="kanban-column" data-status="progress">
-                    <div class="kanban-header">
-                        <div class="kanban-title">🔄 In Progress</div>
-                        <div class="task-count" id="progressCount">0</div>
-                    </div>
-                    <div class="kanban-tasks" id="progressTasks"></div>
-                    <button class="btn w-100" onclick="addTask('progress')">Add Task</button>
-                </div>
-
-                <div class="kanban-column" data-status="done">
-                    <div class="kanban-header">
-                        <div class="kanban-title">✅ Done</div>
-                        <div class="task-count" id="doneCount">0</div>
-                    </div>
-                    <div class="kanban-tasks" id="doneTasks"></div>
-                    <button class="btn w-100" onclick="addTask('done')">Add Task</button>
-                </div>
-            </div>
+            <p>Project management features go here...</p>
         </div>
 
         <!-- Timeline Tab -->
         <div id="timeline" class="tab-content">
-            <div class="timeline" id="timelineContainer">
-                <!-- Timeline phases will be loaded here -->
-            </div>
+            <p>Timeline features go here...</p>
         </div>
 
         <!-- Notes Tab -->
         <div id="notes" class="tab-content">
             <div class="card">
-                <textarea class="notes-editor" id="notesEditor" placeholder="Write your notes here..."></textarea>
-                <div class="notes-meta">
+                <textarea class="form-textarea" id="notesEditor" placeholder="Write your notes here..." style="min-height: 500px;"></textarea>
+                <div class="flex justify-between items-center" style="margin-top: 1rem; font-size: 0.875rem; color: var(--text-muted);">
                     <span id="charCount">0 characters</span>
                     <span id="lastSaved">Never saved</span>
                 </div>
@@ -1878,472 +872,57 @@
 
         <!-- Revenue Tab -->
         <div id="revenue" class="tab-content">
-            <div class="grid-2 mb-3">
-                <div class="card text-center">
-                    <h3 class="mb-2">MRR Progress</h3>
-                    <div class="revenue-gauge">
-                        <svg width="200" height="200">
-                            <circle cx="100" cy="100" r="80" class="gauge-bg"/>
-                            <circle cx="100" cy="100" r="80" class="gauge-fill" id="gaugeCircle"
-                                    style="stroke-dasharray: 0 502; transform: rotate(-90deg); transform-origin: center;"/>
-                            <text x="100" y="90" class="gauge-text" id="gaugeText">$0</text>
-                            <text x="100" y="115" class="gauge-text" style="font-size: 0.875rem;">of $10K</text>
-                        </svg>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <button class="btn-secondary" onclick="addClient()">Add Client</button>
-                        <button class="btn-secondary" onclick="syncFromStripe()">Sync from Stripe</button>
-                        <button class="btn-secondary" onclick="editRevenue()">Edit Revenue</button>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3 class="mb-2">Revenue Projections</h3>
-                    <div id="projections">
-                        <div class="mb-2">
-                            <strong>Current MRR:</strong> <span id="currentMrr">$0</span>
-                        </div>
-                        <div class="mb-2">
-                            <strong>Annual Run Rate:</strong> <span id="annualRate">$0</span>
-                        </div>
-                        <div class="mb-2">
-                            <strong>Goal Progress:</strong> <span id="goalProgress">0%</span>
-                        </div>
-                        <div class="mb-2">
-                            <strong>Monthly Growth Needed:</strong> <span id="growthNeeded">$0</span>
-                        </div>
-                        <div>
-                            <strong>Target Date:</strong> June 2026
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3 class="mb-2">Revenue Chart (Last 6 Months)</h3>
-                <div class="revenue-chart">
-                    <div class="chart-bars" id="revenueChart">
-                        <!-- Chart bars will be generated here -->
-                    </div>
-                    <div class="chart-labels" id="chartLabels">
-                        <!-- Chart labels will be generated here -->
-                    </div>
-                </div>
-            </div>
-
-            <div class="card mt-2">
-                <div class="client-list">
-                    <div class="client-header">
-                        <div class="client-row" style="font-weight: 600;">
-                            <div>Client Name</div>
-                            <div>Monthly Value</div>
-                            <div>Status</div>
-                            <div>Start Date</div>
-                            <div>Actions</div>
-                        </div>
-                    </div>
-                    <div id="clientList">
-                        <!-- Client rows will be loaded here -->
-                    </div>
-                </div>
-            </div>
+            <p>Revenue tracking features go here...</p>
         </div>
 
         <!-- Command Center Tab -->
         <div id="command-center" class="tab-content">
-            <!-- OpenClaw Agent Control -->
-            <div class="card chat-mini-panel">
-                <h3 class="mb-2">OpenClaw Agent Control</h3>
-                <div class="chat-messages" id="agentMessages">
-                    <div class="chat-message">
-                        <strong>System:</strong> Connecting to OpenClaw gateway...
-                    </div>
-                </div>
-                <div class="chat-input-group">
-                    <input type="text" class="chat-input" id="chatInput" placeholder="Send task to agents..." onkeypress="handleChatKeypress(event)">
-                    <button class="btn" onclick="sendChatMessage()">Send Task</button>
-                </div>
-                <div class="mt-2">
-                    <small class="text-muted">WebSocket Status: <span id="wsStatus">Connecting...</span> | Telegram: <span id="telegramStatus">Checking...</span></small>
-                </div>
-            </div>
-
+            <h3 class="mb-2" style="color:var(--text-primary);font-size:1.1rem;">🏢 Agent Overview</h3>
             <div class="agent-grid" id="agentGrid">
-                <!-- Agent cards will be loaded here -->
-            </div>
-
-            <div class="card">
-                <div class="flex justify-between items-center mb-2">
-                    <h3>Executive Decisions</h3>
-                    <button class="btn-secondary" onclick="addDecision()">Add Decision</button>
-                </div>
-                <div id="decisionsList">
-                    <!-- Decisions will be loaded here -->
-                </div>
-            </div>
-        </div>
-
-        <!-- Meetings Tab -->
-        <div id="meetings" class="tab-content">
-            <div class="flex justify-between items-center mb-3">
-                <h2>Meetings & Schedule</h2>
-                <button class="btn" onclick="addMeeting()">Add Meeting</button>
-            </div>
-            <div class="grid-2">
-                <div class="card">
-                    <h3 class="mb-2">Upcoming Meetings</h3>
-                    <div id="upcomingMeetings">
-                        <!-- Upcoming meetings will be loaded here -->
-                    </div>
-                </div>
-                <div class="card">
-                    <h3 class="mb-2">Meeting History</h3>
-                    <div id="meetingHistory">
-                        <!-- Meeting history will be loaded here -->
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Intel Tab -->
-        <div id="intel" class="tab-content">
-            <div class="flex justify-between items-center mb-3">
-                <h2>Intelligence & Research</h2>
-                <div class="flex gap-2">
-                    <select id="intelFilter" class="form-select" style="width: auto;" onchange="filterIntel()">
-                        <option value="">All Categories</option>
-                        <option value="competition">Competition</option>
-                        <option value="market">Market Research</option>
-                        <option value="tech">Technology</option>
-                        <option value="industry">Industry News</option>
-                        <option value="personal">Personal</option>
-                    </select>
-                    <button class="btn" onclick="addIntel()">Add Intel</button>
-                </div>
-            </div>
-            <div id="intelFeed">
-                <!-- Intel items will be loaded here -->
+                <!-- Agent cards auto-populated from OpenClaw -->
             </div>
         </div>
     </main>
 
-    <!-- Quick Actions Bar -->
-    <div class="quick-actions">
-        <div class="quick-actions-menu" id="quickActionsMenu">
-            <div class="quick-action-item" onclick="addTask('backlog'); toggleQuickActions()">
-                <span>📋</span> New Task
-            </div>
-            <div class="quick-action-item" onclick="addActivity(); toggleQuickActions()">
-                <span>📝</span> New Note
-            </div>
-            <div class="quick-action-item" onclick="addMeeting(); toggleQuickActions()">
-                <span>📞</span> New Meeting
-            </div>
-            <div class="quick-action-item" onclick="openQuickSendTask(); toggleQuickActions()">
-                <span>🤖</span> Send Task to Agent
-            </div>
+    <!-- Agent Detail Panel -->
+    <div id="agentDetailPanel" class="agent-detail-panel">
+        <div class="panel-header">
+            <h3 id="agentDetailName">Agent Details</h3>
+            <button class="panel-close" onclick="closeAgentDetail()">&times;</button>
         </div>
-        <button class="quick-actions-fab" onclick="toggleQuickActions()">+</button>
-    </div>
-
-    <!-- Search Modal -->
-    <div class="search-modal" id="searchModal">
-        <div class="search-content">
-            <div class="search-input-container">
-                <input type="text" class="search-input" id="searchModalInput" placeholder="Search across all tabs..." oninput="performSearch()" onkeydown="handleSearchKeydown(event)">
+        
+        <div id="agentDetailContent">
+            <div class="mb-2">
+                <strong>Role:</strong> <span id="agentDetailRole">Unknown</span>
             </div>
-            <div class="search-results" id="searchResults">
-                <div class="search-section">
-                    <div class="search-section-title">Press Cmd/Ctrl + K to search</div>
-                </div>
+            <div class="mb-2">
+                <strong>Model:</strong> <span id="agentDetailModel">Unknown</span>
             </div>
-        </div>
-    </div>
-
-    <!-- Toast Notifications Container -->
-    <div class="toast-container" id="toastContainer">
-        <!-- Toast notifications will be added here -->
-    </div>
-
-    <!-- All Modals -->
-    <div id="taskModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="taskModalTitle">Add Task</h3>
-                <button class="modal-close" onclick="closeModal('taskModal')">&times;</button>
+            <div class="mb-2">
+                <strong>Status:</strong> <span id="agentDetailStatus">Unknown</span>
             </div>
-            <form onsubmit="saveTask(event)">
-                <div class="form-group">
-                    <label class="form-label">Title</label>
-                    <input type="text" class="form-input" id="taskTitle" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Description</label>
-                    <textarea class="form-textarea" id="taskDescription"></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Priority</label>
-                    <select class="form-select" id="taskPriority">
-                        <option value="low">Low</option>
-                        <option value="medium">Medium</option>
-                        <option value="high">High</option>
-                    </select>
-                </div>
-                <div class="flex gap-2">
-                    <button type="submit" class="btn">Save Task</button>
-                    <button type="button" class="btn-secondary" onclick="closeModal('taskModal')">Cancel</button>
-                    <button type="button" class="btn-danger" id="deleteTaskBtn" onclick="deleteTask()" style="display: none;">Delete</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div id="metricModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Edit Metric Card</h3>
-                <button class="modal-close" onclick="closeModal('metricModal')">&times;</button>
+            <div class="mb-2">
+                <strong>Last Active:</strong> <span id="agentDetailLastActive">Unknown</span>
             </div>
-            <form onsubmit="saveMetricCard(event)">
-                <div class="form-group">
-                    <label class="form-label">Metric Type</label>
-                    <select class="form-select" id="metricType">
-                        <option value="mrr">MRR Progress ($10K Goal)</option>
-                        <option value="clients">Active Clients</option>
-                        <option value="issues">Open Issues</option>
-                        <option value="tasks">Agent Tasks</option>
-                        <option value="revenue">Revenue This Month</option>
-                    </select>
-                </div>
-                <div class="flex gap-2">
-                    <button type="submit" class="btn">Save</button>
-                    <button type="button" class="btn-secondary" onclick="closeModal('metricModal')">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div id="digestModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Daily Digest</h3>
-                <button class="modal-close" onclick="closeModal('digestModal')">&times;</button>
+            
+            <h4 style="margin: 1.5rem 0 1rem 0;">Recent Sessions</h4>
+            <div class="session-list" id="agentSessionList">
+                <p style="color: var(--text-muted);">Loading sessions...</p>
             </div>
-            <div id="digestContent">
-                <!-- Digest content will be loaded here -->
+            
+            <div style="margin-top: 1.5rem;">
+                <button class="btn w-100" onclick="refreshAgentSessions()">Refresh Sessions</button>
             </div>
-        </div>
-    </div>
-
-    <div id="settingsModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Settings</h3>
-                <button class="modal-close" onclick="closeModal('settingsModal')">&times;</button>
-            </div>
-            <div class="form-group">
-                <h4 class="mb-2">Data Management</h4>
-                <div class="flex gap-2 mb-2">
-                    <button class="btn-secondary" onclick="exportData()">Export All Data</button>
-                    <button class="btn-secondary" onclick="document.getElementById('importFile').click()">Import Data</button>
-                    <button class="btn-secondary" onclick="backupNow()">Backup Now</button>
-                    <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
-                </div>
-                <button class="btn-danger" onclick="clearAllData()">Clear All Data</button>
-            </div>
-            <div class="form-group" id="userManagement" style="display: none;">
-                <h4 class="mb-2">User Management</h4>
-                <div class="flex gap-2 mb-2">
-                    <button class="btn-secondary" onclick="openUserRegistration()">Add User</button>
-                    <button class="btn-secondary" onclick="viewUsers()">View Users</button>
-                </div>
-            </div>
-            <div class="form-group">
-                <h4 class="mb-2">Notifications</h4>
-                <label class="flex items-center gap-2">
-                    <input type="checkbox" id="enableNotifications" onchange="toggleNotificationSetting()">
-                    <span>Enable Desktop Notifications</span>
-                </label>
-            </div>
-            <div class="form-group">
-                <h4 class="mb-2">Integrations</h4>
-                <div class="mb-2">
-                    <strong>Telegram Bot:</strong> <span id="telegramBotStatus">Not configured</span>
-                </div>
-                <div class="mb-2">
-                    <strong>Stripe:</strong> <span id="stripeStatus">Not configured</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="quickSendTaskModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Send Task to Agent</h3>
-                <button class="modal-close" onclick="closeModal('quickSendTaskModal')">&times;</button>
-            </div>
-            <form onsubmit="sendQuickTask(event)">
-                <div class="form-group">
-                    <label class="form-label">Select Agent</label>
-                    <select class="form-select" id="quickTaskAgent">
-                        <option value="spock">Spock - Unified AI Operator</option>
-                        <option value="dev">Dev - Full Stack Developer</option>
-                        <option value="research">Research - Intelligence & Research</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Task Description</label>
-                    <textarea class="form-textarea" id="quickTaskDescription" required placeholder="Describe the task..."></textarea>
-                </div>
-                <div class="flex gap-2">
-                    <button type="submit" class="btn">Send Task</button>
-                    <button type="button" class="btn-secondary" onclick="closeModal('quickSendTaskModal')">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Client Modal -->
-    <div id="clientModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="clientModalTitle">Add Client</h3>
-                <button class="modal-close" onclick="closeModal('clientModal')">&times;</button>
-            </div>
-            <form onsubmit="saveClient(event)">
-                <div class="form-group">
-                    <label class="form-label">Client Name</label>
-                    <input type="text" class="form-input" id="clientName" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Monthly Value ($)</label>
-                    <input type="number" class="form-input" id="clientValue" required min="0" step="0.01">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Status</label>
-                    <select class="form-select" id="clientStatus">
-                        <option value="active">Active</option>
-                        <option value="pending">Pending</option>
-                        <option value="churned">Churned</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Start Date</label>
-                    <input type="date" class="form-input" id="clientStartDate" required>
-                </div>
-                <div class="flex gap-2">
-                    <button type="submit" class="btn">Save Client</button>
-                    <button type="button" class="btn-secondary" onclick="closeModal('clientModal')">Cancel</button>
-                    <button type="button" class="btn-danger" id="deleteClientBtn" onclick="deleteClient()" style="display: none;">Delete</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div id="meetingModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="meetingModalTitle">Add Meeting</h3>
-                <button class="modal-close" onclick="closeModal('meetingModal')">&times;</button>
-            </div>
-            <form onsubmit="saveMeeting(event)">
-                <div class="form-group">
-                    <label class="form-label">Meeting Title</label>
-                    <input type="text" class="form-input" id="meetingTitle" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Date</label>
-                    <input type="date" class="form-input" id="meetingDate" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Time</label>
-                    <input type="time" class="form-input" id="meetingTime" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Attendee</label>
-                    <input type="text" class="form-input" id="meetingAttendee" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Agenda</label>
-                    <textarea class="form-textarea" id="meetingAgenda"></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Notes</label>
-                    <textarea class="form-textarea" id="meetingNotes"></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Action Items</label>
-                    <textarea class="form-textarea" id="meetingActions"></textarea>
-                </div>
-                <div class="flex gap-2">
-                    <button type="submit" class="btn">Save Meeting</button>
-                    <button type="button" class="btn-secondary" onclick="closeModal('meetingModal')">Cancel</button>
-                    <button type="button" class="btn-danger" id="deleteMeetingBtn" onclick="deleteMeeting()" style="display: none;">Delete</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div id="intelModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="intelModalTitle">Add Intel</h3>
-                <button class="modal-close" onclick="closeModal('intelModal')">&times;</button>
-            </div>
-            <form onsubmit="saveIntel(event)">
-                <div class="form-group">
-                    <label class="form-label">Title</label>
-                    <input type="text" class="form-input" id="intelTitle" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Source URL</label>
-                    <input type="url" class="form-input" id="intelUrl" placeholder="https://...">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Category</label>
-                    <select class="form-select" id="intelCategory">
-                        <option value="competition">Competition</option>
-                        <option value="market">Market Research</option>
-                        <option value="tech">Technology</option>
-                        <option value="industry">Industry News</option>
-                        <option value="personal">Personal</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Summary</label>
-                    <textarea class="form-textarea" id="intelSummary"></textarea>
-                </div>
-                <div class="flex gap-2">
-                    <button type="submit" class="btn">Save Intel</button>
-                    <button type="button" class="btn-secondary" onclick="closeModal('intelModal')">Cancel</button>
-                    <button type="button" class="btn-danger" id="deleteIntelBtn" onclick="deleteIntel()" style="display: none;">Delete</button>
-                </div>
-            </form>
         </div>
     </div>
 
     <script>
         // Global Variables
         let currentTab = 'dashboard';
-        let currentTask = null;
-        let currentClient = null;
-        let currentMeeting = null;
-        let currentIntel = null;
-        let currentMetricCard = null;
         let serverConnected = false;
-        let websocket = null;
-        let notifications = [];
-        let quickActionsOpen = false;
-        let deferredPrompt = null;
-        let serviceWorker = null;
-        
-        // Pomodoro Timer Variables
-        let pomodoroTimer = null;
-        let pomodoroTimeLeft = 25 * 60; // 25 minutes in seconds
-        let pomodoroSession = 'work'; // 'work' or 'break'
-        let pomodoroActive = false;
-        let audioContext = null;
+        let currentAgentDetail = null;
+        let activityFeedInterval = null;
+        let costsRefreshInterval = null;
 
         // Server API base URL
         const IS_LOCAL = window.location.hostname === 'localhost' || window.location.hostname === '45.76.125.57';
@@ -2354,12 +933,8 @@
             const token = localStorage.getItem('mc_token');
             return token ? { 'Authorization': 'Bearer ' + token } : {};
         }
+
         function authFetch(url, opts = {}) {
-            // On Vercel, route server calls through the serverless proxy
-            if (!IS_LOCAL && (url.startsWith('/mc/') || url.startsWith(`${SERVER_URL}/mc/`))) {
-                const path = url.replace(SERVER_URL, '');
-                url = '/api/proxy?path=' + encodeURIComponent(path);
-            }
             opts.headers = { ...getAuthHeaders(), ...(opts.headers || {}) };
             return fetch(url, opts).then(r => {
                 if (r.status === 401 && IS_LOCAL) { 
@@ -2370,231 +945,105 @@
             });
         }
 
-        // User namespace for localStorage
-        function getUserNamespace() {
-            const token = localStorage.getItem('mc_token');
-            if (!token) return 'default';
-            
-            try {
-                // Simple namespace based on token hash (in real app, get from server)
-                return 'user_' + token.substring(0, 8);
-            } catch (error) {
-                return 'default';
-            }
-        }
-
-        // Metric card configurations
-        const METRIC_CONFIGS = {
-            mrr: { icon: '💰', label: 'MRR Progress ($10K Goal)' },
-            clients: { icon: '👥', label: 'Active Clients' },
-            issues: { icon: '🐛', label: 'Open Issues' },
-            tasks: { icon: '🤖', label: 'Agent Tasks' },
-            revenue: { icon: '📊', label: 'Revenue This Month' }
-        };
-
-        // Default habits
-        const DEFAULT_HABITS = [
-            { id: 'code', name: 'Code', icon: '💻', streak: 0, completed: false },
-            { id: 'outreach', name: 'Outreach', icon: '📧', streak: 0, completed: false },
-            { id: 'content', name: 'Content', icon: '📝', streak: 0, completed: false },
-            { id: 'exercise', name: 'Exercise', icon: '🏃', streak: 0, completed: false }
-        ];
-
-        // Timeline Data (keeping existing data)
-        const timelineData = [
-            {
-                title: "Foundation Phase",
-                dateRange: "Jan 2024 - Jun 2024",
-                description: "Build core infrastructure, establish processes, and create initial client base.",
-                current: false,
-                milestones: [
-                    { text: "Set up development environment", completed: true },
-                    { text: "Create mission control dashboard", completed: true },
-                    { text: "Establish first client relationships", completed: true },
-                    { text: "Build core product offerings", completed: false }
-                ]
-            },
-            {
-                title: "Growth Phase",
-                dateRange: "Jul 2024 - Dec 2024",
-                description: "Scale operations, expand client base, and optimize revenue streams.",
-                current: true,
-                milestones: [
-                    { text: "Reach $1K MRR", completed: true },
-                    { text: "Hire first team member", completed: false },
-                    { text: "Launch YouTube channel", completed: true },
-                    { text: "Reach $3K MRR", completed: false }
-                ]
-            },
-            {
-                title: "Scale Phase",
-                dateRange: "Jan 2025 - Jun 2025",
-                description: "Accelerate growth, build team, and establish market presence.",
-                current: false,
-                milestones: [
-                    { text: "Reach $5K MRR", completed: false },
-                    { text: "Build 5-person team", completed: false },
-                    { text: "Launch enterprise offerings", completed: false },
-                    { text: "Establish thought leadership", completed: false }
-                ]
-            },
-            {
-                title: "Target Achievement",
-                dateRange: "Jul 2025 - Jun 2026",
-                description: "Final push to reach $10K MRR and establish sustainable business.",
-                current: false,
-                milestones: [
-                    { text: "Reach $7.5K MRR", completed: false },
-                    { text: "Optimize operations", completed: false },
-                    { text: "Build strategic partnerships", completed: false },
-                    { text: "Achieve $10K MRR", completed: false }
-                ]
-            }
-        ];
-
         // Initialize App
-        let appInitialized = false;
         document.addEventListener('DOMContentLoaded', function() {
-            // Don't auto-init — wait for auth gate to unlock
+            // Check if user is already authenticated
+            const token = localStorage.getItem('mc_token');
+            if (token) {
+                authFetch('/auth/check')
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.authenticated) {
+                            unlockApp();
+                        } else {
+                            showAuthGate();
+                        }
+                    })
+                    .catch(() => showAuthGate());
+            } else {
+                showAuthGate();
+            }
         });
 
-        async function initializeApp() {
-            // Initialize PWA functionality
-            await initializePWA();
+        function showAuthGate() {
+            document.getElementById('authGate').style.display = 'flex';
+            document.getElementById('appContent').style.display = 'none';
             
+            // Setup auth form
+            document.getElementById('authForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const btn = document.getElementById('authBtn');
+                const error = document.getElementById('authError');
+                
+                btn.disabled = true;
+                btn.textContent = 'Signing in...';
+                error.style.display = 'none';
+                
+                try {
+                    const response = await fetch('/auth/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            username: document.getElementById('authUser').value,
+                            password: document.getElementById('authPass').value
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        localStorage.setItem('mc_token', data.token);
+                        unlockApp();
+                    } else {
+                        error.style.display = 'block';
+                        btn.disabled = false;
+                        btn.textContent = 'Sign In';
+                    }
+                } catch (err) {
+                    error.textContent = 'Connection error';
+                    error.style.display = 'block';
+                    btn.disabled = false;
+                    btn.textContent = 'Sign In';
+                }
+            });
+        }
+
+        function unlockApp() {
+            document.getElementById('authGate').style.display = 'none';
+            document.getElementById('appContent').style.display = 'block';
+            initializeApp();
+        }
+
+        async function initializeApp() {
             // Initialize theme
             initializeTheme();
-
-            // Initialize basic functions
+            
+            // Update date/time
             updateDateTime();
-            setInterval(updateDateTime, 60000); // Update every minute
-
-            // Initialize Pomodoro timer
-            initializePomodoroTimer();
-
-            // Load default metric cards configuration
-            loadMetricCardConfig();
-
+            setInterval(updateDateTime, 60000);
+            
             // Initialize server connection
             await checkServerConnection();
             
-            // Load data from server if available, otherwise localStorage
-            await loadAllData();
-
-            // Setup WebSocket for agent communication
-            setupWebSocket();
-
-            // Initialize habits
-            initializeHabits();
-
             // Setup periodic updates
-            setInterval(updateSystemStats, 30000); // Update system stats every 30 seconds
-            setInterval(checkServerConnection, 60000); // Check server every minute
-            setInterval(backupToServer, 300000); // Backup to server every 5 minutes
-            setInterval(updatePomodoroTimer, 1000); // Update pomodoro every second
-
-            // Tab navigation
-            document.querySelectorAll('.nav-tab').forEach(tab => {
-                tab.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    switchTab(this.dataset.tab);
-                });
-            });
-
-            // Notes auto-save
+            setInterval(checkServerConnection, 60000);
+            
+            // Load agent data
+            loadAgents();
+            
+            // Setup activity feed auto-refresh (every 30 seconds)
+            refreshActivityFeed();
+            activityFeedInterval = setInterval(refreshActivityFeed, 30000);
+            
+            // Setup cost tracking auto-refresh (every 2 minutes)
+            refreshCosts();
+            costsRefreshInterval = setInterval(refreshCosts, 120000);
+            
+            // Setup notes auto-save
             const notesEditor = document.getElementById('notesEditor');
             if (notesEditor) {
-                notesEditor.addEventListener('input', debounce(saveNotes, 1000));
                 notesEditor.addEventListener('input', updateNotesStats);
-            }
-
-            // Setup keyboard shortcuts
-            setupKeyboardShortcuts();
-
-            // Setup drag and drop for kanban
-            setupDragAndDrop();
-
-            // Check for meeting reminders
-            setInterval(checkMeetingReminders, 60000); // Check every minute
-
-            // Check Telegram status
-            checkTelegramStatus();
-
-            // Setup offline detection
-            setupOfflineDetection();
-        }
-
-        // PWA Functions
-        async function initializePWA() {
-            // Register service worker
-            if ('serviceWorker' in navigator) {
-                try {
-                    const registration = await navigator.serviceWorker.register('/sw.js');
-                    console.log('Service Worker registered successfully:', registration.scope);
-                    serviceWorker = registration;
-
-                    // Listen for service worker updates
-                    registration.addEventListener('updatefound', () => {
-                        const newWorker = registration.installing;
-                        newWorker.addEventListener('statechange', () => {
-                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                showNotification('New version available! Refresh to update.', 'info');
-                            }
-                        });
-                    });
-                } catch (error) {
-                    console.error('Service Worker registration failed:', error);
-                }
-            }
-
-            // Handle PWA install prompt
-            window.addEventListener('beforeinstallprompt', (e) => {
-                e.preventDefault();
-                deferredPrompt = e;
-                showInstallBanner();
-            });
-
-            // Handle app install
-            window.addEventListener('appinstalled', () => {
-                console.log('PWA was installed');
-                hideInstallBanner();
-                showNotification('Mission Control installed successfully!', 'success');
-                deferredPrompt = null;
-            });
-
-            // Setup install banner events
-            document.getElementById('installBtn').addEventListener('click', installPWA);
-            document.getElementById('dismissInstallBtn').addEventListener('click', hideInstallBanner);
-        }
-
-        function showInstallBanner() {
-            const banner = document.getElementById('installBanner');
-            const dismissed = localStorage.getItem('installBannerDismissed');
-            
-            if (!dismissed && !window.navigator.standalone) {
-                banner.classList.add('show');
-            }
-        }
-
-        function hideInstallBanner() {
-            const banner = document.getElementById('installBanner');
-            banner.classList.remove('show');
-            localStorage.setItem('installBannerDismissed', 'true');
-        }
-
-        async function installPWA() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                
-                if (outcome === 'accepted') {
-                    console.log('User accepted the install prompt');
-                } else {
-                    console.log('User dismissed the install prompt');
-                }
-                
-                deferredPrompt = null;
-                hideInstallBanner();
+                loadNotes();
             }
         }
 
@@ -2620,304 +1069,7 @@
             }
         }
 
-        // Pomodoro Timer Functions
-        function initializePomodoroTimer() {
-            const sessions = getStorageData('pomodoroSessions', { date: '', count: 0 });
-            const today = new Date().toISOString().split('T')[0];
-            
-            if (sessions.date !== today) {
-                sessions.date = today;
-                sessions.count = 0;
-                setStorageData('pomodoroSessions', sessions);
-            }
-            
-            updatePomodoroDisplay();
-            updateDailySessions();
-        }
-
-        function togglePomodoroTimer() {
-            const timer = document.getElementById('pomodoroTimer');
-            timer.classList.toggle('minimized');
-        }
-
-        function startPomodoro() {
-            if (!pomodoroActive) {
-                pomodoroActive = true;
-                document.getElementById('pomodoroStart').textContent = 'Resume';
-                showNotification(`${pomodoroSession === 'work' ? 'Work' : 'Break'} session started!`, 'success');
-            }
-        }
-
-        function pausePomodoro() {
-            pomodoroActive = false;
-            document.getElementById('pomodoroStart').textContent = 'Start';
-        }
-
-        function resetPomodoro() {
-            pomodoroActive = false;
-            pomodoroTimeLeft = pomodoroSession === 'work' ? 25 * 60 : 5 * 60;
-            document.getElementById('pomodoroStart').textContent = 'Start';
-            updatePomodoroDisplay();
-        }
-
-        function updatePomodoroTimer() {
-            if (pomodoroActive && pomodoroTimeLeft > 0) {
-                pomodoroTimeLeft--;
-                updatePomodoroDisplay();
-                
-                if (pomodoroTimeLeft === 0) {
-                    pomodoroSessionComplete();
-                }
-            }
-        }
-
-        function updatePomodoroDisplay() {
-            const minutes = Math.floor(pomodoroTimeLeft / 60);
-            const seconds = pomodoroTimeLeft % 60;
-            const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            
-            document.getElementById('pomodoroTime').textContent = timeString;
-            document.getElementById('pomodoroSession').textContent = pomodoroSession === 'work' ? 'Work Session' : 'Break Time';
-        }
-
-        function pomodoroSessionComplete() {
-            pomodoroActive = false;
-            playPomodoroSound();
-            
-            if (pomodoroSession === 'work') {
-                // Work session completed
-                const sessions = getStorageData('pomodoroSessions', { date: '', count: 0 });
-                sessions.count++;
-                setStorageData('pomodoroSessions', sessions);
-                updateDailySessions();
-                
-                pomodoroSession = 'break';
-                pomodoroTimeLeft = 5 * 60; // 5 minute break
-                showNotification('Work session complete! Time for a 5-minute break.', 'success');
-            } else {
-                // Break session completed
-                pomodoroSession = 'work';
-                pomodoroTimeLeft = 25 * 60; // 25 minute work session
-                showNotification('Break time over! Ready for another work session?', 'info');
-            }
-            
-            document.getElementById('pomodoroStart').textContent = 'Start';
-            updatePomodoroDisplay();
-        }
-
-        function updateDailySessions() {
-            const sessions = getStorageData('pomodoroSessions', { date: '', count: 0 });
-            document.getElementById('dailySessions').textContent = sessions.count;
-            
-            // Update daily focus hours on dashboard
-            const focusHours = (sessions.count * 25 / 60).toFixed(1);
-            const focusElement = document.getElementById('dailyFocusHours');
-            if (focusElement) {
-                focusElement.textContent = `${focusHours}h focus today`;
-            }
-        }
-
-        function playPomodoroSound() {
-            try {
-                if (!audioContext) {
-                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                }
-                
-                // Create a simple beep sound
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-                oscillator.type = 'sine';
-                
-                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-                
-                oscillator.start();
-                oscillator.stop(audioContext.currentTime + 0.5);
-            } catch (error) {
-                console.log('Could not play sound:', error);
-                // Fallback to browser notification sound
-                if ('Notification' in window && Notification.permission === 'granted') {
-                    new Notification('Pomodoro Timer', {
-                        body: 'Session complete!',
-                        icon: '/manifest.json',
-                        silent: false
-                    });
-                }
-            }
-        }
-
-        // Habits Functions
-        function initializeHabits() {
-            const habits = getStorageData('habits', DEFAULT_HABITS);
-            const today = new Date().toISOString().split('T')[0];
-            const lastHabitDate = getStorageData('lastHabitDate', '');
-            
-            // Reset daily completion if it's a new day
-            if (lastHabitDate !== today) {
-                habits.forEach(habit => {
-                    if (!habit.completed) {
-                        // Streak broken
-                        habit.streak = 0;
-                    }
-                    habit.completed = false;
-                });
-                
-                setStorageData('habits', habits);
-                setStorageData('lastHabitDate', today);
-            }
-            
-            renderHabits(habits);
-        }
-
-        function renderHabits(habits) {
-            const container = document.getElementById('habitGrid');
-            if (!container) return;
-
-            container.innerHTML = habits.map((habit, index) => `
-                <div class="habit-item">
-                    <div class="habit-info">
-                        <div class="habit-icon">${habit.icon}</div>
-                        <div class="habit-details">
-                            <h4>${habit.name}</h4>
-                            <div class="habit-streak">${habit.streak} day streak</div>
-                        </div>
-                    </div>
-                    <input type="checkbox" class="habit-checkbox" ${habit.completed ? 'checked' : ''} 
-                           onchange="toggleHabit(${index})" data-habit="${habit.id}">
-                </div>
-            `).join('');
-        }
-
-        function toggleHabit(index) {
-            const habits = getStorageData('habits', DEFAULT_HABITS);
-            const habit = habits[index];
-            
-            habit.completed = !habit.completed;
-            
-            if (habit.completed) {
-                habit.streak++;
-                showNotification(`${habit.name} completed! 🎉 ${habit.streak} day streak!`, 'success');
-            } else {
-                habit.streak = Math.max(0, habit.streak - 1);
-            }
-            
-            setStorageData('habits', habits);
-            renderHabits(habits);
-            
-            logActivity(`${habit.completed ? 'Completed' : 'Unchecked'} habit: ${habit.name}`, 'habit');
-        }
-
-        // Drag and Drop Functions
-        function setupDragAndDrop() {
-            const columns = document.querySelectorAll('.kanban-column');
-            
-            columns.forEach(column => {
-                column.addEventListener('dragover', handleDragOver);
-                column.addEventListener('drop', handleDrop);
-                column.addEventListener('dragenter', handleDragEnter);
-                column.addEventListener('dragleave', handleDragLeave);
-            });
-        }
-
-        function handleDragOver(e) {
-            e.preventDefault();
-        }
-
-        function handleDragEnter(e) {
-            e.preventDefault();
-            if (e.target.classList.contains('kanban-column')) {
-                e.target.classList.add('drag-over');
-            }
-        }
-
-        function handleDragLeave(e) {
-            if (e.target.classList.contains('kanban-column')) {
-                e.target.classList.remove('drag-over');
-            }
-        }
-
-        function handleDrop(e) {
-            e.preventDefault();
-            const column = e.target.closest('.kanban-column');
-            if (!column) return;
-            
-            column.classList.remove('drag-over');
-            
-            const taskIndex = e.dataTransfer.getData('text/plain');
-            const sourceStatus = e.dataTransfer.getData('source-status');
-            const targetStatus = column.dataset.status;
-            
-            if (sourceStatus !== targetStatus && taskIndex !== '') {
-                moveTask(sourceStatus, targetStatus, parseInt(taskIndex));
-            }
-        }
-
-        function makeTaskDraggable(taskElement, status, index) {
-            taskElement.draggable = true;
-            
-            taskElement.addEventListener('dragstart', (e) => {
-                e.dataTransfer.setData('text/plain', index.toString());
-                e.dataTransfer.setData('source-status', status);
-                taskElement.classList.add('dragging');
-                
-                // Create a ghost element
-                const ghost = taskElement.cloneNode(true);
-                ghost.classList.add('drag-ghost');
-                document.body.appendChild(ghost);
-                e.dataTransfer.setDragImage(ghost, 0, 0);
-                
-                setTimeout(() => document.body.removeChild(ghost), 0);
-            });
-            
-            taskElement.addEventListener('dragend', () => {
-                taskElement.classList.remove('dragging');
-            });
-        }
-
-        function moveTask(fromStatus, toStatus, taskIndex) {
-            const projects = getStorageData('projects', { backlog: [], progress: [], done: [] });
-            const task = projects[fromStatus][taskIndex];
-            
-            if (!task) return;
-            
-            // Remove from source
-            projects[fromStatus].splice(taskIndex, 1);
-            
-            // Add to target
-            projects[toStatus].push(task);
-            
-            // Save and reload
-            setStorageData('projects', projects);
-            loadProjects();
-            updateDashboardMetrics();
-            
-            showNotification(`Task moved to ${toStatus}`, 'success');
-            logActivity(`Moved task "${task.title}" to ${toStatus}`, 'task');
-        }
-
-        // Offline Detection
-        function setupOfflineDetection() {
-            const offlineIndicator = document.getElementById('offlineIndicator');
-            
-            function updateOnlineStatus() {
-                if (navigator.onLine) {
-                    offlineIndicator.classList.add('hidden');
-                } else {
-                    offlineIndicator.classList.remove('hidden');
-                }
-            }
-            
-            window.addEventListener('online', updateOnlineStatus);
-            window.addEventListener('offline', updateOnlineStatus);
-            updateOnlineStatus();
-        }
-
-        // Server Integration Functions (enhanced)
+        // Server Connection Functions
         async function checkServerConnection() {
             try {
                 const response = await authFetch(`${SERVER_URL}/mc/status`);
@@ -2926,14 +1078,7 @@
                 if (data.health === 'online') {
                     serverConnected = true;
                     updateServerStatus(true);
-                    
-                    // Load weather data
                     loadWeatherData();
-                    
-                    // Sync data with server
-                    await syncDataWithServer();
-                    
-                    // Update integration statuses
                     updateIntegrationStatuses(data.features || {});
                 } else {
                     throw new Error('Server not healthy');
@@ -2945,226 +1090,6 @@
             }
         }
 
-        function updateIntegrationStatuses(features) {
-            const telegramStatus = document.getElementById('telegramBotStatus');
-            const stripeStatus = document.getElementById('stripeStatus');
-            const telegramHeaderStatus = document.getElementById('telegramStatus');
-            
-            if (telegramStatus) {
-                telegramStatus.textContent = features.telegram ? 'Connected' : 'Not configured';
-                telegramStatus.style.color = features.telegram ? 'var(--success-color)' : 'var(--text-muted)';
-            }
-            
-            if (stripeStatus) {
-                stripeStatus.textContent = features.stripe ? 'Connected' : 'Not configured';
-                stripeStatus.style.color = features.stripe ? 'var(--success-color)' : 'var(--text-muted)';
-            }
-            
-            if (telegramHeaderStatus) {
-                telegramHeaderStatus.textContent = features.telegram ? 'Connected' : 'Not configured';
-            }
-        }
-
-        async function checkTelegramStatus() {
-            // This will be updated when server status is checked
-        }
-
-        // Enhanced Chat Functions with Telegram Integration
-        async function sendChatMessage() {
-            const input = document.getElementById('chatInput');
-            const message = input.value.trim();
-            
-            if (!message) return;
-            
-            input.value = '';
-            addChatMessage('user', message);
-            
-            // Try sending to server (Telegram integration)
-            try {
-                const response = await authFetch(`${SERVER_URL}/mc/agent/task`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        task: message,
-                        agent: 'general'
-                    })
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    addChatMessage('system', result.message);
-                    if (result.sent) {
-                        showNotification('Task sent via Telegram', 'success');
-                    }
-                } else {
-                    addChatMessage('system', 'Failed to send task: ' + result.error);
-                }
-            } catch (error) {
-                console.error('Error sending task:', error);
-                simulateAgentResponse(message);
-            }
-            
-            // Log activity
-            await logActivity(`Sent task to agents: ${message.substring(0, 100)}${message.length > 100 ? '...' : ''}`, 'agent');
-        }
-
-        // Daily Digest Functions
-        async function generateDigest() {
-            try {
-                showNotification('Generating daily digest...', 'info');
-                
-                const response = await authFetch(`${SERVER_URL}/mc/digest`);
-                const digest = await response.json();
-                
-                displayDigest(digest);
-                openModal('digestModal');
-                
-                await logActivity('Generated daily digest', 'digest');
-            } catch (error) {
-                console.error('Error generating digest:', error);
-                showNotification('Failed to generate digest', 'error');
-            }
-        }
-
-        function displayDigest(digest) {
-            const container = document.getElementById('digestContent');
-            if (!container) return;
-
-            const daysToTarget = digest.summary.daysToJune2026;
-            const percentToTarget = digest.summary.mrr.progress;
-            
-            container.innerHTML = `
-                <div class="digest-summary">
-                    <h4 style="margin-bottom: 1rem; color: var(--accent-color);">Daily Digest - ${new Date().toLocaleDateString()}</h4>
-                    
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
-                        <div style="background: var(--glass-bg); padding: 1rem; border-radius: var(--border-radius-md); text-align: center;">
-                            <div style="font-size: 1.5rem; font-weight: 600; color: var(--success-color);">$${digest.summary.mrr.current.toLocaleString()}</div>
-                            <div style="color: var(--text-muted); font-size: 0.875rem;">Current MRR</div>
-                            <div style="color: var(--text-secondary); font-size: 0.75rem; margin-top: 0.25rem;">${percentToTarget}% to goal</div>
-                        </div>
-                        
-                        <div style="background: var(--glass-bg); padding: 1rem; border-radius: var(--border-radius-md); text-align: center;">
-                            <div style="font-size: 1.5rem; font-weight: 600; color: var(--warning-color);">${digest.summary.tasksToday}</div>
-                            <div style="color: var(--text-muted); font-size: 0.875rem;">Active Tasks</div>
-                        </div>
-                        
-                        <div style="background: var(--glass-bg); padding: 1rem; border-radius: var(--border-radius-md); text-align: center;">
-                            <div style="font-size: 1.5rem; font-weight: 600; color: var(--accent-color);">${digest.summary.upcomingMeetings}</div>
-                            <div style="color: var(--text-muted); font-size: 0.875rem;">Meetings Today</div>
-                        </div>
-                        
-                        <div style="background: var(--glass-bg); padding: 1rem; border-radius: var(--border-radius-md); text-align: center;">
-                            <div style="font-size: 1.5rem; font-weight: 600; color: var(--text-primary);">${daysToTarget}</div>
-                            <div style="color: var(--text-muted); font-size: 0.875rem;">Days to June 2026</div>
-                        </div>
-                    </div>
-                    
-                    ${digest.details.meetings && digest.details.meetings.length > 0 ? `
-                        <div style="margin-bottom: 2rem;">
-                            <h5 style="margin-bottom: 1rem;">Today's Meetings</h5>
-                            ${digest.details.meetings.map(meeting => `
-                                <div style="background: var(--glass-bg); padding: 0.75rem; border-radius: var(--border-radius-md); margin-bottom: 0.5rem;">
-                                    <strong>${meeting.title}</strong> with ${meeting.attendee} at ${meeting.time}
-                                </div>
-                            `).join('')}
-                        </div>
-                    ` : ''}
-                    
-                    ${digest.details.topPriorities && digest.details.topPriorities.length > 0 ? `
-                        <div>
-                            <h5 style="margin-bottom: 1rem;">Top Priorities</h5>
-                            ${digest.details.topPriorities.map(priority => `
-                                <div style="background: var(--glass-bg); padding: 0.75rem; border-radius: var(--border-radius-md); margin-bottom: 0.5rem;">
-                                    ${priority.text}
-                                </div>
-                            `).join('')}
-                        </div>
-                    ` : ''}
-                </div>
-            `;
-        }
-
-        // Stripe Integration Functions
-        async function syncFromStripe() {
-            try {
-                showNotification('Syncing from Stripe...', 'info');
-                
-                const [mrrResponse, customersResponse] = await Promise.all([
-                    authFetch(`${SERVER_URL}/mc/stripe/mrr`),
-                    authFetch(`${SERVER_URL}/mc/stripe/customers`)
-                ]);
-                
-                const mrrData = await mrrResponse.json();
-                const customersData = await customersResponse.json();
-                
-                if (mrrData.connected && customersData.connected) {
-                    // Update local data with Stripe data
-                    const clients = getStorageData('clients', []);
-                    
-                    // Add Stripe customers as clients (or update existing)
-                    customersData.customers.forEach(customer => {
-                        const existingClient = clients.find(c => c.email === customer.email);
-                        if (!existingClient) {
-                            clients.push({
-                                name: customer.name || customer.email,
-                                email: customer.email,
-                                value: 0, // Would need subscription data to calculate
-                                status: 'active',
-                                startDate: new Date(customer.created * 1000).toISOString().split('T')[0],
-                                source: 'stripe'
-                            });
-                        }
-                    });
-                    
-                    setStorageData('clients', clients);
-                    
-                    // Show results
-                    showNotification(`Synced ${customersData.customers.length} customers from Stripe. MRR: $${mrrData.mrr.toLocaleString()}`, 'success');
-                    
-                    // Reload revenue data
-                    loadRevenue();
-                    updateDashboardMetrics();
-                    
-                    await logActivity(`Synced data from Stripe: $${mrrData.mrr} MRR, ${customersData.customers.length} customers`, 'stripe');
-                } else {
-                    showNotification('Stripe not configured. Please add STRIPE_SECRET_KEY to environment variables.', 'warning');
-                }
-            } catch (error) {
-                console.error('Error syncing from Stripe:', error);
-                showNotification('Failed to sync from Stripe', 'error');
-            }
-        }
-
-        // Backup Functions
-        async function backupNow() {
-            try {
-                showNotification('Creating encrypted backup...', 'info');
-                
-                const response = await authFetch(`${SERVER_URL}/mc/backup`, {
-                    method: 'POST'
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    showNotification(`Backup created: ${result.filename} (${(result.size / 1024).toFixed(1)}KB)`, 'success');
-                    await logActivity(`Created encrypted backup: ${result.filename}`, 'backup');
-                } else {
-                    throw new Error(result.error || 'Backup failed');
-                }
-            } catch (error) {
-                console.error('Backup error:', error);
-                showNotification('Backup failed: ' + error.message, 'error');
-            }
-        }
-
-        // All existing functions remain the same, but enhanced where needed...
-        // (Previous functions for updateDateTime, switchTab, loadDashboardData, etc. all remain)
-
         function updateServerStatus(connected) {
             const statusDot = document.getElementById('statusDot');
             const serverStatus = document.getElementById('serverStatus');
@@ -3175,6 +1100,15 @@
             } else {
                 statusDot.className = 'status-dot offline';
                 serverStatus.textContent = 'Server: Offline';
+            }
+        }
+
+        function updateIntegrationStatuses(features) {
+            const gatewayStatus = document.getElementById('gatewayStatus');
+            
+            if (gatewayStatus) {
+                gatewayStatus.textContent = features.openclaw ? 'Connected' : 'Unavailable';
+                gatewayStatus.style.color = features.openclaw ? 'var(--success-color)' : 'var(--error-color)';
             }
         }
 
@@ -3201,887 +1135,38 @@
             }
         }
 
-        async function syncDataWithServer() {
-            if (!serverConnected) return;
-            
-            try {
-                // Try to load data from server
-                const response = await authFetch(`${SERVER_URL}/mc/data`);
-                if (response.ok) {
-                    const serverData = await response.json();
-                    
-                    // Merge server data with localStorage
-                    Object.keys(serverData).forEach(key => {
-                        const localData = getStorageData(key, null);
-                        if (localData === null || (serverData[key] && Array.isArray(serverData[key]) && serverData[key].length > 0)) {
-                            setStorageData(key, serverData[key]);
-                        }
-                    });
-                }
-            } catch (error) {
-                console.error('Error syncing with server:', error);
-            }
-        }
-
-        async function backupToServer() {
-            if (!serverConnected) return;
-            
-            try {
-                // Collect all localStorage data
-                const backupData = {};
-                const keys = ['activities', 'priorities', 'projects', 'clients', 'meetings', 'intel', 'notes', 'agents', 'decisions', 'habits', 'pomodoroSessions', 'metricCardConfig'];
-                
-                keys.forEach(key => {
-                    const data = getStorageData(key, null);
-                    if (data !== null) {
-                        backupData[key] = data;
-                    }
-                });
-                
-                // Send to server
-                await authFetch(`${SERVER_URL}/mc/data`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(backupData)
-                });
-                
-                console.log('Data backed up to server successfully');
-            } catch (error) {
-                console.error('Error backing up to server:', error);
-            }
-        }
-
-        async function logActivity(description, type = 'user') {
-            // Log to localStorage
-            const activities = getStorageData('activities', []);
-            activities.unshift({
-                text: description,
-                timestamp: new Date().toISOString()
+        // Tab Navigation
+        function switchTab(tabName) {
+            // Update nav tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
             });
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
             
-            if (activities.length > 50) {
-                activities.length = 50;
-            }
-            
-            setStorageData('activities', activities);
-            
-            // Log to server if connected
-            if (serverConnected) {
-                try {
-                    await authFetch(`${SERVER_URL}/mc/activity`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            description: description,
-                            type: type
-                        })
-                    });
-                } catch (error) {
-                    console.error('Error logging to server:', error);
-                }
-            }
-            
-            loadActivityFeed(activities);
-        }
-
-        // System Monitor Functions
-        async function updateSystemStats() {
-            if (!serverConnected) return;
-            
-            try {
-                const response = await authFetch(`${SERVER_URL}/mc/system`);
-                const stats = await response.json();
-                
-                const statsContainer = document.getElementById('systemStats');
-                if (statsContainer) {
-                    statsContainer.innerHTML = `
-                        <div class="stat-item">
-                            <div class="stat-label">CPU</div>
-                            <div class="stat-value" style="color: ${getStatColor(stats.cpu)}">${stats.cpu}%</div>
-                            <div class="stat-bar">
-                                <div class="stat-progress ${getStatColorClass(stats.cpu)}" style="width: ${stats.cpu}%"></div>
-                            </div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-label">Memory</div>
-                            <div class="stat-value" style="color: ${getStatColor(stats.memory)}">${stats.memory}%</div>
-                            <div class="stat-bar">
-                                <div class="stat-progress ${getStatColorClass(stats.memory)}" style="width: ${stats.memory}%"></div>
-                            </div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-label">Disk</div>
-                            <div class="stat-value" style="color: ${getStatColor(stats.disk)}">${stats.disk}%</div>
-                            <div class="stat-bar">
-                                <div class="stat-progress ${getStatColorClass(stats.disk)}" style="width: ${stats.disk}%"></div>
-                            </div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-label">Uptime</div>
-                            <div class="stat-value">${formatUptime(stats.uptime)}</div>
-                            <div class="stat-bar">
-                                <div class="stat-progress green" style="width: 100%"></div>
-                            </div>
-                        </div>
-                    `;
-                }
-            } catch (error) {
-                console.error('Error updating system stats:', error);
-                const statsContainer = document.getElementById('systemStats');
-                if (statsContainer) {
-                    statsContainer.innerHTML = '<div class="text-center text-muted">System stats unavailable</div>';
-                }
-            }
-        }
-
-        function getStatColor(value) {
-            if (value < 60) return 'var(--success-color)';
-            if (value < 80) return 'var(--warning-color)';
-            return 'var(--error-color)';
-        }
-
-        function getStatColorClass(value) {
-            if (value < 60) return 'green';
-            if (value < 80) return 'yellow';
-            return 'red';
-        }
-
-        function formatUptime(seconds) {
-            const days = Math.floor(seconds / 86400);
-            const hours = Math.floor((seconds % 86400) / 3600);
-            const minutes = Math.floor((seconds % 3600) / 60);
-            
-            if (days > 0) return `${days}d ${hours}h`;
-            if (hours > 0) return `${hours}h ${minutes}m`;
-            return `${minutes}m`;
-        }
-
-        // GitHub Integration Functions
-        async function loadGitHubData() {
-            if (!serverConnected) return;
-            
-            try {
-                await loadGitHubRepos();
-                await loadGitHubCommits();
-            } catch (error) {
-                console.error('Error loading GitHub data:', error);
-            }
-        }
-
-        async function loadGitHubRepos() {
-            try {
-                const response = await authFetch(`${SERVER_URL}/mc/github/repos`);
-                if (!response.ok) throw new Error('Failed to fetch repos');
-                
-                const repos = await response.json();
-                const repoGrid = document.getElementById('repoGrid');
-                
-                if (repoGrid) {
-                    if (repos.length === 0) {
-                        repoGrid.innerHTML = '<div class="text-center text-muted">No repositories found</div>';
-                    } else {
-                        repoGrid.innerHTML = repos.slice(0, 6).map(repo => `
-                            <div class="repo-card">
-                                <div class="repo-header">
-                                    <a href="${repo.url}" target="_blank" class="repo-name">${repo.name}</a>
-                                </div>
-                                <div style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: var(--spacing-sm);">
-                                    ${repo.description || 'No description'}
-                                </div>
-                                <div class="repo-meta">
-                                    <span>${repo.language || 'N/A'}</span>
-                                    <span>⭐ ${repo.stars}</span>
-                                    <span>🍴 ${repo.forks}</span>
-                                    <span>Updated: ${formatDate(repo.updated_at)}</span>
-                                </div>
-                            </div>
-                        `).join('');
-                    }
-                }
-            } catch (error) {
-                console.error('Error loading GitHub repos:', error);
-                const repoGrid = document.getElementById('repoGrid');
-                if (repoGrid) {
-                    repoGrid.innerHTML = '<div class="text-center text-muted">GitHub repos unavailable</div>';
-                }
-            }
-        }
-
-        async function loadGitHubCommits() {
-            try {
-                const response = await authFetch(`${SERVER_URL}/mc/github/commits`);
-                if (!response.ok) throw new Error('Failed to fetch commits');
-                
-                const commits = await response.json();
-                const commitsContainer = document.getElementById('recentCommits');
-                
-                if (commitsContainer) {
-                    if (commits.length === 0) {
-                        commitsContainer.innerHTML = '<div class="text-center text-muted">No recent commits</div>';
-                    } else {
-                        commitsContainer.innerHTML = commits.slice(0, 10).map(commitEvent => `
-                            <div class="commit-item">
-                                <div style="font-weight: 600; margin-bottom: var(--spacing-xs);">
-                                    ${commitEvent.repo.replace('ryojindev/', '')}
-                                </div>
-                                ${commitEvent.commits.map(commit => `
-                                    <div style="margin-left: var(--spacing-md); margin-bottom: var(--spacing-xs);">
-                                        <a href="${commit.url}" target="_blank" style="color: var(--accent-color); font-size: 0.75rem;">
-                                            ${commit.sha}
-                                        </a>
-                                        <span style="color: var(--text-secondary); margin-left: var(--spacing-sm);">
-                                            ${commit.message}
-                                        </span>
-                                    </div>
-                                `).join('')}
-                                <div style="color: var(--text-muted); font-size: 0.75rem;">
-                                    ${formatDate(commitEvent.created_at)}
-                                </div>
-                            </div>
-                        `).join('');
-                    }
-                }
-            } catch (error) {
-                console.error('Error loading GitHub commits:', error);
-                const commitsContainer = document.getElementById('recentCommits');
-                if (commitsContainer) {
-                    commitsContainer.innerHTML = '<div class="text-center text-muted">Recent commits unavailable</div>';
-                }
-            }
-        }
-
-        // WebSocket for Agent Communication
-        function setupWebSocket() {
-            try {
-                websocket = new WebSocket('ws://127.0.0.1:18789');
-                
-                websocket.onopen = function() {
-                    document.getElementById('wsStatus').textContent = 'Connected';
-                    addChatMessage('system', 'Connected to OpenClaw gateway');
-                };
-                
-                websocket.onmessage = function(event) {
-                    try {
-                        const data = JSON.parse(event.data);
-                        addChatMessage('agent', `Agent response: ${data.message || event.data}`);
-                        showNotification('New agent activity', 'success');
-                    } catch (error) {
-                        addChatMessage('agent', event.data);
-                    }
-                };
-                
-                websocket.onclose = function() {
-                    document.getElementById('wsStatus').textContent = 'Disconnected';
-                    addChatMessage('system', 'Connection closed. Fallback to simulated mode.');
-                    
-                    // Retry connection after 5 seconds
-                    setTimeout(setupWebSocket, 5000);
-                };
-                
-                websocket.onerror = function(error) {
-                    document.getElementById('wsStatus').textContent = 'Error';
-                    addChatMessage('system', 'Connection error. Using simulated mode.');
-                };
-            } catch (error) {
-                document.getElementById('wsStatus').textContent = 'Unavailable';
-                addChatMessage('system', 'WebSocket unavailable. Using simulated mode.');
-            }
-        }
-
-        function addChatMessage(type, message) {
-            const messagesContainer = document.getElementById('agentMessages');
-            const messageElement = document.createElement('div');
-            messageElement.className = 'chat-message';
-            messageElement.innerHTML = `<strong>${type.charAt(0).toUpperCase() + type.slice(1)}:</strong> ${message}`;
-            
-            messagesContainer.appendChild(messageElement);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            
-            // Keep only last 50 messages
-            while (messagesContainer.children.length > 50) {
-                messagesContainer.removeChild(messagesContainer.firstChild);
-            }
-        }
-
-        function handleChatKeypress(event) {
-            if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                sendChatMessage();
-            }
-        }
-
-        function simulateAgentResponse(message) {
-            setTimeout(() => {
-                const responses = [
-                    'Task received and queued for processing.',
-                    'Acknowledged. Working on your request.',
-                    'Request added to my task queue.',
-                    'Processing your task now.',
-                    'Task understood. Executing...'
-                ];
-                const response = responses[Math.floor(Math.random() * responses.length)];
-                addChatMessage('agent', response);
-            }, 1000);
-        }
-
-        // Metric Cards Functions
-        function loadMetricCardConfig() {
-            const config = getStorageData('metricCardConfig', [
-                { type: 'mrr', icon: '💰', label: 'MRR Progress ($10K Goal)' },
-                { type: 'clients', icon: '👥', label: 'Active Clients' },
-                { type: 'issues', icon: '🐛', label: 'Open Issues' },
-                { type: 'tasks', icon: '🤖', label: 'Agent Tasks' }
-            ]);
-            
-            config.forEach((card, index) => {
-                const iconEl = document.getElementById(`metric${index}Icon`);
-                const labelEl = document.getElementById(`metric${index}Label`);
-                
-                if (iconEl) iconEl.textContent = card.icon;
-                if (labelEl) labelEl.textContent = card.label;
+            // Show/hide content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
             });
+            document.getElementById(tabName).classList.add('active');
+            
+            currentTab = tabName;
         }
 
-        function editMetricCard(index) {
-            currentMetricCard = index;
-            const config = getStorageData('metricCardConfig', []);
-            const card = config[index] || { type: 'mrr' };
-            
-            document.getElementById('metricType').value = card.type;
-            openModal('metricModal');
-        }
-
-        function saveMetricCard(event) {
-            event.preventDefault();
-            
-            const type = document.getElementById('metricType').value;
-            const config = getStorageData('metricCardConfig', []);
-            
-            config[currentMetricCard] = {
-                type: type,
-                icon: METRIC_CONFIGS[type].icon,
-                label: METRIC_CONFIGS[type].label
-            };
-            
-            setStorageData('metricCardConfig', config);
-            loadMetricCardConfig();
-            updateDashboardMetrics();
-            closeModal('metricModal');
-        }
-
-        // Quick Actions Functions
-        function toggleQuickActions() {
-            const menu = document.getElementById('quickActionsMenu');
-            quickActionsOpen = !quickActionsOpen;
-            
-            if (quickActionsOpen) {
-                menu.classList.add('active');
-            } else {
-                menu.classList.remove('active');
-            }
-        }
-
-        function openQuickSendTask() {
-            openModal('quickSendTaskModal');
-        }
-
-        async function sendQuickTask(event) {
-            event.preventDefault();
-            
-            const agent = document.getElementById('quickTaskAgent').value;
-            const description = document.getElementById('quickTaskDescription').value;
-            
-            // Add to chat
-            addChatMessage('user', `Task for ${agent}: ${description}`);
-            
-            // Try to send to server
-            try {
-                const response = await authFetch(`${SERVER_URL}/mc/agent/task`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        task: description,
-                        agent: agent
-                    })
-                });
-                
-                const result = await response.json();
-                if (result.success) {
-                    addChatMessage('system', result.message);
-                }
-            } catch (error) {
-                console.error('Error sending task:', error);
-                simulateAgentResponse(description);
-            }
-            
-            // Log activity
-            await logActivity(`Quick task sent to ${agent}: ${description.substring(0, 100)}${description.length > 100 ? '...' : ''}`, 'agent');
-            
-            // Clear form and close modal
-            document.getElementById('quickTaskDescription').value = '';
-            closeModal('quickSendTaskModal');
-            
-            showNotification(`Task sent to ${agent}`, 'success');
-        }
-
-        // Search Functions
-        function setupKeyboardShortcuts() {
-            document.addEventListener('keydown', function(event) {
-                // Escape key closes modals and search
-                if (event.key === 'Escape') {
-                    document.querySelectorAll('.modal.active').forEach(modal => {
-                        modal.classList.remove('active');
-                    });
-                    closeSearch();
-                    if (quickActionsOpen) {
-                        toggleQuickActions();
-                    }
-                }
-
-                // Ctrl/Cmd + K opens search
-                if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
-                    event.preventDefault();
-                    openSearch();
-                }
-            });
-        }
-
-        function openSearch() {
-            const modal = document.getElementById('searchModal');
-            const input = document.getElementById('searchModalInput');
-            
-            modal.classList.add('active');
-            input.focus();
-        }
-
-        function closeSearch() {
-            const modal = document.getElementById('searchModal');
-            modal.classList.remove('active');
-            document.getElementById('searchModalInput').value = '';
-            document.getElementById('searchResults').innerHTML = '';
-        }
-
-        function performSearch() {
-            const query = document.getElementById('searchModalInput').value.toLowerCase();
-            const resultsContainer = document.getElementById('searchResults');
-            
-            if (!query) {
-                resultsContainer.innerHTML = `
-                    <div class="search-section">
-                        <div class="search-section-title">Start typing to search...</div>
-                    </div>
-                `;
-                return;
-            }
-
-            const results = {
-                tasks: searchTasks(query),
-                clients: searchClients(query),
-                meetings: searchMeetings(query),
-                intel: searchIntel(query),
-                notes: searchNotes(query)
-            };
-
-            let html = '';
-            
-            Object.keys(results).forEach(section => {
-                if (results[section].length > 0) {
-                    html += `
-                        <div class="search-section">
-                            <div class="search-section-title">${section.charAt(0).toUpperCase() + section.slice(1)}</div>
-                            ${results[section].map(item => `
-                                <div class="search-result-item" onclick="navigateToSearchResult('${section}', '${item.id}')">
-                                    <div style="font-weight: 600;">${item.title}</div>
-                                    <div style="color: var(--text-secondary); font-size: 0.875rem;">${item.description}</div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    `;
-                }
-            });
-
-            if (html === '') {
-                html = `
-                    <div class="search-section">
-                        <div class="search-section-title">No results found for "${query}"</div>
-                    </div>
-                `;
-            }
-
-            resultsContainer.innerHTML = html;
-        }
-
-        function searchTasks(query) {
-            const projects = getStorageData('projects', { backlog: [], progress: [], done: [] });
-            const allTasks = [...projects.backlog, ...projects.progress, ...projects.done];
-            
-            return allTasks
-                .filter(task => 
-                    task.title.toLowerCase().includes(query) || 
-                    task.description.toLowerCase().includes(query)
-                )
-                .slice(0, 5)
-                .map(task => ({
-                    id: task.title,
-                    title: task.title,
-                    description: task.description.substring(0, 100)
-                }));
-        }
-
-        function searchClients(query) {
-            const clients = getStorageData('clients', []);
-            
-            return clients
-                .filter(client => client.name.toLowerCase().includes(query))
-                .slice(0, 5)
-                .map(client => ({
-                    id: client.name,
-                    title: client.name,
-                    description: `$${client.value}/month - ${client.status}`
-                }));
-        }
-
-        function searchMeetings(query) {
-            const meetings = getStorageData('meetings', []);
-            
-            return meetings
-                .filter(meeting => 
-                    meeting.title.toLowerCase().includes(query) ||
-                    meeting.attendee.toLowerCase().includes(query)
-                )
-                .slice(0, 5)
-                .map(meeting => ({
-                    id: meeting.title,
-                    title: meeting.title,
-                    description: `With ${meeting.attendee} on ${formatDate(meeting.date)}`
-                }));
-        }
-
-        function searchIntel(query) {
-            const intel = getStorageData('intel', []);
-            
-            return intel
-                .filter(item => 
-                    item.title.toLowerCase().includes(query) ||
-                    item.summary.toLowerCase().includes(query)
-                )
-                .slice(0, 5)
-                .map(item => ({
-                    id: item.title,
-                    title: item.title,
-                    description: item.summary.substring(0, 100)
-                }));
-        }
-
-        function searchNotes(query) {
-            const notes = getStorageData('notes', '');
-            
-            if (notes.toLowerCase().includes(query)) {
-                const index = notes.toLowerCase().indexOf(query);
-                const snippet = notes.substring(Math.max(0, index - 50), index + 100);
-                
-                return [{
-                    id: 'notes',
-                    title: 'Notes',
-                    description: snippet
-                }];
-            }
-            
-            return [];
-        }
-
-        function navigateToSearchResult(section, id) {
-            closeSearch();
-            
-            // Navigate to appropriate tab
-            switch (section) {
-                case 'tasks':
-                    switchTab('projects');
-                    break;
-                case 'clients':
-                    switchTab('revenue');
-                    break;
-                case 'meetings':
-                    switchTab('meetings');
-                    break;
-                case 'intel':
-                    switchTab('intel');
-                    break;
-                case 'notes':
-                    switchTab('notes');
-                    break;
-            }
-        }
-
-        function handleSearchKeydown(event) {
-            // Handle arrow keys for result navigation
-            if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-                event.preventDefault();
-                // TODO: Implement result navigation
-            }
-        }
-
-        // Notification Functions
-        function showNotification(message, type = 'info', duration = 5000) {
-            return; // Disabled - no popup notifications
-            const notification = {
-                id: Date.now(),
-                message,
-                type,
-                timestamp: new Date().toISOString()
-            };
-            
-            notifications.unshift(notification);
-            updateNotificationBadge();
-            
-            const toastContainer = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.innerHTML = `
-                <div class="toast-header">
-                    <div class="toast-title">${type.charAt(0).toUpperCase() + type.slice(1)}</div>
-                    <button class="toast-close" onclick="removeToast(this.parentElement.parentElement)">&times;</button>
-                </div>
-                <div class="toast-message">${message}</div>
-            `;
-            
-            toastContainer.appendChild(toast);
-            
-            // Show toast
-            setTimeout(() => toast.classList.add('show'), 100);
-            
-            // Auto-remove toast
-            setTimeout(() => removeToast(toast), duration);
-        }
-
-        function removeToast(toast) {
-            toast.classList.remove('show');
-            setTimeout(() => {
-                if (toast.parentElement) {
-                    toast.parentElement.removeChild(toast);
-                }
-            }, 300);
-        }
-
-        function updateNotificationBadge() {
-            const badge = document.getElementById('notificationBadge');
-            const unreadCount = notifications.filter(n => !n.read).length;
-            
-            if (unreadCount > 0) {
-                badge.textContent = unreadCount;
-                badge.classList.remove('hidden');
-            } else {
-                badge.classList.add('hidden');
-            }
-        }
-
-        function toggleNotifications() {
-            // Mark all as read
-            notifications.forEach(n => n.read = true);
-            updateNotificationBadge();
-        }
-
-        function checkMeetingReminders() {
-            const meetings = getStorageData('meetings', []);
-            const now = new Date();
-            const reminderTime = new Date(now.getTime() + 15 * 60 * 1000); // 15 minutes from now
-            
-            meetings.forEach(meeting => {
-                const meetingTime = new Date(`${meeting.date}T${meeting.time}`);
-                
-                if (meetingTime > now && meetingTime <= reminderTime) {
-                    const reminderKey = `reminder_${meeting.title}_${meeting.date}_${meeting.time}`;
-                    
-                    if (!getStorageData(reminderKey, false)) {
-                        showNotification(`Meeting reminder: "${meeting.title}" with ${meeting.attendee} in 15 minutes`, 'warning', 10000);
-                        setStorageData(reminderKey, true);
-                    }
-                }
-            });
-        }
-
-        // Data Export/Import Functions
-        function openSettings() {
-            // Show user management section for admin users
-            const userManagement = document.getElementById('userManagement');
-            const token = localStorage.getItem('mc_token');
-            // Simple check - in real app, check with server
-            if (token && token.length > 0) {
-                userManagement.style.display = 'block';
-            }
-            
-            openModal('settingsModal');
-        }
-
-        function exportData() {
-            const data = {};
-            const keys = ['activities', 'priorities', 'projects', 'clients', 'meetings', 'intel', 'notes', 'agents', 'decisions', 'metricCardConfig', 'habits', 'pomodoroSessions'];
-            
-            keys.forEach(key => {
-                const value = getStorageData(key, null);
-                if (value !== null) {
-                    data[key] = value;
-                }
-            });
-            
-            const dataStr = JSON.stringify(data, null, 2);
-            const dataBlob = new Blob([dataStr], { type: 'application/json' });
-            
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(dataBlob);
-            link.download = `mission-control-backup-${new Date().toISOString().split('T')[0]}.json`;
-            link.click();
-            
-            showNotification('Data exported successfully', 'success');
-        }
-
-        function importData(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    
-                    // Import data
-                    Object.keys(data).forEach(key => {
-                        setStorageData(key, data[key]);
-                    });
-                    
-                    // Reload all data
-                    loadAllData();
-                    
-                    showNotification('Data imported successfully', 'success');
-                    closeModal('settingsModal');
-                } catch (error) {
-                    showNotification('Error importing data: Invalid file format', 'error');
-                }
-            };
-            
-            reader.readAsText(file);
-            event.target.value = ''; // Clear input
-        }
-
-        function clearAllData() {
-            if (!confirm('Are you sure you want to clear all data? This cannot be undone.')) return;
-            
-            if (!confirm('This will permanently delete ALL your data. Are you absolutely sure?')) return;
-            
-            const keys = ['activities', 'priorities', 'projects', 'clients', 'meetings', 'intel', 'notes', 'agents', 'decisions', 'metricCardConfig', 'habits', 'pomodoroSessions'];
-            const namespace = getUserNamespace();
-            
-            keys.forEach(key => {
-                localStorage.removeItem(`${namespace}_${key}`);
-            });
-            
-            showNotification('All data cleared', 'success');
-            closeModal('settingsModal');
-            
-            // Reload page to reset everything
-            setTimeout(() => location.reload(), 1000);
-        }
-
-        function toggleNotificationSetting() {
-            const enabled = document.getElementById('enableNotifications').checked;
-            
-            if (enabled && 'Notification' in window) {
-                Notification.requestPermission();
-            }
-            
-            setStorageData('notificationsEnabled', enabled);
-        }
-
-        // Load all data function
-        async function loadAllData() {
-            loadDashboardData();
-            loadProjects();
-            loadTimeline();
-            loadNotes();
-            loadRevenue();
-            loadCommandCenter();
-            loadMeetings();
-            loadIntel();
-            initializeHabits();
-            
-            // Load GitHub data if server is connected
-            if (serverConnected) {
-                await loadGitHubData();
-            }
-            
-            // Update system stats if server is connected
-            if (serverConnected) {
-                await updateSystemStats();
-            }
-        }
-
-        // Update dashboard metrics
-        function updateDashboardMetrics() {
-            const config = getStorageData('metricCardConfig', []);
-            const projects = getStorageData('projects', { backlog: [], progress: [], done: [] });
-            const clients = getStorageData('clients', []);
-            
-            config.forEach((card, index) => {
-                const valueEl = document.getElementById(`metric${index}Value`);
-                if (!valueEl) return;
-                
-                let value = 0;
-                
-                switch (card.type) {
-                    case 'mrr':
-                        value = clients.filter(c => c.status === 'active').reduce((sum, c) => sum + parseFloat(c.value), 0);
-                        valueEl.textContent = `$${value.toLocaleString()}`;
-                        break;
-                    case 'clients':
-                        value = clients.filter(c => c.status === 'active').length;
-                        valueEl.textContent = value;
-                        break;
-                    case 'issues':
-                        // Simulated - would come from GitHub Issues API
-                        value = Math.floor(Math.random() * 15);
-                        valueEl.textContent = value;
-                        break;
-                    case 'tasks':
-                        value = projects.progress.length;
-                        valueEl.textContent = value;
-                        break;
-                    case 'revenue':
-                        const currentMonth = new Date().getMonth();
-                        // Simulated current month revenue
-                        value = Math.floor(Math.random() * 5000) + 2000;
-                        valueEl.textContent = `$${value.toLocaleString()}`;
-                        break;
-                }
-            });
-        }
-
-        // All the existing functions from the original code need to be preserved
-        // I'll include the essential ones here (shortened for space but fully functional)
-
+        // Date/Time Functions
         function updateDateTime() {
             const now = new Date();
             const hours = now.getHours();
             let greeting = 'Good morning';
             
-            if (hours >= 12 && hours < 18) {
-                greeting = 'Good afternoon';
-            } else if (hours >= 18) {
-                greeting = 'Good evening';
-            }
-
-            const welcomeText = document.getElementById('welcomeText');
-            const welcomeDate = document.getElementById('welcomeDate');
+            if (hours >= 12 && hours < 17) greeting = 'Good afternoon';
+            else if (hours >= 17) greeting = 'Good evening';
             
+            const welcomeText = document.getElementById('welcomeText');
             if (welcomeText) {
                 welcomeText.textContent = `${greeting}, Tolga`;
             }
             
+            const welcomeDate = document.getElementById('welcomeDate');
             if (welcomeDate) {
                 welcomeDate.textContent = now.toLocaleDateString('en-US', { 
                     weekday: 'long', 
@@ -4092,498 +1177,44 @@
             }
         }
 
-        function switchTab(tabName) {
-            // Update nav
-            document.querySelectorAll('.nav-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-
-            // Update content
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
-            document.getElementById(tabName).classList.add('active');
-
-            currentTab = tabName;
+        // CRITICAL FIX: Disable WebSocket connections
+        // NO WebSocket setup function - this was causing the spam
+        function setupWebSocket() {
+            // DISABLED: WebSocket connections to OpenClaw gateway
+            // This was causing constant handshake timeout errors
+            console.log('WebSocket connections disabled to prevent spam');
             
-            // Load tab-specific data
-            if (tabName === 'projects' && serverConnected) {
-                loadGitHubRepos();
-            } else if (tabName === 'command-center') {
-                loadCommandCenter();
-            } else if (tabName === 'dashboard') {
-                loadDashboardData();
-                if (serverConnected) updateSystemStats();
-            } else if (tabName === 'revenue') {
-                loadRevenue();
-            } else if (tabName === 'notes') {
-                loadNotes();
-            } else if (tabName === 'meetings') {
-                loadMeetings();
-            } else if (tabName === 'intel') {
-                loadIntel();
-            }
+            // Update status to show REST API mode
+            const messages = document.getElementById('agentMessages');
+            addChatMessage('system', 'Using REST API mode for agent communication');
+            addChatMessage('system', 'WebSocket spam prevention: Direct gateway connections disabled');
         }
 
-        function loadDashboardData() {
-            const activities = getStorageData('activities', []);
-            const priorities = getStorageData('priorities', []);
-            
-            loadActivityFeed(activities);
-            loadPriorityList(priorities);
-            updateDashboardMetrics();
-        }
-
-        function loadActivityFeed(activities) {
-            const feed = document.getElementById('activityFeed');
-            if (!feed) return;
-
-            if (activities.length === 0) {
-                feed.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No recent activity</p>';
-                return;
-            }
-
-            feed.innerHTML = activities.slice(0, 10).map(activity => `
-                <div class="activity-item">
-                    <div>${activity.text}</div>
-                    <div style="color: var(--text-muted); font-size: 0.75rem;">${formatDate(activity.timestamp)}</div>
-                </div>
-            `).join('');
-        }
-
-        function loadPriorityList(priorities) {
-            const list = document.getElementById('priorityList');
-            if (!list) return;
-
-            if (priorities.length === 0) {
-                list.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No priorities set</p>';
-                return;
-            }
-
-            list.innerHTML = priorities.map((priority, index) => `
-                <li class="priority-item">
-                    <input type="checkbox" class="priority-checkbox" ${priority.completed ? 'checked' : ''} 
-                           onchange="togglePriority(${index})">
-                    <span style="${priority.completed ? 'text-decoration: line-through; opacity: 0.6;' : ''}">${priority.text}</span>
-                    <button class="btn-danger" style="padding: var(--spacing-xs) var(--spacing-sm); font-size: 0.75rem;" 
-                            onclick="deletePriority(${index})">×</button>
-                </li>
-            `).join('');
-        }
-
-        async function addActivity() {
-            const text = prompt('Enter activity:');
-            if (!text) return;
-
-            await logActivity(text);
-        }
-
-        function addPriority() {
-            const text = prompt('Enter priority:');
-            if (!text) return;
-
-            const priorities = getStorageData('priorities', []);
-            priorities.push({
-                text: text,
-                completed: false
-            });
-
-            setStorageData('priorities', priorities);
-            loadPriorityList(priorities);
-        }
-
-        function togglePriority(index) {
-            const priorities = getStorageData('priorities', []);
-            priorities[index].completed = !priorities[index].completed;
-            setStorageData('priorities', priorities);
-            loadPriorityList(priorities);
-        }
-
-        function deletePriority(index) {
-            if (!confirm('Delete this priority?')) return;
-            
-            const priorities = getStorageData('priorities', []);
-            priorities.splice(index, 1);
-            setStorageData('priorities', priorities);
-            loadPriorityList(priorities);
-        }
-
-        function loadProjects() {
-            const projects = getStorageData('projects', { backlog: [], progress: [], done: [] });
-            
-            renderTasks('backlog', projects.backlog);
-            renderTasks('progress', projects.progress);
-            renderTasks('done', projects.done);
-            
-            updateTaskCounts(projects);
-        }
-
-        function renderTasks(status, tasks) {
-            const container = document.getElementById(`${status}Tasks`);
-            if (!container) return;
-
-            container.innerHTML = tasks.map((task, index) => {
-                const taskElement = document.createElement('div');
-                taskElement.className = 'task-card';
-                taskElement.onclick = () => editTask(status, index);
-                taskElement.innerHTML = `
-                    <div class="task-title">${task.title}</div>
-                    <div class="task-description">${task.description}</div>
-                    <div class="task-meta">
-                        <span class="priority-badge priority-${task.priority}">${task.priority.toUpperCase()}</span>
-                        <span>${formatDate(task.createdAt)}</span>
-                    </div>
-                `;
-                
-                // Make draggable
-                makeTaskDraggable(taskElement, status, index);
-                
-                return taskElement.outerHTML;
-            }).join('');
-            
-            // Re-setup drag and drop events for new elements
-            setTimeout(() => {
-                container.querySelectorAll('.task-card').forEach((el, idx) => {
-                    el.onclick = () => editTask(status, idx);
-                    makeTaskDraggable(el, status, idx);
-                });
-            }, 0);
-        }
-
-        function updateTaskCounts(projects) {
-            document.getElementById('backlogCount').textContent = projects.backlog.length;
-            document.getElementById('progressCount').textContent = projects.progress.length;
-            document.getElementById('doneCount').textContent = projects.done.length;
-        }
-
-        function addTask(status) {
-            currentTask = { status: status, index: null };
-            document.getElementById('taskModalTitle').textContent = 'Add Task';
-            document.getElementById('deleteTaskBtn').style.display = 'none';
-            document.getElementById('taskTitle').value = '';
-            document.getElementById('taskDescription').value = '';
-            document.getElementById('taskPriority').value = 'medium';
-            openModal('taskModal');
-        }
-
-        function editTask(status, index) {
-            const projects = getStorageData('projects', { backlog: [], progress: [], done: [] });
-            const task = projects[status][index];
-            
-            currentTask = { status: status, index: index };
-            document.getElementById('taskModalTitle').textContent = 'Edit Task';
-            document.getElementById('deleteTaskBtn').style.display = 'inline-block';
-            document.getElementById('taskTitle').value = task.title;
-            document.getElementById('taskDescription').value = task.description;
-            document.getElementById('taskPriority').value = task.priority;
-            openModal('taskModal');
-        }
-
-        async function saveTask(event) {
-            event.preventDefault();
-            
-            const title = document.getElementById('taskTitle').value;
-            const description = document.getElementById('taskDescription').value;
-            const priority = document.getElementById('taskPriority').value;
-            
-            const projects = getStorageData('projects', { backlog: [], progress: [], done: [] });
-            
-            const taskData = {
-                title: title,
-                description: description,
-                priority: priority,
-                createdAt: new Date().toISOString()
-            };
-
-            if (currentTask.index !== null) {
-                // Edit existing task
-                projects[currentTask.status][currentTask.index] = taskData;
-                await logActivity(`Updated task: ${title}`, 'task');
-            } else {
-                // Add new task
-                projects[currentTask.status].push(taskData);
-                await logActivity(`Created task: ${title}`, 'task');
-            }
-
-            setStorageData('projects', projects);
-            loadProjects();
-            updateDashboardMetrics();
-            closeModal('taskModal');
-        }
-
-        function deleteTask() {
-            if (!confirm('Delete this task?')) return;
-            
-            const projects = getStorageData('projects', { backlog: [], progress: [], done: [] });
-            const task = projects[currentTask.status][currentTask.index];
-            
-            projects[currentTask.status].splice(currentTask.index, 1);
-            setStorageData('projects', projects);
-            loadProjects();
-            updateDashboardMetrics();
-            closeModal('taskModal');
-            
-            logActivity(`Deleted task: ${task.title}`, 'task');
-        }
-
-        // Timeline and other sections would continue with similar implementations...
-        // For brevity, I'll include just the essential core functions needed to make it work
-
-        function loadTimeline() {
-            const container = document.getElementById('timelineContainer');
-            if (!container) return;
-
-            container.innerHTML = timelineData.map(phase => `
-                <div class="timeline-phase ${phase.current ? 'current' : ''}">
-                    <div class="phase-header">
-                        <div class="phase-title">${phase.title}</div>
-                        <div class="phase-dates">${phase.dateRange}</div>
-                    </div>
-                    <div class="phase-description">${phase.description}</div>
-                    <ul class="milestone-list">
-                        ${phase.milestones.map((milestone, index) => `
-                            <li class="milestone-item">
-                                <input type="checkbox" class="milestone-checkbox" ${milestone.completed ? 'checked' : ''}>
-                                <span style="${milestone.completed ? 'text-decoration: line-through; opacity: 0.6;' : ''}">${milestone.text}</span>
-                            </li>
-                        `).join('')}
-                    </ul>
-                </div>
-            `).join('');
-        }
-
-        function loadNotes() {
-            const editor = document.getElementById('notesEditor');
-            const notes = getStorageData('notes', '');
-            const lastSaved = getStorageData('notesLastSaved', null);
-            
-            if (editor) {
-                editor.value = notes;
-                updateNotesStats();
-            }
-            
-            if (lastSaved) {
-                document.getElementById('lastSaved').textContent = `Last saved: ${formatDate(lastSaved)}`;
-            }
-        }
-
-        function saveNotes() {
-            const editor = document.getElementById('notesEditor');
-            const notes = editor.value;
-            const timestamp = new Date().toISOString();
-            
-            setStorageData('notes', notes);
-            setStorageData('notesLastSaved', timestamp);
-            
-            document.getElementById('lastSaved').textContent = `Last saved: ${formatDate(timestamp)}`;
-            updateNotesStats();
-        }
-
-        function updateNotesStats() {
-            const editor = document.getElementById('notesEditor');
-            const charCount = editor.value.length;
-            document.getElementById('charCount').textContent = `${charCount.toLocaleString()} characters`;
-        }
-
-        function loadRevenue() {
-            const clients = getStorageData('clients', []);
-            
-            loadClientList(clients);
-            updateRevenueGauge(clients);
-            updateRevenueProjections(clients);
-        }
-
-        function loadClientList(clients) {
-            const container = document.getElementById('clientList');
-            if (!container) return;
-
-            if (clients.length === 0) {
-                container.innerHTML = '<div style="padding: 2rem; text-align: center; color: var(--text-muted);">No clients added yet</div>';
-                return;
-            }
-
-            container.innerHTML = clients.map((client, index) => `
-                <div class="client-row">
-                    <div>${client.name}</div>
-                    <div>$${parseFloat(client.value).toLocaleString()}</div>
-                    <div><span class="client-status status-${client.status}">${client.status.toUpperCase()}</span></div>
-                    <div>${formatDate(client.startDate)}</div>
-                    <div>
-                        <button class="btn-secondary" style="padding: var(--spacing-xs) var(--spacing-sm); font-size: 0.75rem;" onclick="editClient(${index})">Edit</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function updateRevenueGauge(clients) {
-            const activeMrr = clients.filter(c => c.status === 'active').reduce((sum, c) => sum + parseFloat(c.value), 0);
-            const progress = (activeMrr / 10000) * 100;
-            const circumference = 2 * Math.PI * 80;
-            const dashArray = (progress / 100) * circumference;
-            
-            document.getElementById('gaugeText').textContent = `$${activeMrr.toLocaleString()}`;
-            document.getElementById('gaugeCircle').style.strokeDasharray = `${dashArray} ${circumference}`;
-        }
-
-        function updateRevenueProjections(clients) {
-            const activeMrr = clients.filter(c => c.status === 'active').reduce((sum, c) => sum + parseFloat(c.value), 0);
-            const annualRate = activeMrr * 12;
-            const goalProgress = (activeMrr / 10000) * 100;
-            
-            const now = new Date();
-            const target = new Date('2026-06-01');
-            const monthsRemaining = Math.max(0, (target.getFullYear() - now.getFullYear()) * 12 + (target.getMonth() - now.getMonth()));
-            
-            const remainingToGoal = 10000 - activeMrr;
-            const monthlyGrowthNeeded = monthsRemaining > 0 ? remainingToGoal / monthsRemaining : remainingToGoal;
-            
-            document.getElementById('currentMrr').textContent = `$${activeMrr.toLocaleString()}`;
-            document.getElementById('annualRate').textContent = `$${annualRate.toLocaleString()}`;
-            document.getElementById('goalProgress').textContent = `${goalProgress.toFixed(1)}%`;
-            document.getElementById('growthNeeded').textContent = `$${monthlyGrowthNeeded.toLocaleString()}`;
-        }
-
-        function addClient() {
-            currentClient = null;
-            document.getElementById('clientModalTitle').textContent = 'Add Client';
-            document.getElementById('deleteClientBtn').style.display = 'none';
-            document.getElementById('clientName').value = '';
-            document.getElementById('clientValue').value = '';
-            document.getElementById('clientStatus').value = 'active';
-            document.getElementById('clientStartDate').value = new Date().toISOString().split('T')[0];
-            openModal('clientModal');
-        }
-
-        function editClient(index) {
-            const clients = getStorageData('clients', []);
-            const client = clients[index];
-            
-            currentClient = index;
-            document.getElementById('clientModalTitle').textContent = 'Edit Client';
-            document.getElementById('deleteClientBtn').style.display = 'inline-block';
-            document.getElementById('clientName').value = client.name;
-            document.getElementById('clientValue').value = client.value;
-            document.getElementById('clientStatus').value = client.status;
-            document.getElementById('clientStartDate').value = client.startDate.split('T')[0];
-            openModal('clientModal');
-        }
-
-        async function saveClient(event) {
-            event.preventDefault();
-            
-            const name = document.getElementById('clientName').value;
-            const value = document.getElementById('clientValue').value;
-            const status = document.getElementById('clientStatus').value;
-            const startDate = document.getElementById('clientStartDate').value;
-            
-            const clients = getStorageData('clients', []);
-            
-            const clientData = {
-                name: name,
-                value: value,
-                status: status,
-                startDate: startDate
-            };
-
-            if (currentClient !== null) {
-                clients[currentClient] = clientData;
-                await logActivity(`Updated client: ${name}`, 'client');
-            } else {
-                clients.push(clientData);
-                await logActivity(`Added client: ${name}`, 'client');
-            }
-
-            setStorageData('clients', clients);
-            loadRevenue();
-            updateDashboardMetrics();
-            closeModal('clientModal');
-        }
-
-        function deleteClient() {
-            if (!confirm('Delete this client?')) return;
-            
-            const clients = getStorageData('clients', []);
-            const client = clients[currentClient];
-            
-            clients.splice(currentClient, 1);
-            setStorageData('clients', clients);
-            loadRevenue();
-            updateDashboardMetrics();
-            closeModal('clientModal');
-            
-            logActivity(`Deleted client: ${client.name}`, 'client');
-        }
-
-        // Implement other functions (meetings, intel, command center)
-        function loadMeetings() {
-            // Implementation similar to other sections
-        }
-
-        function loadIntel() {
-            // Implementation similar to other sections
-        }
-
-        async function loadCommandCenter() {
-            // Try to fetch real agent data from OpenClaw gateway
+        // Agent Management Functions
+        async function loadAgents() {
             try {
                 const response = await authFetch(`${SERVER_URL}/mc/openclaw/agents`);
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.agents && data.agents.length > 0) {
-                        const agents = data.agents.map(a => ({
-                            name: a.name.charAt(0).toUpperCase() + a.name.slice(1),
-                            role: a.role,
-                            model: a.model,
-                            status: a.status,
-                            lastActive: a.lastActive || new Date().toISOString(),
-                            heartbeat: a.heartbeat
-                        }));
-                        setStorageData('agents', agents);
-                        renderAgentGrid(agents);
-                        return;
-                    }
-                }
-            } catch (e) {
-                console.log('OpenClaw gateway not available, using cached/default agents');
+                const data = await response.json();
+                
+                renderAgents(data.agents || []);
+                updateActiveAgentsCount(data.agents || []);
+            } catch (error) {
+                console.error('Error loading agents:', error);
+                renderAgents([]);
             }
-            // Fallback to cached or defaults
-            const agents = getStorageData('agents', getDefaultAgents());
-            renderAgentGrid(agents);
         }
 
-        function getDefaultAgents() {
-            return [
-                {
-                    name: 'Spock',
-                    role: 'Unified AI Operator',
-                    model: 'gpt-4o-mini',
-                    status: 'offline',
-                    lastActive: null
-                },
-                {
-                    name: 'Dev',
-                    role: 'Full Stack Developer',
-                    model: 'gpt-4o',
-                    status: 'offline',
-                    lastActive: null
-                },
-                {
-                    name: 'Research',
-                    role: 'Intelligence & Research',
-                    model: 'gpt-4o-mini',
-                    status: 'offline',
-                    lastActive: null
-                }
-            ];
-        }
-
-        function renderAgentGrid(agents) {
+        function renderAgents(agents) {
             const container = document.getElementById('agentGrid');
             if (!container) return;
-
-            container.innerHTML = agents.map((agent, index) => `
-                <div class="agent-card" onclick="sendTaskToSpecificAgent('${agent.name}')">
+            
+            if (agents.length === 0) {
+                container.innerHTML = '<div class="text-center" style="color: var(--text-muted); grid-column: 1/-1;">No agents available</div>';
+                return;
+            }
+            
+            container.innerHTML = agents.map(agent => `
+                <div class="agent-card" onclick="showAgentDetail('${agent.id}')">
                     <div class="agent-header">
                         <div class="agent-info">
                             <h3>${agent.name}</h3>
@@ -4591,190 +1222,306 @@
                         </div>
                         <div class="agent-status-dot status-${agent.status}"></div>
                     </div>
-                    <div class="agent-model">🧠 ${agent.model}</div>
-                    <div class="agent-last-active">${agent.lastActive ? 'Last active: ' + formatDate(agent.lastActive) : 'No recent activity'}</div>
-                    ${agent.heartbeat ? `<div class="agent-last-active">Heartbeat: ${agent.heartbeat.enabled ? '✅ ' + agent.heartbeat.every : '❌ disabled'}</div>` : ''}
-                    <div class="mt-2">
-                        <button class="btn" onclick="event.stopPropagation(); sendTaskToSpecificAgent('${agent.name}')">Send Task</button>
+                    <div class="agent-model">${agent.model}</div>
+                    <div class="agent-last-active">
+                        ${agent.lastActive ? 
+                            `Last active: ${formatTimeAgo(agent.lastActiveAgo)}` : 
+                            'Never active'
+                        }
                     </div>
                 </div>
             `).join('');
         }
 
-        async function sendTaskToSpecificAgent(agentName) {
-            const task = prompt(`Enter task for ${agentName}:`);
-            if (!task) return;
-            
-            addChatMessage('user', `Task for ${agentName}: ${task}`);
-            await logActivity(`Sent task to ${agentName}: ${task.substring(0, 100)}${task.length > 100 ? '...' : ''}`, 'agent');
-            
-            showNotification(`Task sent to ${agentName}`, 'success');
-        }
-
-        // Modal Functions
-        function openModal(modalId) {
-            document.getElementById(modalId).classList.add('active');
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-        }
-
-        // Storage Functions with user namespace
-        function getStorageData(key, defaultValue) {
-            try {
-                const namespace = getUserNamespace();
-                const data = localStorage.getItem(`${namespace}_${key}`);
-                return data ? JSON.parse(data) : defaultValue;
-            } catch (error) {
-                console.error('Error reading from localStorage:', error);
-                return defaultValue;
+        function updateActiveAgentsCount(agents) {
+            const activeCount = agents.filter(a => a.status === 'online').length;
+            const element = document.getElementById('activeAgents');
+            if (element) {
+                element.textContent = activeCount;
             }
         }
 
-        function setStorageData(key, value) {
+        async function showAgentDetail(agentId) {
             try {
-                const namespace = getUserNamespace();
-                localStorage.setItem(`${namespace}_${key}`, JSON.stringify(value));
+                // Get agent info
+                const agentsResponse = await authFetch(`${SERVER_URL}/mc/openclaw/agents`);
+                const agentsData = await agentsResponse.json();
+                const agent = (agentsData.agents || []).find(a => a.id === agentId);
+                
+                if (!agent) {
+                    console.error('Agent not found:', agentId);
+                    return;
+                }
+                
+                currentAgentDetail = agent;
+                
+                // Populate agent details
+                document.getElementById('agentDetailName').textContent = agent.name;
+                document.getElementById('agentDetailRole').textContent = agent.role;
+                document.getElementById('agentDetailModel').textContent = agent.model;
+                document.getElementById('agentDetailStatus').textContent = agent.status;
+                document.getElementById('agentDetailLastActive').textContent = 
+                    agent.lastActive ? formatTimeAgo(agent.lastActiveAgo) : 'Never active';
+                
+                // Load sessions
+                await refreshAgentSessions();
+                
+                // Show panel
+                document.getElementById('agentDetailPanel').classList.add('open');
             } catch (error) {
-                console.error('Error writing to localStorage:', error);
+                console.error('Error loading agent details:', error);
+            }
+        }
+
+        function closeAgentDetail() {
+            document.getElementById('agentDetailPanel').classList.remove('open');
+            currentAgentDetail = null;
+        }
+
+        async function refreshAgentSessions() {
+            if (!currentAgentDetail) return;
+            
+            try {
+                const response = await authFetch(`${SERVER_URL}/mc/openclaw/sessions`);
+                const data = await response.json();
+                
+                // Filter sessions for current agent
+                const agentSessions = (data.sessions || [])
+                    .filter(s => s.agentId === currentAgentDetail.id)
+                    .slice(0, 10); // Show only last 10
+                
+                const container = document.getElementById('agentSessionList');
+                
+                if (agentSessions.length === 0) {
+                    container.innerHTML = '<p style="color: var(--text-muted);">No recent sessions found</p>';
+                    return;
+                }
+                
+                container.innerHTML = agentSessions.map(session => `
+                    <div class="session-item">
+                        <div class="session-key">${session.key}</div>
+                        <div class="session-meta">
+                            Model: ${session.model} | 
+                            Tokens: ${session.tokens.total.toLocaleString()} | 
+                            Updated: ${session.updatedAt ? formatTimeAgo(Date.now() - new Date(session.updatedAt).getTime()) : 'Unknown'}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading sessions:', error);
+                document.getElementById('agentSessionList').innerHTML = 
+                    '<p style="color: var(--error-color);">Error loading sessions</p>';
+            }
+        }
+
+        // Live Activity Feed
+        async function refreshActivityFeed() {
+            try {
+                const response = await authFetch(`${SERVER_URL}/mc/openclaw/logs`);
+                const data = await response.json();
+                
+                const container = document.getElementById('liveActivityFeed');
+                const entries = data.entries || [];
+                
+                if (entries.length === 0) {
+                    container.innerHTML = `
+                        <div class="activity-entry">
+                            <span class="activity-timestamp">${formatTime(new Date())}</span>
+                            <span>No recent activity</span>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = entries.slice(0, 20).map(entry => `
+                    <div class="activity-entry">
+                        <span class="activity-timestamp">${formatTime(new Date(entry.timestamp))}</span>
+                        <span class="activity-level ${entry.level}">${entry.level.toUpperCase()}</span>
+                        <span>${entry.subsystem}: ${entry.message}</span>
+                    </div>
+                `).join('');
+                
+                // Auto-scroll to top
+                container.scrollTop = 0;
+            } catch (error) {
+                console.error('Error refreshing activity feed:', error);
+                const container = document.getElementById('liveActivityFeed');
+                container.innerHTML = `
+                    <div class="activity-entry">
+                        <span class="activity-timestamp">${formatTime(new Date())}</span>
+                        <span class="activity-level error">ERROR</span>
+                        <span>Failed to load activity feed</span>
+                    </div>
+                `;
+            }
+        }
+
+        // Cost Tracking
+        async function refreshCosts() {
+            try {
+                const response = await authFetch(`${SERVER_URL}/mc/openclaw/costs`);
+                const data = await response.json();
+                
+                // Update overview stats
+                document.getElementById('totalCostToday').textContent = `$${data.today.estimatedCost}`;
+                document.getElementById('totalTokensToday').textContent = data.today.totalTokens.toLocaleString();
+                document.getElementById('estimatedMonthly').textContent = `$${(data.today.estimatedCost * 30).toFixed(2)}`;
+                
+                // Render agent breakdown
+                const breakdownContainer = document.getElementById('agentCostBreakdown');
+                if (data.agentBreakdown && data.agentBreakdown.length > 0) {
+                    breakdownContainer.innerHTML = `
+                        <h5 style="margin-bottom: 1rem;">Agent Breakdown</h5>
+                        <div style="display: grid; gap: 0.5rem;">
+                            ${data.agentBreakdown.map(agent => `
+                                <div style="display: flex; justify-content: space-between; padding: 0.5rem; background: var(--glass-bg); border-radius: 6px;">
+                                    <span>${agent.agentId}</span>
+                                    <div>
+                                        <span style="margin-right: 1rem;">${agent.totalTokens.toLocaleString()} tokens</span>
+                                        <span style="color: var(--accent-color);">$${agent.cost.toFixed(3)}</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                } else {
+                    breakdownContainer.innerHTML = '<p style="color: var(--text-muted);">No activity today</p>';
+                }
+            } catch (error) {
+                console.error('Error refreshing costs:', error);
+                document.getElementById('totalCostToday').textContent = '$0.00';
+                document.getElementById('totalTokensToday').textContent = '0';
+                document.getElementById('estimatedMonthly').textContent = '$0.00';
+                document.getElementById('agentCostBreakdown').innerHTML = 
+                    '<p style="color: var(--error-color);">Error loading cost data</p>';
+            }
+        }
+
+        // Chat Functions (REST API based)
+        async function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            input.value = '';
+            addChatMessage('user', message);
+            
+            try {
+                const response = await authFetch(`${SERVER_URL}/mc/agent/task`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        task: message,
+                        agent: 'general'
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    addChatMessage('system', result.message);
+                } else {
+                    addChatMessage('system', 'Failed to send task: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Error sending task:', error);
+                addChatMessage('system', 'Connection error while sending task');
+            }
+        }
+
+        function handleChatKeypress(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendChatMessage();
+            }
+        }
+
+        function addChatMessage(type, message) {
+            const container = document.getElementById('agentMessages');
+            const messageElement = document.createElement('div');
+            messageElement.className = 'chat-message';
+            messageElement.innerHTML = `<strong>${type.charAt(0).toUpperCase() + type.slice(1)}:</strong> ${message}`;
+            
+            container.appendChild(messageElement);
+            container.scrollTop = container.scrollHeight;
+            
+            // Keep only last 50 messages
+            while (container.children.length > 50) {
+                container.removeChild(container.firstChild);
+            }
+        }
+
+        // Notes Functions
+        function updateNotesStats() {
+            const editor = document.getElementById('notesEditor');
+            const charCount = document.getElementById('charCount');
+            const lastSaved = document.getElementById('lastSaved');
+            
+            if (editor && charCount) {
+                charCount.textContent = `${editor.value.length} characters`;
+            }
+            
+            // Auto-save (debounced)
+            clearTimeout(window.notesTimeout);
+            window.notesTimeout = setTimeout(saveNotes, 1000);
+        }
+
+        function saveNotes() {
+            const editor = document.getElementById('notesEditor');
+            const lastSaved = document.getElementById('lastSaved');
+            
+            if (editor) {
+                localStorage.setItem('mc_notes', editor.value);
+                if (lastSaved) {
+                    lastSaved.textContent = `Saved at ${new Date().toLocaleTimeString()}`;
+                }
+            }
+        }
+
+        function loadNotes() {
+            const editor = document.getElementById('notesEditor');
+            if (editor) {
+                const saved = localStorage.getItem('mc_notes') || '';
+                editor.value = saved;
+                updateNotesStats();
             }
         }
 
         // Utility Functions
-        function formatDate(dateString) {
-            if (!dateString) return 'Never';
-            const date = new Date(dateString);
-            const now = new Date();
-            const diffMs = now - date;
-            const diffMins = Math.floor(diffMs / 60000);
-            const diffHours = Math.floor(diffMs / 3600000);
-            const diffDays = Math.floor(diffMs / 86400000);
-
-            if (diffMins < 1) return 'Just now';
-            if (diffMins < 60) return `${diffMins}m ago`;
-            if (diffHours < 24) return `${diffHours}h ago`;
-            if (diffDays < 7) return `${diffDays}d ago`;
+        function formatTimeAgo(ms) {
+            if (!ms || ms < 0) return 'Unknown';
             
-            return date.toLocaleDateString('en-US', { 
-                month: 'short', 
-                day: 'numeric',
-                year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
+            const seconds = Math.floor(ms / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+            
+            if (days > 0) return `${days}d ago`;
+            if (hours > 0) return `${hours}h ago`;
+            if (minutes > 0) return `${minutes}m ago`;
+            return 'Just now';
+        }
+
+        function formatTime(date) {
+            return date.toLocaleTimeString('en-US', { 
+                hour12: false, 
+                hour: '2-digit', 
+                minute: '2-digit',
+                second: '2-digit'
             });
         }
 
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
+        // Initialize disabled WebSocket setup
+        setupWebSocket();
 
-        // Close modals and panels when clicking outside
-        document.addEventListener('click', function(event) {
-            // Close modals when clicking outside
-            const modals = document.querySelectorAll('.modal.active');
-            modals.forEach(modal => {
-                if (event.target === modal) {
-                    modal.classList.remove('active');
-                }
-            });
-
-            // Close search modal when clicking outside
-            const searchModal = document.getElementById('searchModal');
-            if (searchModal.classList.contains('active') && event.target === searchModal) {
-                closeSearch();
-            }
-
-            // Close quick actions when clicking outside
-            const quickActions = document.querySelector('.quick-actions');
-            if (quickActionsOpen && !quickActions.contains(event.target)) {
-                toggleQuickActions();
-            }
+        // Cleanup intervals when page unloads
+        window.addEventListener('beforeunload', () => {
+            if (activityFeedInterval) clearInterval(activityFeedInterval);
+            if (costsRefreshInterval) clearInterval(costsRefreshInterval);
         });
-
-        // Initialize notifications permission if enabled
-        window.addEventListener('load', function() {
-            const notificationsEnabled = getStorageData('notificationsEnabled', false);
-            if (notificationsEnabled) {
-                document.getElementById('enableNotifications').checked = true;
-                if ('Notification' in window && Notification.permission !== 'granted') {
-                    Notification.requestPermission();
-                }
-            }
-        });
-
-        // Stub functions for features not implemented in this shortened version
-        function addMeeting() { showNotification('Add Meeting feature', 'info'); }
-        function addIntel() { showNotification('Add Intel feature', 'info'); }
-        function addDecision() { showNotification('Add Decision feature', 'info'); }
-        function editRevenue() { showNotification('Edit Revenue feature', 'info'); }
-        
-        // Ensure PWA functions work
-        console.log('Mission Control initialized with PWA support');
     </script>
-    </div><!-- end appContent -->
-    <script>
-    (function(){
-        const gate = document.getElementById('authGate');
-        const app = document.getElementById('appContent');
-        const form = document.getElementById('authForm');
-        const err = document.getElementById('authError');
 
-        function unlock() {
-            gate.style.display = 'none';
-            app.style.display = 'block';
-            if (!appInitialized && typeof initializeApp === 'function') {
-                appInitialized = true;
-                initializeApp();
-            }
-        }
-
-        // Check existing token
-        const token = localStorage.getItem('mc_token');
-        if (token) {
-            // Verify token
-            const checkUrl = IS_LOCAL ? '/auth/check' : '/auth/check';
-            const url = IS_LOCAL ? checkUrl : '/api/auth?action=check';
-            fetch(url, { headers: { 'Authorization': 'Bearer ' + token } })
-                .then(r => r.json())
-                .then(d => { if (d.authenticated) unlock(); })
-                .catch(() => {});
-        }
-
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('authBtn');
-            btn.disabled = true; btn.textContent = 'Signing in...';
-            err.style.display = 'none';
-            try {
-                const loginUrl = IS_LOCAL ? '/auth/login' : '/auth/login';
-                const url = IS_LOCAL ? loginUrl : '/api/auth?action=login';
-                const r = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username: document.getElementById('authUser').value, password: document.getElementById('authPass').value })
-                });
-                const d = await r.json();
-                if (d.success) {
-                    localStorage.setItem('mc_token', d.token);
-                    unlock();
-                } else {
-                    err.style.display = 'block';
-                    btn.disabled = false; btn.textContent = 'Sign In';
-                }
-            } catch(ex) {
-                err.textContent = 'Connection error';
-                err.style.display = 'block';
-                btn.disabled = false; btn.textContent = 'Sign In';
-            }
-        });
-    })();
-    </script>
+    </div>
 </body>
 </html>

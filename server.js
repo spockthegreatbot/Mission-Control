@@ -22,6 +22,9 @@ const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 const MC_BACKUP_KEY = process.env.MC_BACKUP_KEY || crypto.randomBytes(32).toString('hex');
 
+// OpenClaw gateway config
+const OPENCLAW_TOKEN = process.env.OPENCLAW_GATEWAY_TOKEN || 'e7b2f7acd7ad812952ba65e17137199a68e9ca6c6f467d80';
+
 // Middleware
 app.use(cors({ origin: true, credentials: true }));
 app.use((req, res, next) => {
@@ -329,9 +332,6 @@ app.get('/', (req, res) => {
 });
 
 // GET /mc/openclaw/agents - Real agent status from OpenClaw gateway
-const OPENCLAW_TOKEN = process.env.OPENCLAW_GATEWAY_TOKEN || 'e7b2f7acd7ad812952ba65e17137199a68e9ca6c6f467d80';
-const OPENCLAW_WS_URL = 'ws://127.0.0.1:18789';
-
 app.get('/mc/openclaw/agents', async (req, res) => {
     try {
         const { execSync } = require('child_process');
@@ -353,12 +353,14 @@ app.get('/mc/openclaw/agents', async (req, res) => {
             if (a.id === 'main') {
                 agentConfigs['main'].model = a.model || defaultModel;
             } else {
-                agentConfigs[a.id] = { id: a.id, name: a.name || a.id, model: a.model || defaultModel };
+                agentConfigs[a.id] = { 
+                    id: a.id, 
+                    name: a.name || a.id, 
+                    role: a.role || a.id,
+                    model: a.model || defaultModel 
+                };
             }
         }
-        // Add roles
-        if (agentConfigs['dev']) agentConfigs['dev'].role = 'Full Stack Developer';
-        if (agentConfigs['research']) agentConfigs['research'].role = 'Intelligence & Research';
         
         // Get session activity per agent
         const sessions = data.sessions?.recent || [];
@@ -403,7 +405,168 @@ app.get('/mc/openclaw/agents', async (req, res) => {
         
         res.json({ agents, sessions: sessions.length, defaultModel });
     } catch (err) {
-        res.status(500).json({ error: 'Failed to query OpenClaw gateway', detail: err.message });
+        console.error('OpenClaw gateway error:', err.message);
+        // Fallback to default agents
+        res.json({ 
+            agents: [
+                { id: 'main', name: 'Spock', role: 'Unified AI Operator', model: 'gpt-4o-mini', status: 'offline', lastActive: null },
+                { id: 'dev', name: 'Dev', role: 'Full Stack Developer', model: 'gpt-4o-mini', status: 'offline', lastActive: null },
+                { id: 'research', name: 'Research', role: 'Intelligence & Research', model: 'gpt-4o-mini', status: 'offline', lastActive: null }
+            ], 
+            sessions: 0, 
+            defaultModel: 'gpt-4o-mini',
+            error: 'OpenClaw gateway unavailable'
+        });
+    }
+});
+
+// NEW FEATURE: Live Activity Feed
+app.get('/mc/openclaw/logs', async (req, res) => {
+    try {
+        const { execSync } = require('child_process');
+        const raw = execSync(`openclaw gateway call logs.tail --token "${OPENCLAW_TOKEN}" --json --limit 50`, { timeout: 15000 }).toString();
+        const data = JSON.parse(raw);
+        
+        // Parse and filter log entries
+        const entries = (data.entries || [])
+            .filter(entry => {
+                // Filter out WebSocket handshake timeout spam
+                const msg = entry.message || '';
+                if (msg.includes('handshake timeout') || msg.includes('websocket')) return false;
+                if (msg.includes('TCP connect') || msg.includes('connection reset')) return false;
+                return true;
+            })
+            .map(entry => ({
+                timestamp: entry.timestamp || new Date().toISOString(),
+                level: entry.level || 'info',
+                subsystem: entry.subsystem || 'unknown',
+                message: (entry.message || '').substring(0, 200),
+                agentId: entry.agentId || null
+            }))
+            .slice(0, 50);
+        
+        res.json({ entries, count: entries.length });
+    } catch (err) {
+        console.error('Error fetching OpenClaw logs:', err.message);
+        res.status(500).json({ error: 'Failed to fetch activity logs', detail: err.message });
+    }
+});
+
+// NEW FEATURE: Session Viewer
+app.get('/mc/openclaw/sessions', async (req, res) => {
+    try {
+        const { execSync } = require('child_process');
+        const raw = execSync(`openclaw gateway call status --token "${OPENCLAW_TOKEN}" --json`, { timeout: 10000 }).toString();
+        const data = JSON.parse(raw);
+        
+        const sessions = (data.sessions?.recent || []).map(session => ({
+            agentId: session.agentId || 'unknown',
+            key: session.key || 'unknown',
+            kind: session.kind || 'unknown',
+            model: session.model || 'unknown',
+            updatedAt: session.updatedAt ? new Date(session.updatedAt).toISOString() : null,
+            age: session.age || null,
+            tokens: {
+                input: session.tokens?.input || 0,
+                output: session.tokens?.output || 0,
+                total: (session.tokens?.input || 0) + (session.tokens?.output || 0)
+            }
+        }));
+        
+        res.json({ sessions, total: sessions.length });
+    } catch (err) {
+        console.error('Error fetching OpenClaw sessions:', err.message);
+        res.status(500).json({ error: 'Failed to fetch sessions', detail: err.message });
+    }
+});
+
+// NEW FEATURE: Cost Tracker
+app.get('/mc/openclaw/costs', async (req, res) => {
+    try {
+        // Get sessions data
+        const sessionsResponse = await new Promise((resolve, reject) => {
+            try {
+                const { execSync } = require('child_process');
+                const raw = execSync(`openclaw gateway call status --token "${OPENCLAW_TOKEN}" --json`, { timeout: 10000 }).toString();
+                resolve(JSON.parse(raw));
+            } catch (err) {
+                reject(err);
+            }
+        });
+        
+        const sessions = sessionsResponse.sessions?.recent || [];
+        
+        // Calculate costs per agent
+        const costsByAgent = {};
+        let totalInputTokens = 0;
+        let totalOutputTokens = 0;
+        let totalCost = 0;
+        
+        const today = new Date().toDateString();
+        
+        for (const session of sessions) {
+            // Filter to today's sessions (rough approximation)
+            const sessionAge = session.age || 0;
+            const sessionTime = new Date(Date.now() - sessionAge);
+            if (sessionTime.toDateString() !== today) continue;
+            
+            const agentId = session.agentId || 'unknown';
+            const model = session.model || 'gpt-4o-mini';
+            const inputTokens = session.tokens?.input || 0;
+            const outputTokens = session.tokens?.output || 0;
+            
+            // Cost calculation (rough estimates)
+            let inputCostPer1K = 0.003; // Default for gpt-4o-mini
+            let outputCostPer1K = 0.003;
+            
+            if (model.includes('claude')) {
+                inputCostPer1K = 0.015;
+                outputCostPer1K = 0.015;
+            } else if (model.includes('gpt-4o')) {
+                inputCostPer1K = 0.005;
+                outputCostPer1K = 0.015;
+            }
+            
+            const inputCost = (inputTokens / 1000) * inputCostPer1K;
+            const outputCost = (outputTokens / 1000) * outputCostPer1K;
+            const sessionCost = inputCost + outputCost;
+            
+            if (!costsByAgent[agentId]) {
+                costsByAgent[agentId] = {
+                    agentId,
+                    inputTokens: 0,
+                    outputTokens: 0,
+                    totalTokens: 0,
+                    cost: 0
+                };
+            }
+            
+            costsByAgent[agentId].inputTokens += inputTokens;
+            costsByAgent[agentId].outputTokens += outputTokens;
+            costsByAgent[agentId].totalTokens += inputTokens + outputTokens;
+            costsByAgent[agentId].cost += sessionCost;
+            
+            totalInputTokens += inputTokens;
+            totalOutputTokens += outputTokens;
+            totalCost += sessionCost;
+        }
+        
+        const agentBreakdown = Object.values(costsByAgent);
+        
+        res.json({
+            today: {
+                totalInputTokens,
+                totalOutputTokens,
+                totalTokens: totalInputTokens + totalOutputTokens,
+                estimatedCost: Math.round(totalCost * 100) / 100,
+                currency: 'USD'
+            },
+            agentBreakdown,
+            lastUpdated: new Date().toISOString()
+        });
+    } catch (err) {
+        console.error('Error calculating costs:', err.message);
+        res.status(500).json({ error: 'Failed to calculate costs', detail: err.message });
     }
 });
 
@@ -415,12 +578,13 @@ app.get('/mc/status', (req, res) => {
         uptime: uptime,
         lastRefresh: new Date().toISOString(),
         startTime: startTime.toISOString(),
-        version: '1.1.0',
+        version: '1.2.0',
         status: 'operational',
         features: {
             telegram: !!TELEGRAM_BOT_TOKEN,
             stripe: !!STRIPE_SECRET_KEY,
-            backup: !!MC_BACKUP_KEY
+            backup: !!MC_BACKUP_KEY,
+            openclaw: !!OPENCLAW_TOKEN
         }
     });
 });
@@ -919,7 +1083,7 @@ app.post('/mc/backup', async (req, res) => {
         const backupContent = JSON.stringify({
             timestamp: new Date().toISOString(),
             files: backupData,
-            version: '1.1.0'
+            version: '1.2.0'
         });
         
         // Encrypt backup
@@ -1152,6 +1316,7 @@ app.listen(PORT, () => {
     console.log(`- TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN ? 'Set' : 'Not set'}`);
     console.log(`- TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID ? 'Set' : 'Not set'}`);
     console.log(`- STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY ? 'Set' : 'Not set'}`);
+    console.log(`- OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_TOKEN ? 'Set' : 'Not set'}`);
     console.log(`- MC_BACKUP_KEY: ${MC_BACKUP_KEY ? 'Generated/Set' : 'Not set'}`);
 });
 

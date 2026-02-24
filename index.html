@@ -1,0 +1,2802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mission Control - Ryojin Dev</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #050508;
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Header Styles */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(8, 8, 12, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #6C63FF;
+            text-decoration: none;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            flex: 1;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .nav-tab.active {
+            background: rgba(108, 99, 255, 0.2);
+            border-color: #6C63FF;
+            color: #6C63FF;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .search-bar {
+            position: relative;
+        }
+
+        .search-bar input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            color: #ffffff;
+            font-size: 0.875rem;
+            width: 200px;
+            transition: all 0.2s ease;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: #6C63FF;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2.5rem;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Card Styles */
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .card.accent-top {
+            border-top: 3px solid #6C63FF;
+        }
+
+        /* Grid Layouts */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Button Styles */
+        .btn {
+            background: #6C63FF;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background: #5a52e0;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-danger {
+            background: #ff4444;
+        }
+
+        .btn-danger:hover {
+            background: #cc3333;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #cccccc;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            color: #ffffff;
+            font-size: 0.875rem;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #6C63FF;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* Dashboard Specific */
+        .welcome-bar {
+            background: rgba(108, 99, 255, 0.1);
+            border: 1px solid rgba(108, 99, 255, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .welcome-text {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-card {
+            text-align: center;
+            position: relative;
+        }
+
+        .metric-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            color: #cccccc;
+            font-size: 0.875rem;
+        }
+
+        .trend-indicator {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+        }
+
+        .activity-feed {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .priority-list {
+            list-style: none;
+        }
+
+        .priority-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .priority-item:last-child {
+            border-bottom: none;
+        }
+
+        .priority-checkbox {
+            width: 18px;
+            height: 18px;
+            accent-color: #6C63FF;
+        }
+
+        /* Kanban Board */
+        .kanban-board {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .kanban-column {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 1rem;
+        }
+
+        .kanban-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .kanban-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .task-count {
+            background: rgba(108, 99, 255, 0.2);
+            color: #6C63FF;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .task-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .task-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .task-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .task-description {
+            color: #cccccc;
+            font-size: 0.875rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .task-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: #999999;
+        }
+
+        .priority-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .priority-high {
+            background: rgba(255, 68, 68, 0.2);
+            color: #ff4444;
+        }
+
+        .priority-medium {
+            background: rgba(255, 184, 0, 0.2);
+            color: #ffb800;
+        }
+
+        .priority-low {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 1rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, #6C63FF, rgba(108, 99, 255, 0.2));
+        }
+
+        .timeline-phase {
+            position: relative;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            margin-left: 1rem;
+        }
+
+        .timeline-phase.current {
+            border-color: #6C63FF;
+            box-shadow: 0 0 20px rgba(108, 99, 255, 0.3);
+        }
+
+        .timeline-phase::before {
+            content: '';
+            position: absolute;
+            left: -1.75rem;
+            top: 1.5rem;
+            width: 12px;
+            height: 12px;
+            background: #6C63FF;
+            border-radius: 50%;
+            border: 3px solid #050508;
+        }
+
+        .phase-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .phase-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .phase-dates {
+            color: #cccccc;
+            font-size: 0.875rem;
+        }
+
+        .phase-description {
+            color: #cccccc;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .milestone-list {
+            list-style: none;
+        }
+
+        .milestone-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .milestone-item:last-child {
+            border-bottom: none;
+        }
+
+        .milestone-checkbox {
+            width: 16px;
+            height: 16px;
+            accent-color: #6C63FF;
+        }
+
+        /* Notes */
+        .notes-editor {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 1.5rem;
+            min-height: 500px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #ffffff;
+            resize: none;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .notes-editor:focus {
+            border-color: #6C63FF;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .notes-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            color: #999999;
+            font-size: 0.875rem;
+        }
+
+        /* Revenue */
+        .revenue-gauge {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 2rem;
+        }
+
+        .gauge-bg {
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 10;
+            fill: none;
+        }
+
+        .gauge-fill {
+            stroke: #6C63FF;
+            stroke-width: 10;
+            fill: none;
+            stroke-linecap: round;
+            transition: stroke-dasharray 0.5s ease;
+        }
+
+        .gauge-text {
+            text-anchor: middle;
+            dominant-baseline: central;
+            font-size: 1.5rem;
+            font-weight: 700;
+            fill: #ffffff;
+        }
+
+        .revenue-chart {
+            height: 300px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-bars {
+            display: flex;
+            align-items: end;
+            height: 240px;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .chart-bar {
+            flex: 1;
+            background: linear-gradient(to top, #6C63FF, rgba(108, 99, 255, 0.3));
+            border-radius: 4px;
+            min-height: 20px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .chart-bar:hover {
+            transform: translateY(-2px);
+        }
+
+        .chart-bar::after {
+            content: attr(data-value);
+            position: absolute;
+            top: -2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            color: #cccccc;
+        }
+
+        .chart-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            color: #999999;
+            font-size: 0.75rem;
+        }
+
+        .client-list {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .client-header {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .client-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            align-items: center;
+        }
+
+        .client-row:last-child {
+            border-bottom: none;
+        }
+
+        .client-status {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .status-active {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+        }
+
+        .status-pending {
+            background: rgba(255, 184, 0, 0.2);
+            color: #ffb800;
+        }
+
+        .status-churned {
+            background: rgba(255, 68, 68, 0.2);
+            color: #ff4444;
+        }
+
+        /* Agent Cards */
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .agent-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .agent-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.12);
+            transform: translateY(-2px);
+        }
+
+        .agent-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .agent-info h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .agent-role {
+            color: #cccccc;
+            font-size: 0.875rem;
+        }
+
+        .agent-status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-top: 0.25rem;
+        }
+
+        .status-online {
+            background: #00ff88;
+        }
+
+        .status-busy {
+            background: #ffb800;
+        }
+
+        .status-offline {
+            background: #666666;
+        }
+
+        .agent-model {
+            background: rgba(108, 99, 255, 0.2);
+            color: #6C63FF;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            display: inline-block;
+        }
+
+        .agent-last-active {
+            color: #999999;
+            font-size: 0.75rem;
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            background: rgba(20, 20, 30, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #999999;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .modal-close:hover {
+            color: #ffffff;
+        }
+
+        /* Slide Panel */
+        .slide-panel {
+            position: fixed;
+            top: 0;
+            right: -500px;
+            width: 500px;
+            height: 100vh;
+            background: rgba(20, 20, 30, 0.95);
+            backdrop-filter: blur(20px);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 2000;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .slide-panel.active {
+            right: 0;
+        }
+
+        .slide-panel-header {
+            padding: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .slide-panel-content {
+            padding: 2rem;
+        }
+
+        /* Utility Classes */
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .mb-1 {
+            margin-bottom: 0.5rem;
+        }
+
+        .mb-2 {
+            margin-bottom: 1rem;
+        }
+
+        .mb-3 {
+            margin-bottom: 1.5rem;
+        }
+
+        .mt-2 {
+            margin-top: 1rem;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .gap-2 {
+            gap: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+                flex-wrap: wrap;
+            }
+
+            .nav-tabs {
+                order: 3;
+                width: 100%;
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-top: 1rem;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .grid-4 {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+
+            .kanban-board {
+                grid-template-columns: 1fr;
+            }
+
+            .client-row {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .agent-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .slide-panel {
+                width: 100%;
+                right: -100%;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="#" class="logo">🚀 Mission Control</a>
+        <nav class="nav-tabs">
+            <a href="#dashboard" class="nav-tab active" data-tab="dashboard">📊 Dashboard</a>
+            <a href="#projects" class="nav-tab" data-tab="projects">📋 Projects</a>
+            <a href="#timeline" class="nav-tab" data-tab="timeline">📅 Timeline</a>
+            <a href="#notes" class="nav-tab" data-tab="notes">📝 Notes</a>
+            <a href="#revenue" class="nav-tab" data-tab="revenue">💰 Revenue</a>
+            <a href="#command-center" class="nav-tab" data-tab="command-center">🏢 Command Center</a>
+            <a href="#youtube" class="nav-tab" data-tab="youtube">🎬 YouTube</a>
+            <a href="#meetings" class="nav-tab" data-tab="meetings">📞 Meetings</a>
+            <a href="#intel" class="nav-tab" data-tab="intel">📡 Intel</a>
+        </nav>
+        <div class="header-right">
+            <div class="search-bar">
+                <input type="text" placeholder="Search..." id="searchInput">
+            </div>
+            <div class="status-dot"></div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <div class="welcome-bar">
+                <div class="welcome-text" id="welcomeText">Good morning, Tolga</div>
+                <div class="welcome-date" id="welcomeDate"></div>
+            </div>
+
+            <div class="grid-4 mb-3">
+                <div class="card accent-top metric-card">
+                    <div class="metric-icon">💰</div>
+                    <div class="metric-value" id="mrrValue">$0</div>
+                    <div class="metric-label">MRR Progress ($10K Goal)</div>
+                    <div class="trend-indicator">+0%</div>
+                </div>
+                <div class="card accent-top metric-card">
+                    <div class="metric-icon">📋</div>
+                    <div class="metric-value" id="projectsValue">0</div>
+                    <div class="metric-label">Active Projects</div>
+                    <div class="trend-indicator">+0</div>
+                </div>
+                <div class="card accent-top metric-card">
+                    <div class="metric-icon">✅</div>
+                    <div class="metric-value" id="tasksValue">0</div>
+                    <div class="metric-label">Tasks Today</div>
+                    <div class="trend-indicator">+0</div>
+                </div>
+                <div class="card accent-top metric-card">
+                    <div class="metric-icon">⏰</div>
+                    <div class="metric-value" id="countdownValue">0</div>
+                    <div class="metric-label">Days Until June 2026</div>
+                    <div class="trend-indicator">⏰</div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3>Activity Feed</h3>
+                        <button class="btn-secondary" onclick="addActivity()">Add Activity</button>
+                    </div>
+                    <div class="activity-feed" id="activityFeed">
+                        <!-- Activities will be loaded here -->
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3>Top Priorities</h3>
+                        <button class="btn-secondary" onclick="addPriority()">Add Priority</button>
+                    </div>
+                    <ul class="priority-list" id="priorityList">
+                        <!-- Priorities will be loaded here -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Projects Tab -->
+        <div id="projects" class="tab-content">
+            <div class="kanban-board">
+                <div class="kanban-column">
+                    <div class="kanban-header">
+                        <div class="kanban-title">📥 Backlog</div>
+                        <div class="task-count" id="backlogCount">0</div>
+                    </div>
+                    <div class="kanban-tasks" id="backlogTasks"></div>
+                    <button class="btn w-100" onclick="addTask('backlog')">Add Task</button>
+                </div>
+
+                <div class="kanban-column">
+                    <div class="kanban-header">
+                        <div class="kanban-title">🔄 In Progress</div>
+                        <div class="task-count" id="progressCount">0</div>
+                    </div>
+                    <div class="kanban-tasks" id="progressTasks"></div>
+                    <button class="btn w-100" onclick="addTask('progress')">Add Task</button>
+                </div>
+
+                <div class="kanban-column">
+                    <div class="kanban-header">
+                        <div class="kanban-title">✅ Done</div>
+                        <div class="task-count" id="doneCount">0</div>
+                    </div>
+                    <div class="kanban-tasks" id="doneTasks"></div>
+                    <button class="btn w-100" onclick="addTask('done')">Add Task</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Timeline Tab -->
+        <div id="timeline" class="tab-content">
+            <div class="timeline" id="timelineContainer">
+                <!-- Timeline phases will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Notes Tab -->
+        <div id="notes" class="tab-content">
+            <div class="card">
+                <textarea class="notes-editor" id="notesEditor" placeholder="Write your notes here..."></textarea>
+                <div class="notes-meta">
+                    <span id="charCount">0 characters</span>
+                    <span id="lastSaved">Never saved</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Revenue Tab -->
+        <div id="revenue" class="tab-content">
+            <div class="grid-2 mb-3">
+                <div class="card text-center">
+                    <h3 class="mb-2">MRR Progress</h3>
+                    <div class="revenue-gauge">
+                        <svg width="200" height="200">
+                            <circle cx="100" cy="100" r="80" class="gauge-bg"/>
+                            <circle cx="100" cy="100" r="80" class="gauge-fill" id="gaugeCircle"
+                                    style="stroke-dasharray: 0 502; transform: rotate(-90deg); transform-origin: center;"/>
+                            <text x="100" y="90" class="gauge-text" id="gaugeText">$0</text>
+                            <text x="100" y="115" class="gauge-text" style="font-size: 0.875rem;">of $10K</text>
+                        </svg>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <button class="btn-secondary" onclick="addClient()">Add Client</button>
+                        <button class="btn-secondary" onclick="editRevenue()">Edit Revenue</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 class="mb-2">Revenue Projections</h3>
+                    <div id="projections">
+                        <div class="mb-2">
+                            <strong>Current MRR:</strong> <span id="currentMrr">$0</span>
+                        </div>
+                        <div class="mb-2">
+                            <strong>Annual Run Rate:</strong> <span id="annualRate">$0</span>
+                        </div>
+                        <div class="mb-2">
+                            <strong>Goal Progress:</strong> <span id="goalProgress">0%</span>
+                        </div>
+                        <div class="mb-2">
+                            <strong>Monthly Growth Needed:</strong> <span id="growthNeeded">$0</span>
+                        </div>
+                        <div>
+                            <strong>Target Date:</strong> June 2026
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="mb-2">Revenue Chart (Last 6 Months)</h3>
+                <div class="revenue-chart">
+                    <div class="chart-bars" id="revenueChart">
+                        <!-- Chart bars will be generated here -->
+                    </div>
+                    <div class="chart-labels" id="chartLabels">
+                        <!-- Chart labels will be generated here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-2">
+                <div class="client-list">
+                    <div class="client-header">
+                        <div class="client-row" style="font-weight: 600;">
+                            <div>Client Name</div>
+                            <div>Monthly Value</div>
+                            <div>Status</div>
+                            <div>Start Date</div>
+                            <div>Actions</div>
+                        </div>
+                    </div>
+                    <div id="clientList">
+                        <!-- Client rows will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Command Center Tab -->
+        <div id="command-center" class="tab-content">
+            <div class="agent-grid" id="agentGrid">
+                <!-- Agent cards will be loaded here -->
+            </div>
+
+            <div class="card">
+                <div class="flex justify-between items-center mb-2">
+                    <h3>Executive Decisions</h3>
+                    <button class="btn-secondary" onclick="addDecision()">Add Decision</button>
+                </div>
+                <div id="decisionsList">
+                    <!-- Decisions will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- YouTube Tab -->
+        <div id="youtube" class="tab-content">
+            <div class="flex justify-between items-center mb-3">
+                <h2>YouTube Content Tracker</h2>
+                <button class="btn" onclick="addVideo()">Add Video</button>
+            </div>
+            <div class="card">
+                <div class="client-list">
+                    <div class="client-header">
+                        <div class="client-row" style="font-weight: 600;">
+                            <div>Video Title</div>
+                            <div>Status</div>
+                            <div>Publish Date</div>
+                            <div>Views</div>
+                            <div>Actions</div>
+                        </div>
+                    </div>
+                    <div id="videoList">
+                        <!-- Video rows will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Meetings Tab -->
+        <div id="meetings" class="tab-content">
+            <div class="flex justify-between items-center mb-3">
+                <h2>Meetings & Schedule</h2>
+                <button class="btn" onclick="addMeeting()">Add Meeting</button>
+            </div>
+            <div class="grid-2">
+                <div class="card">
+                    <h3 class="mb-2">Upcoming Meetings</h3>
+                    <div id="upcomingMeetings">
+                        <!-- Upcoming meetings will be loaded here -->
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 class="mb-2">Meeting History</h3>
+                    <div id="meetingHistory">
+                        <!-- Meeting history will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Intel Tab -->
+        <div id="intel" class="tab-content">
+            <div class="flex justify-between items-center mb-3">
+                <h2>Intelligence & Research</h2>
+                <div class="flex gap-2">
+                    <select id="intelFilter" class="form-select" style="width: auto;" onchange="filterIntel()">
+                        <option value="">All Categories</option>
+                        <option value="competition">Competition</option>
+                        <option value="market">Market Research</option>
+                        <option value="tech">Technology</option>
+                        <option value="industry">Industry News</option>
+                        <option value="personal">Personal</option>
+                    </select>
+                    <button class="btn" onclick="addIntel()">Add Intel</button>
+                </div>
+            </div>
+            <div id="intelFeed">
+                <!-- Intel items will be loaded here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Modals -->
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="taskModalTitle">Add Task</h3>
+                <button class="modal-close" onclick="closeModal('taskModal')">&times;</button>
+            </div>
+            <form onsubmit="saveTask(event)">
+                <div class="form-group">
+                    <label class="form-label">Title</label>
+                    <input type="text" class="form-input" id="taskTitle" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-textarea" id="taskDescription"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Priority</label>
+                    <select class="form-select" id="taskPriority">
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                <div class="flex gap-2">
+                    <button type="submit" class="btn">Save Task</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal('taskModal')">Cancel</button>
+                    <button type="button" class="btn-danger" id="deleteTaskBtn" onclick="deleteTask()" style="display: none;">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="clientModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="clientModalTitle">Add Client</h3>
+                <button class="modal-close" onclick="closeModal('clientModal')">&times;</button>
+            </div>
+            <form onsubmit="saveClient(event)">
+                <div class="form-group">
+                    <label class="form-label">Client Name</label>
+                    <input type="text" class="form-input" id="clientName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Monthly Value ($)</label>
+                    <input type="number" class="form-input" id="clientValue" required min="0" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select class="form-select" id="clientStatus">
+                        <option value="active">Active</option>
+                        <option value="pending">Pending</option>
+                        <option value="churned">Churned</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Start Date</label>
+                    <input type="date" class="form-input" id="clientStartDate" required>
+                </div>
+                <div class="flex gap-2">
+                    <button type="submit" class="btn">Save Client</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal('clientModal')">Cancel</button>
+                    <button type="button" class="btn-danger" id="deleteClientBtn" onclick="deleteClient()" style="display: none;">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="videoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="videoModalTitle">Add Video</h3>
+                <button class="modal-close" onclick="closeModal('videoModal')">&times;</button>
+            </div>
+            <form onsubmit="saveVideo(event)">
+                <div class="form-group">
+                    <label class="form-label">Video Title</label>
+                    <input type="text" class="form-input" id="videoTitle" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">URL</label>
+                    <input type="url" class="form-input" id="videoUrl" placeholder="https://youtube.com/...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select class="form-select" id="videoStatus">
+                        <option value="idea">Idea</option>
+                        <option value="scripting">Scripting</option>
+                        <option value="filming">Filming</option>
+                        <option value="editing">Editing</option>
+                        <option value="published">Published</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Publish Date</label>
+                    <input type="date" class="form-input" id="videoDate">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Views</label>
+                    <input type="number" class="form-input" id="videoViews" min="0" value="0">
+                </div>
+                <div class="flex gap-2">
+                    <button type="submit" class="btn">Save Video</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal('videoModal')">Cancel</button>
+                    <button type="button" class="btn-danger" id="deleteVideoBtn" onclick="deleteVideo()" style="display: none;">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="meetingModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="meetingModalTitle">Add Meeting</h3>
+                <button class="modal-close" onclick="closeModal('meetingModal')">&times;</button>
+            </div>
+            <form onsubmit="saveMeeting(event)">
+                <div class="form-group">
+                    <label class="form-label">Meeting Title</label>
+                    <input type="text" class="form-input" id="meetingTitle" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Date</label>
+                    <input type="date" class="form-input" id="meetingDate" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Time</label>
+                    <input type="time" class="form-input" id="meetingTime" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Attendee</label>
+                    <input type="text" class="form-input" id="meetingAttendee" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Agenda</label>
+                    <textarea class="form-textarea" id="meetingAgenda"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Notes</label>
+                    <textarea class="form-textarea" id="meetingNotes"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Action Items</label>
+                    <textarea class="form-textarea" id="meetingActions"></textarea>
+                </div>
+                <div class="flex gap-2">
+                    <button type="submit" class="btn">Save Meeting</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal('meetingModal')">Cancel</button>
+                    <button type="button" class="btn-danger" id="deleteMeetingBtn" onclick="deleteMeeting()" style="display: none;">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="intelModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="intelModalTitle">Add Intel</h3>
+                <button class="modal-close" onclick="closeModal('intelModal')">&times;</button>
+            </div>
+            <form onsubmit="saveIntel(event)">
+                <div class="form-group">
+                    <label class="form-label">Title</label>
+                    <input type="text" class="form-input" id="intelTitle" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Source URL</label>
+                    <input type="url" class="form-input" id="intelUrl" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select class="form-select" id="intelCategory">
+                        <option value="competition">Competition</option>
+                        <option value="market">Market Research</option>
+                        <option value="tech">Technology</option>
+                        <option value="industry">Industry News</option>
+                        <option value="personal">Personal</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Summary</label>
+                    <textarea class="form-textarea" id="intelSummary"></textarea>
+                </div>
+                <div class="flex gap-2">
+                    <button type="submit" class="btn">Save Intel</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal('intelModal')">Cancel</button>
+                    <button type="button" class="btn-danger" id="deleteIntelBtn" onclick="deleteIntel()" style="display: none;">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="taskSendModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Send Task to <span id="taskSendAgent"></span></h3>
+                <button class="modal-close" onclick="closeModal('taskSendModal')">&times;</button>
+            </div>
+            <form onsubmit="sendTaskToAgent(event)">
+                <div class="form-group">
+                    <label class="form-label">Task Description</label>
+                    <textarea class="form-textarea" id="taskSendDescription" required placeholder="Describe the task you want to send to this agent..."></textarea>
+                </div>
+                <div class="flex gap-2">
+                    <button type="submit" class="btn">Send Task</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal('taskSendModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="agentPanel" class="slide-panel">
+        <div class="slide-panel-header">
+            <h3 id="agentPanelTitle">Agent Details</h3>
+            <button class="modal-close" onclick="closeAgentPanel()">&times;</button>
+        </div>
+        <div class="slide-panel-content" id="agentPanelContent">
+            <!-- Agent details will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        // Global Variables
+        let currentTab = 'dashboard';
+        let currentTask = null;
+        let currentClient = null;
+        let currentVideo = null;
+        let currentMeeting = null;
+        let currentIntel = null;
+        let currentAgent = null;
+
+        // Timeline Data
+        const timelineData = [
+            {
+                title: "Foundation Phase",
+                dateRange: "Jan 2024 - Jun 2024",
+                description: "Build core infrastructure, establish processes, and create initial client base.",
+                current: false,
+                milestones: [
+                    { text: "Set up development environment", completed: true },
+                    { text: "Create mission control dashboard", completed: true },
+                    { text: "Establish first client relationships", completed: true },
+                    { text: "Build core product offerings", completed: false }
+                ]
+            },
+            {
+                title: "Growth Phase",
+                dateRange: "Jul 2024 - Dec 2024",
+                description: "Scale operations, expand client base, and optimize revenue streams.",
+                current: true,
+                milestones: [
+                    { text: "Reach $1K MRR", completed: true },
+                    { text: "Hire first team member", completed: false },
+                    { text: "Launch YouTube channel", completed: true },
+                    { text: "Reach $3K MRR", completed: false }
+                ]
+            },
+            {
+                title: "Scale Phase",
+                dateRange: "Jan 2025 - Jun 2025",
+                description: "Accelerate growth, build team, and establish market presence.",
+                current: false,
+                milestones: [
+                    { text: "Reach $5K MRR", completed: false },
+                    { text: "Build 5-person team", completed: false },
+                    { text: "Launch enterprise offerings", completed: false },
+                    { text: "Establish thought leadership", completed: false }
+                ]
+            },
+            {
+                title: "Target Achievement",
+                dateRange: "Jul 2025 - Jun 2026",
+                description: "Final push to reach $10K MRR and establish sustainable business.",
+                current: false,
+                milestones: [
+                    { text: "Reach $7.5K MRR", completed: false },
+                    { text: "Optimize operations", completed: false },
+                    { text: "Build strategic partnerships", completed: false },
+                    { text: "Achieve $10K MRR", completed: false }
+                ]
+            }
+        ];
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+
+        function initializeApp() {
+            updateDateTime();
+            setInterval(updateDateTime, 60000); // Update every minute
+
+            loadDashboardData();
+            loadProjects();
+            loadTimeline();
+            loadNotes();
+            loadRevenue();
+            loadCommandCenter();
+            loadYouTube();
+            loadMeetings();
+            loadIntel();
+
+            // Tab navigation
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    switchTab(this.dataset.tab);
+                });
+            });
+
+            // Notes auto-save
+            const notesEditor = document.getElementById('notesEditor');
+            if (notesEditor) {
+                notesEditor.addEventListener('input', debounce(saveNotes, 1000));
+            }
+
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', debounce(performSearch, 300));
+            }
+        }
+
+        function updateDateTime() {
+            const now = new Date();
+            const hours = now.getHours();
+            let greeting = 'Good morning';
+            
+            if (hours >= 12 && hours < 18) {
+                greeting = 'Good afternoon';
+            } else if (hours >= 18) {
+                greeting = 'Good evening';
+            }
+
+            const welcomeText = document.getElementById('welcomeText');
+            const welcomeDate = document.getElementById('welcomeDate');
+            
+            if (welcomeText) {
+                welcomeText.textContent = `${greeting}, Tolga`;
+            }
+            
+            if (welcomeDate) {
+                welcomeDate.textContent = now.toLocaleDateString('en-US', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+            }
+
+            // Update countdown
+            const targetDate = new Date('2026-06-01');
+            const diffTime = targetDate - now;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            const countdownValue = document.getElementById('countdownValue');
+            if (countdownValue) {
+                countdownValue.textContent = diffDays;
+            }
+        }
+
+        function switchTab(tabName) {
+            // Update nav
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+
+            // Update content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabName).classList.add('active');
+
+            currentTab = tabName;
+        }
+
+        // Dashboard Functions
+        function loadDashboardData() {
+            const activities = getStorageData('activities', []);
+            const priorities = getStorageData('priorities', []);
+            const projects = getStorageData('projects', { backlog: [], progress: [], done: [] });
+            const clients = getStorageData('clients', []);
+
+            // Update metrics
+            const activeMrr = clients.filter(c => c.status === 'active').reduce((sum, c) => sum + parseFloat(c.value), 0);
+            document.getElementById('mrrValue').textContent = `$${activeMrr.toLocaleString()}`;
+            
+            const activeProjects = projects.backlog.length + projects.progress.length;
+            document.getElementById('projectsValue').textContent = activeProjects;
+            
+            // Count today's tasks (simplified)
+            const todaysTasks = projects.progress.filter(task => {
+                const taskDate = new Date(task.createdAt);
+                const today = new Date();
+                return taskDate.toDateString() === today.toDateString();
+            }).length;
+            document.getElementById('tasksValue').textContent = todaysTasks;
+
+            loadActivityFeed(activities);
+            loadPriorityList(priorities);
+        }
+
+        function loadActivityFeed(activities) {
+            const feed = document.getElementById('activityFeed');
+            if (!feed) return;
+
+            if (activities.length === 0) {
+                feed.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">No recent activity</p>';
+                return;
+            }
+
+            feed.innerHTML = activities.slice(0, 10).map(activity => `
+                <div class="activity-item">
+                    <div>${activity.text}</div>
+                    <div style="color: #666; font-size: 0.75rem;">${formatDate(activity.timestamp)}</div>
+                </div>
+            `).join('');
+        }
+
+        function loadPriorityList(priorities) {
+            const list = document.getElementById('priorityList');
+            if (!list) return;
+
+            if (priorities.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">No priorities set</p>';
+                return;
+            }
+
+            list.innerHTML = priorities.map((priority, index) => `
+                <li class="priority-item">
+                    <input type="checkbox" class="priority-checkbox" ${priority.completed ? 'checked' : ''} 
+                           onchange="togglePriority(${index})">
+                    <span style="${priority.completed ? 'text-decoration: line-through; opacity: 0.6;' : ''}">${priority.text}</span>
+                    <button class="btn-danger" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" 
+                            onclick="deletePriority(${index})">×</button>
+                </li>
+            `).join('');
+        }
+
+        function addActivity() {
+            const text = prompt('Enter activity:');
+            if (!text) return;
+
+            const activities = getStorageData('activities', []);
+            activities.unshift({
+                text: text,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Keep only last 50 activities
+            if (activities.length > 50) {
+                activities.length = 50;
+            }
+
+            setStorageData('activities', activities);
+            loadActivityFeed(activities);
+        }
+
+        function addPriority() {
+            const text = prompt('Enter priority:');
+            if (!text) return;
+
+            const priorities = getStorageData('priorities', []);
+            priorities.push({
+                text: text,
+                completed: false
+            });
+
+            setStorageData('priorities', priorities);
+            loadPriorityList(priorities);
+        }
+
+        function togglePriority(index) {
+            const priorities = getStorageData('priorities', []);
+            priorities[index].completed = !priorities[index].completed;
+            setStorageData('priorities', priorities);
+            loadPriorityList(priorities);
+        }
+
+        function deletePriority(index) {
+            if (!confirm('Delete this priority?')) return;
+            
+            const priorities = getStorageData('priorities', []);
+            priorities.splice(index, 1);
+            setStorageData('priorities', priorities);
+            loadPriorityList(priorities);
+        }
+
+        // Projects Functions
+        function loadProjects() {
+            const projects = getStorageData('projects', { backlog: [], progress: [], done: [] });
+            
+            renderTasks('backlog', projects.backlog);
+            renderTasks('progress', projects.progress);
+            renderTasks('done', projects.done);
+            
+            updateTaskCounts(projects);
+        }
+
+        function renderTasks(status, tasks) {
+            const container = document.getElementById(`${status}Tasks`);
+            if (!container) return;
+
+            container.innerHTML = tasks.map((task, index) => `
+                <div class="task-card" onclick="editTask('${status}', ${index})">
+                    <div class="task-title">${task.title}</div>
+                    <div class="task-description">${task.description}</div>
+                    <div class="task-meta">
+                        <span class="priority-badge priority-${task.priority}">${task.priority.toUpperCase()}</span>
+                        <span>${formatDate(task.createdAt)}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateTaskCounts(projects) {
+            document.getElementById('backlogCount').textContent = projects.backlog.length;
+            document.getElementById('progressCount').textContent = projects.progress.length;
+            document.getElementById('doneCount').textContent = projects.done.length;
+        }
+
+        function addTask(status) {
+            currentTask = { status: status, index: null };
+            document.getElementById('taskModalTitle').textContent = 'Add Task';
+            document.getElementById('deleteTaskBtn').style.display = 'none';
+            document.getElementById('taskTitle').value = '';
+            document.getElementById('taskDescription').value = '';
+            document.getElementById('taskPriority').value = 'medium';
+            openModal('taskModal');
+        }
+
+        function editTask(status, index) {
+            const projects = getStorageData('projects', { backlog: [], progress: [], done: [] });
+            const task = projects[status][index];
+            
+            currentTask = { status: status, index: index };
+            document.getElementById('taskModalTitle').textContent = 'Edit Task';
+            document.getElementById('deleteTaskBtn').style.display = 'inline-block';
+            document.getElementById('taskTitle').value = task.title;
+            document.getElementById('taskDescription').value = task.description;
+            document.getElementById('taskPriority').value = task.priority;
+            openModal('taskModal');
+        }
+
+        function saveTask(event) {
+            event.preventDefault();
+            
+            const title = document.getElementById('taskTitle').value;
+            const description = document.getElementById('taskDescription').value;
+            const priority = document.getElementById('taskPriority').value;
+            
+            const projects = getStorageData('projects', { backlog: [], progress: [], done: [] });
+            
+            const taskData = {
+                title: title,
+                description: description,
+                priority: priority,
+                createdAt: new Date().toISOString()
+            };
+
+            if (currentTask.index !== null) {
+                // Edit existing task
+                projects[currentTask.status][currentTask.index] = taskData;
+            } else {
+                // Add new task
+                projects[currentTask.status].push(taskData);
+            }
+
+            setStorageData('projects', projects);
+            loadProjects();
+            closeModal('taskModal');
+        }
+
+        function deleteTask() {
+            if (!confirm('Delete this task?')) return;
+            
+            const projects = getStorageData('projects', { backlog: [], progress: [], done: [] });
+            projects[currentTask.status].splice(currentTask.index, 1);
+            setStorageData('projects', projects);
+            loadProjects();
+            closeModal('taskModal');
+        }
+
+        // Timeline Functions
+        function loadTimeline() {
+            const container = document.getElementById('timelineContainer');
+            if (!container) return;
+
+            container.innerHTML = timelineData.map(phase => `
+                <div class="timeline-phase ${phase.current ? 'current' : ''}">
+                    <div class="phase-header">
+                        <div class="phase-title">${phase.title}</div>
+                        <div class="phase-dates">${phase.dateRange}</div>
+                    </div>
+                    <div class="phase-description">${phase.description}</div>
+                    <ul class="milestone-list">
+                        ${phase.milestones.map((milestone, index) => `
+                            <li class="milestone-item">
+                                <input type="checkbox" class="milestone-checkbox" ${milestone.completed ? 'checked' : ''} 
+                                       onchange="toggleMilestone('${phase.title}', ${index})">
+                                <span style="${milestone.completed ? 'text-decoration: line-through; opacity: 0.6;' : ''}">${milestone.text}</span>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            `).join('');
+        }
+
+        function toggleMilestone(phaseTitle, milestoneIndex) {
+            const phase = timelineData.find(p => p.title === phaseTitle);
+            if (phase) {
+                phase.milestones[milestoneIndex].completed = !phase.milestones[milestoneIndex].completed;
+                loadTimeline();
+            }
+        }
+
+        // Notes Functions
+        function loadNotes() {
+            const editor = document.getElementById('notesEditor');
+            const notes = getStorageData('notes', '');
+            const lastSaved = getStorageData('notesLastSaved', null);
+            
+            if (editor) {
+                editor.value = notes;
+                updateNotesStats();
+            }
+            
+            if (lastSaved) {
+                document.getElementById('lastSaved').textContent = `Last saved: ${formatDate(lastSaved)}`;
+            }
+        }
+
+        function saveNotes() {
+            const editor = document.getElementById('notesEditor');
+            const notes = editor.value;
+            const timestamp = new Date().toISOString();
+            
+            setStorageData('notes', notes);
+            setStorageData('notesLastSaved', timestamp);
+            
+            document.getElementById('lastSaved').textContent = `Last saved: ${formatDate(timestamp)}`;
+            updateNotesStats();
+        }
+
+        function updateNotesStats() {
+            const editor = document.getElementById('notesEditor');
+            const charCount = editor.value.length;
+            document.getElementById('charCount').textContent = `${charCount.toLocaleString()} characters`;
+        }
+
+        // Revenue Functions
+        function loadRevenue() {
+            const clients = getStorageData('clients', []);
+            const revenueHistory = getStorageData('revenueHistory', generateDummyRevenueData());
+            
+            loadClientList(clients);
+            updateRevenueGauge(clients);
+            updateRevenueProjections(clients);
+            renderRevenueChart(revenueHistory);
+        }
+
+        function generateDummyRevenueData() {
+            const data = [];
+            const now = new Date();
+            
+            for (let i = 5; i >= 0; i--) {
+                const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                const revenue = Math.floor(Math.random() * 3000) + 500; // Random revenue between $500-3500
+                data.push({
+                    month: date.toISOString(),
+                    revenue: revenue
+                });
+            }
+            
+            return data;
+        }
+
+        function loadClientList(clients) {
+            const container = document.getElementById('clientList');
+            if (!container) return;
+
+            if (clients.length === 0) {
+                container.innerHTML = '<div style="padding: 2rem; text-align: center; color: #666;">No clients added yet</div>';
+                return;
+            }
+
+            container.innerHTML = clients.map((client, index) => `
+                <div class="client-row">
+                    <div>${client.name}</div>
+                    <div>$${parseFloat(client.value).toLocaleString()}</div>
+                    <div><span class="client-status status-${client.status}">${client.status.toUpperCase()}</span></div>
+                    <div>${formatDate(client.startDate)}</div>
+                    <div>
+                        <button class="btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" onclick="editClient(${index})">Edit</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateRevenueGauge(clients) {
+            const activeMrr = clients.filter(c => c.status === 'active').reduce((sum, c) => sum + parseFloat(c.value), 0);
+            const progress = (activeMrr / 10000) * 100;
+            const circumference = 2 * Math.PI * 80; // radius = 80
+            const dashArray = (progress / 100) * circumference;
+            
+            document.getElementById('gaugeText').textContent = `$${activeMrr.toLocaleString()}`;
+            document.getElementById('gaugeCircle').style.strokeDasharray = `${dashArray} ${circumference}`;
+        }
+
+        function updateRevenueProjections(clients) {
+            const activeMrr = clients.filter(c => c.status === 'active').reduce((sum, c) => sum + parseFloat(c.value), 0);
+            const annualRate = activeMrr * 12;
+            const goalProgress = (activeMrr / 10000) * 100;
+            
+            // Calculate months until June 2026
+            const now = new Date();
+            const target = new Date('2026-06-01');
+            const monthsRemaining = Math.max(0, (target.getFullYear() - now.getFullYear()) * 12 + (target.getMonth() - now.getMonth()));
+            
+            const remainingToGoal = 10000 - activeMrr;
+            const monthlyGrowthNeeded = monthsRemaining > 0 ? remainingToGoal / monthsRemaining : remainingToGoal;
+            
+            document.getElementById('currentMrr').textContent = `$${activeMrr.toLocaleString()}`;
+            document.getElementById('annualRate').textContent = `$${annualRate.toLocaleString()}`;
+            document.getElementById('goalProgress').textContent = `${goalProgress.toFixed(1)}%`;
+            document.getElementById('growthNeeded').textContent = `$${monthlyGrowthNeeded.toLocaleString()}`;
+        }
+
+        function renderRevenueChart(data) {
+            const container = document.getElementById('revenueChart');
+            const labelsContainer = document.getElementById('chartLabels');
+            
+            if (!container || !labelsContainer) return;
+
+            const maxRevenue = Math.max(...data.map(d => d.revenue));
+            
+            // Create bars
+            container.innerHTML = data.map(d => {
+                const height = (d.revenue / maxRevenue) * 240;
+                return `<div class="chart-bar" style="height: ${height}px;" data-value="$${d.revenue.toLocaleString()}"></div>`;
+            }).join('');
+            
+            // Create labels
+            labelsContainer.innerHTML = data.map(d => {
+                const date = new Date(d.month);
+                return `<div>${date.toLocaleDateString('en-US', { month: 'short' })}</div>`;
+            }).join('');
+        }
+
+        function addClient() {
+            currentClient = null;
+            document.getElementById('clientModalTitle').textContent = 'Add Client';
+            document.getElementById('deleteClientBtn').style.display = 'none';
+            document.getElementById('clientName').value = '';
+            document.getElementById('clientValue').value = '';
+            document.getElementById('clientStatus').value = 'active';
+            document.getElementById('clientStartDate').value = new Date().toISOString().split('T')[0];
+            openModal('clientModal');
+        }
+
+        function editClient(index) {
+            const clients = getStorageData('clients', []);
+            const client = clients[index];
+            
+            currentClient = index;
+            document.getElementById('clientModalTitle').textContent = 'Edit Client';
+            document.getElementById('deleteClientBtn').style.display = 'inline-block';
+            document.getElementById('clientName').value = client.name;
+            document.getElementById('clientValue').value = client.value;
+            document.getElementById('clientStatus').value = client.status;
+            document.getElementById('clientStartDate').value = client.startDate.split('T')[0];
+            openModal('clientModal');
+        }
+
+        function saveClient(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('clientName').value;
+            const value = document.getElementById('clientValue').value;
+            const status = document.getElementById('clientStatus').value;
+            const startDate = document.getElementById('clientStartDate').value;
+            
+            const clients = getStorageData('clients', []);
+            
+            const clientData = {
+                name: name,
+                value: value,
+                status: status,
+                startDate: startDate
+            };
+
+            if (currentClient !== null) {
+                // Edit existing client
+                clients[currentClient] = clientData;
+            } else {
+                // Add new client
+                clients.push(clientData);
+            }
+
+            setStorageData('clients', clients);
+            loadRevenue();
+            loadDashboardData(); // Update dashboard metrics
+            closeModal('clientModal');
+        }
+
+        function deleteClient() {
+            if (!confirm('Delete this client?')) return;
+            
+            const clients = getStorageData('clients', []);
+            clients.splice(currentClient, 1);
+            setStorageData('clients', clients);
+            loadRevenue();
+            loadDashboardData();
+            closeModal('clientModal');
+        }
+
+        function editRevenue() {
+            const currentMrr = parseFloat(document.getElementById('currentMrr').textContent.replace(/[$,]/g, ''));
+            const newMrr = prompt('Enter current MRR:', currentMrr);
+            
+            if (newMrr === null || isNaN(parseFloat(newMrr))) return;
+            
+            // Add manual revenue adjustment
+            const clients = getStorageData('clients', []);
+            const adjustment = parseFloat(newMrr) - clients.filter(c => c.status === 'active').reduce((sum, c) => sum + parseFloat(c.value), 0);
+            
+            if (adjustment !== 0) {
+                clients.push({
+                    name: 'Manual Adjustment',
+                    value: adjustment,
+                    status: 'active',
+                    startDate: new Date().toISOString()
+                });
+                setStorageData('clients', clients);
+                loadRevenue();
+                loadDashboardData();
+            }
+        }
+
+        // Command Center Functions
+        function loadCommandCenter() {
+            const agents = getStorageData('agents', getDefaultAgents());
+            const decisions = getStorageData('decisions', []);
+            
+            renderAgentGrid(agents);
+            renderDecisions(decisions);
+        }
+
+        function getDefaultAgents() {
+            return [
+                {
+                    name: 'Spock',
+                    role: 'Unified AI Operator',
+                    model: 'gpt-4o-mini',
+                    status: 'online',
+                    lastActive: new Date().toISOString(),
+                    description: 'Central command and coordination AI responsible for orchestrating tasks across all systems and agents.',
+                    capabilities: [
+                        'Task orchestration and delegation',
+                        'System monitoring and optimization',
+                        'Cross-platform integration',
+                        'Performance analysis and reporting'
+                    ],
+                    activity: [
+                        { timestamp: new Date().toISOString(), action: 'Coordinated daily standup meeting' },
+                        { timestamp: new Date(Date.now() - 3600000).toISOString(), action: 'Optimized resource allocation' }
+                    ],
+                    performance: 'Excellent coordination and task management. 98% uptime this month.'
+                },
+                {
+                    name: 'Dev',
+                    role: 'Full Stack Developer',
+                    model: 'gpt-4o',
+                    status: 'busy',
+                    lastActive: new Date(Date.now() - 1800000).toISOString(),
+                    description: 'Expert full-stack developer specializing in modern web technologies, API development, and system architecture.',
+                    capabilities: [
+                        'Frontend development (React, Vue, Svelte)',
+                        'Backend development (Node.js, Python, Go)',
+                        'Database design and optimization',
+                        'DevOps and deployment automation'
+                    ],
+                    activity: [
+                        { timestamp: new Date().toISOString(), action: 'Deployed new feature to production' },
+                        { timestamp: new Date(Date.now() - 7200000).toISOString(), action: 'Completed code review' }
+                    ],
+                    performance: 'Strong technical execution. Successfully delivered 15 features this sprint.'
+                },
+                {
+                    name: 'Research',
+                    role: 'Intelligence & Research',
+                    model: 'gpt-4o-mini',
+                    status: 'online',
+                    lastActive: new Date(Date.now() - 900000).toISOString(),
+                    description: 'Specialized in market research, competitive analysis, and intelligence gathering across multiple domains.',
+                    capabilities: [
+                        'Market analysis and trends',
+                        'Competitive intelligence',
+                        'Data collection and synthesis',
+                        'Strategic insights and recommendations'
+                    ],
+                    activity: [
+                        { timestamp: new Date().toISOString(), action: 'Completed competitor analysis report' },
+                        { timestamp: new Date(Date.now() - 5400000).toISOString(), action: 'Updated market trend database' }
+                    ],
+                    performance: 'Excellent research depth and accuracy. Delivered 8 comprehensive reports this month.'
+                }
+            ];
+        }
+
+        function renderAgentGrid(agents) {
+            const container = document.getElementById('agentGrid');
+            if (!container) return;
+
+            container.innerHTML = agents.map((agent, index) => `
+                <div class="agent-card" onclick="openAgentPanel(${index})">
+                    <div class="agent-header">
+                        <div class="agent-info">
+                            <h3>${agent.name}</h3>
+                            <div class="agent-role">${agent.role}</div>
+                        </div>
+                        <div class="agent-status-dot status-${agent.status}"></div>
+                    </div>
+                    <div class="agent-model">${agent.model}</div>
+                    <div class="agent-last-active">Last active: ${formatDate(agent.lastActive)}</div>
+                    <div class="mt-2">
+                        <button class="btn" onclick="event.stopPropagation(); openTaskSendModal(${index})">Send Task</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openAgentPanel(index) {
+            const agents = getStorageData('agents', getDefaultAgents());
+            const agent = agents[index];
+            currentAgent = index;
+            
+            document.getElementById('agentPanelTitle').textContent = agent.name;
+            document.getElementById('agentPanelContent').innerHTML = `
+                <div class="mb-3">
+                    <div class="flex items-center gap-2 mb-2">
+                        <div class="agent-status-dot status-${agent.status}"></div>
+                        <strong>${agent.status.toUpperCase()}</strong>
+                        <span class="agent-model">${agent.model}</span>
+                    </div>
+                    <div style="color: #999; font-size: 0.875rem;">Last active: ${formatDate(agent.lastActive)}</div>
+                </div>
+                
+                <div class="mb-3">
+                    <h4 class="mb-2">Description</h4>
+                    <p style="color: #ccc; line-height: 1.6;">${agent.description}</p>
+                </div>
+                
+                <div class="mb-3">
+                    <h4 class="mb-2">Capabilities</h4>
+                    <ul style="color: #ccc; padding-left: 1rem;">
+                        ${agent.capabilities.map(cap => `<li>${cap}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                <div class="mb-3">
+                    <h4 class="mb-2">Recent Activity</h4>
+                    <div>
+                        ${agent.activity.map(activity => `
+                            <div class="activity-item">
+                                <div>${activity.action}</div>
+                                <div style="color: #666; font-size: 0.75rem;">${formatDate(activity.timestamp)}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <h4 class="mb-2">Performance Notes</h4>
+                    <p style="color: #ccc; line-height: 1.6;">${agent.performance}</p>
+                </div>
+                
+                <button class="btn w-100" onclick="openTaskSendModal(${index})">Send Task to ${agent.name}</button>
+            `;
+            
+            document.getElementById('agentPanel').classList.add('active');
+        }
+
+        function closeAgentPanel() {
+            document.getElementById('agentPanel').classList.remove('active');
+        }
+
+        function openTaskSendModal(index) {
+            const agents = getStorageData('agents', getDefaultAgents());
+            const agent = agents[index];
+            currentAgent = index;
+            
+            document.getElementById('taskSendAgent').textContent = agent.name;
+            document.getElementById('taskSendDescription').value = '';
+            openModal('taskSendModal');
+        }
+
+        function sendTaskToAgent(event) {
+            event.preventDefault();
+            
+            const description = document.getElementById('taskSendDescription').value;
+            const agents = getStorageData('agents', getDefaultAgents());
+            const agent = agents[currentAgent];
+            
+            // Add to agent's activity log
+            agent.activity.unshift({
+                timestamp: new Date().toISOString(),
+                action: `Received task: ${description.substring(0, 50)}${description.length > 50 ? '...' : ''}`
+            });
+            
+            // Update last active
+            agent.lastActive = new Date().toISOString();
+            
+            // Save agents
+            setStorageData('agents', agents);
+            
+            // Add to activities
+            const activities = getStorageData('activities', []);
+            activities.unshift({
+                text: `Sent task to ${agent.name}: ${description.substring(0, 100)}${description.length > 100 ? '...' : ''}`,
+                timestamp: new Date().toISOString()
+            });
+            setStorageData('activities', activities);
+            
+            loadCommandCenter();
+            loadDashboardData();
+            closeModal('taskSendModal');
+            closeAgentPanel();
+        }
+
+        function renderDecisions(decisions) {
+            const container = document.getElementById('decisionsList');
+            if (!container) return;
+
+            if (decisions.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">No executive decisions recorded</p>';
+                return;
+            }
+
+            container.innerHTML = decisions.map((decision, index) => `
+                <div class="activity-item">
+                    <div>
+                        <strong>${decision.question}</strong>
+                        <div style="color: #ccc; margin-top: 0.5rem;">${decision.summary}</div>
+                        <div style="color: #999; font-size: 0.75rem; margin-top: 0.5rem;">
+                            Consulted: ${decision.agents.join(', ')}
+                        </div>
+                    </div>
+                    <div>
+                        <div style="color: #666; font-size: 0.75rem;">${formatDate(decision.date)}</div>
+                        <button class="btn-danger" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; margin-top: 0.5rem;" 
+                                onclick="deleteDecision(${index})">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addDecision() {
+            const question = prompt('What was the key question or decision?');
+            if (!question) return;
+            
+            const summary = prompt('Decision summary:');
+            if (!summary) return;
+            
+            const agentsConsulted = prompt('Which agents were consulted? (comma separated)') || 'None';
+            
+            const decisions = getStorageData('decisions', []);
+            decisions.unshift({
+                question: question,
+                summary: summary,
+                agents: agentsConsulted.split(',').map(a => a.trim()),
+                date: new Date().toISOString()
+            });
+            
+            setStorageData('decisions', decisions);
+            renderDecisions(decisions);
+        }
+
+        function deleteDecision(index) {
+            if (!confirm('Delete this decision record?')) return;
+            
+            const decisions = getStorageData('decisions', []);
+            decisions.splice(index, 1);
+            setStorageData('decisions', decisions);
+            renderDecisions(decisions);
+        }
+
+        // YouTube Functions
+        function loadYouTube() {
+            const videos = getStorageData('videos', []);
+            renderVideoList(videos);
+        }
+
+        function renderVideoList(videos) {
+            const container = document.getElementById('videoList');
+            if (!container) return;
+
+            if (videos.length === 0) {
+                container.innerHTML = '<div style="padding: 2rem; text-align: center; color: #666;">No videos tracked yet</div>';
+                return;
+            }
+
+            container.innerHTML = videos.map((video, index) => `
+                <div class="client-row">
+                    <div>
+                        ${video.url ? `<a href="${video.url}" target="_blank" style="color: #6C63FF;">${video.title}</a>` : video.title}
+                    </div>
+                    <div><span class="priority-badge priority-${getStatusColor(video.status)}">${video.status.toUpperCase()}</span></div>
+                    <div>${video.date ? formatDate(video.date) : 'Not set'}</div>
+                    <div>${video.views ? video.views.toLocaleString() : '0'}</div>
+                    <div>
+                        <button class="btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" onclick="editVideo(${index})">Edit</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getStatusColor(status) {
+            const colors = {
+                'idea': 'low',
+                'scripting': 'medium',
+                'filming': 'medium',
+                'editing': 'high',
+                'published': 'low'
+            };
+            return colors[status] || 'low';
+        }
+
+        function addVideo() {
+            currentVideo = null;
+            document.getElementById('videoModalTitle').textContent = 'Add Video';
+            document.getElementById('deleteVideoBtn').style.display = 'none';
+            document.getElementById('videoTitle').value = '';
+            document.getElementById('videoUrl').value = '';
+            document.getElementById('videoStatus').value = 'idea';
+            document.getElementById('videoDate').value = '';
+            document.getElementById('videoViews').value = '0';
+            openModal('videoModal');
+        }
+
+        function editVideo(index) {
+            const videos = getStorageData('videos', []);
+            const video = videos[index];
+            
+            currentVideo = index;
+            document.getElementById('videoModalTitle').textContent = 'Edit Video';
+            document.getElementById('deleteVideoBtn').style.display = 'inline-block';
+            document.getElementById('videoTitle').value = video.title;
+            document.getElementById('videoUrl').value = video.url || '';
+            document.getElementById('videoStatus').value = video.status;
+            document.getElementById('videoDate').value = video.date ? video.date.split('T')[0] : '';
+            document.getElementById('videoViews').value = video.views || '0';
+            openModal('videoModal');
+        }
+
+        function saveVideo(event) {
+            event.preventDefault();
+            
+            const title = document.getElementById('videoTitle').value;
+            const url = document.getElementById('videoUrl').value;
+            const status = document.getElementById('videoStatus').value;
+            const date = document.getElementById('videoDate').value;
+            const views = document.getElementById('videoViews').value;
+            
+            const videos = getStorageData('videos', []);
+            
+            const videoData = {
+                title: title,
+                url: url,
+                status: status,
+                date: date || null,
+                views: parseInt(views) || 0
+            };
+
+            if (currentVideo !== null) {
+                // Edit existing video
+                videos[currentVideo] = videoData;
+            } else {
+                // Add new video
+                videos.push(videoData);
+            }
+
+            setStorageData('videos', videos);
+            loadYouTube();
+            closeModal('videoModal');
+        }
+
+        function deleteVideo() {
+            if (!confirm('Delete this video?')) return;
+            
+            const videos = getStorageData('videos', []);
+            videos.splice(currentVideo, 1);
+            setStorageData('videos', videos);
+            loadYouTube();
+            closeModal('videoModal');
+        }
+
+        // Meetings Functions
+        function loadMeetings() {
+            const meetings = getStorageData('meetings', []);
+            renderUpcomingMeetings(meetings);
+            renderMeetingHistory(meetings);
+        }
+
+        function renderUpcomingMeetings(meetings) {
+            const container = document.getElementById('upcomingMeetings');
+            if (!container) return;
+
+            const now = new Date();
+            const upcoming = meetings.filter(meeting => {
+                const meetingDate = new Date(`${meeting.date}T${meeting.time}`);
+                return meetingDate > now;
+            }).sort((a, b) => {
+                const dateA = new Date(`${a.date}T${a.time}`);
+                const dateB = new Date(`${b.date}T${b.time}`);
+                return dateA - dateB;
+            });
+
+            if (upcoming.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666; padding: 1rem;">No upcoming meetings</p>';
+                return;
+            }
+
+            container.innerHTML = upcoming.slice(0, 5).map(meeting => `
+                <div class="activity-item">
+                    <div>
+                        <strong>${meeting.title}</strong>
+                        <div style="color: #ccc; font-size: 0.875rem;">with ${meeting.attendee}</div>
+                    </div>
+                    <div style="color: #666; font-size: 0.75rem;">
+                        ${formatDate(`${meeting.date}T${meeting.time}`)}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderMeetingHistory(meetings) {
+            const container = document.getElementById('meetingHistory');
+            if (!container) return;
+
+            const now = new Date();
+            const past = meetings.filter(meeting => {
+                const meetingDate = new Date(`${meeting.date}T${meeting.time}`);
+                return meetingDate <= now;
+            }).sort((a, b) => {
+                const dateA = new Date(`${a.date}T${a.time}`);
+                const dateB = new Date(`${b.date}T${b.time}`);
+                return dateB - dateA; // Most recent first
+            });
+
+            if (past.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666; padding: 1rem;">No meeting history</p>';
+                return;
+            }
+
+            container.innerHTML = past.slice(0, 10).map((meeting, index) => `
+                <div class="activity-item">
+                    <div>
+                        <strong>${meeting.title}</strong>
+                        <div style="color: #ccc; font-size: 0.875rem;">with ${meeting.attendee}</div>
+                    </div>
+                    <div>
+                        <div style="color: #666; font-size: 0.75rem;">${formatDate(`${meeting.date}T${meeting.time}`)}</div>
+                        <button class="btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; margin-top: 0.25rem;" 
+                                onclick="editMeeting(${meetings.indexOf(meeting)})">Edit</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addMeeting() {
+            currentMeeting = null;
+            document.getElementById('meetingModalTitle').textContent = 'Add Meeting';
+            document.getElementById('deleteMeetingBtn').style.display = 'none';
+            document.getElementById('meetingTitle').value = '';
+            document.getElementById('meetingDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('meetingTime').value = '09:00';
+            document.getElementById('meetingAttendee').value = '';
+            document.getElementById('meetingAgenda').value = '';
+            document.getElementById('meetingNotes').value = '';
+            document.getElementById('meetingActions').value = '';
+            openModal('meetingModal');
+        }
+
+        function editMeeting(index) {
+            const meetings = getStorageData('meetings', []);
+            const meeting = meetings[index];
+            
+            currentMeeting = index;
+            document.getElementById('meetingModalTitle').textContent = 'Edit Meeting';
+            document.getElementById('deleteMeetingBtn').style.display = 'inline-block';
+            document.getElementById('meetingTitle').value = meeting.title;
+            document.getElementById('meetingDate').value = meeting.date;
+            document.getElementById('meetingTime').value = meeting.time;
+            document.getElementById('meetingAttendee').value = meeting.attendee;
+            document.getElementById('meetingAgenda').value = meeting.agenda || '';
+            document.getElementById('meetingNotes').value = meeting.notes || '';
+            document.getElementById('meetingActions').value = meeting.actions || '';
+            openModal('meetingModal');
+        }
+
+        function saveMeeting(event) {
+            event.preventDefault();
+            
+            const title = document.getElementById('meetingTitle').value;
+            const date = document.getElementById('meetingDate').value;
+            const time = document.getElementById('meetingTime').value;
+            const attendee = document.getElementById('meetingAttendee').value;
+            const agenda = document.getElementById('meetingAgenda').value;
+            const notes = document.getElementById('meetingNotes').value;
+            const actions = document.getElementById('meetingActions').value;
+            
+            const meetings = getStorageData('meetings', []);
+            
+            const meetingData = {
+                title: title,
+                date: date,
+                time: time,
+                attendee: attendee,
+                agenda: agenda,
+                notes: notes,
+                actions: actions
+            };
+
+            if (currentMeeting !== null) {
+                // Edit existing meeting
+                meetings[currentMeeting] = meetingData;
+            } else {
+                // Add new meeting
+                meetings.push(meetingData);
+            }
+
+            setStorageData('meetings', meetings);
+            loadMeetings();
+            closeModal('meetingModal');
+        }
+
+        function deleteMeeting() {
+            if (!confirm('Delete this meeting?')) return;
+            
+            const meetings = getStorageData('meetings', []);
+            meetings.splice(currentMeeting, 1);
+            setStorageData('meetings', meetings);
+            loadMeetings();
+            closeModal('meetingModal');
+        }
+
+        // Intel Functions
+        function loadIntel() {
+            const intel = getStorageData('intel', []);
+            renderIntelFeed(intel);
+        }
+
+        function renderIntelFeed(intel, filter = '') {
+            const container = document.getElementById('intelFeed');
+            if (!container) return;
+
+            let filteredIntel = intel;
+            if (filter) {
+                filteredIntel = intel.filter(item => item.category === filter);
+            }
+
+            if (filteredIntel.length === 0) {
+                container.innerHTML = '<div style="padding: 2rem; text-align: center; color: #666;">No intel items found</div>';
+                return;
+            }
+
+            container.innerHTML = filteredIntel.map((item, index) => `
+                <div class="card mb-2">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3>${item.url ? `<a href="${item.url}" target="_blank" style="color: #6C63FF;">${item.title}</a>` : item.title}</h3>
+                        <div class="flex items-center gap-2">
+                            <span class="priority-badge priority-${getCategoryColor(item.category)}">${item.category.toUpperCase()}</span>
+                            <button class="btn-secondary" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" onclick="editIntel(${intel.indexOf(item)})">Edit</button>
+                        </div>
+                    </div>
+                    <div style="color: #ccc; line-height: 1.6; margin-bottom: 1rem;">${item.summary}</div>
+                    <div style="color: #666; font-size: 0.75rem;">Added: ${formatDate(item.dateAdded)}</div>
+                </div>
+            `).join('');
+        }
+
+        function getCategoryColor(category) {
+            const colors = {
+                'competition': 'high',
+                'market': 'medium',
+                'tech': 'low',
+                'industry': 'medium',
+                'personal': 'low'
+            };
+            return colors[category] || 'low';
+        }
+
+        function filterIntel() {
+            const filter = document.getElementById('intelFilter').value;
+            const intel = getStorageData('intel', []);
+            renderIntelFeed(intel, filter);
+        }
+
+        function addIntel() {
+            currentIntel = null;
+            document.getElementById('intelModalTitle').textContent = 'Add Intel';
+            document.getElementById('deleteIntelBtn').style.display = 'none';
+            document.getElementById('intelTitle').value = '';
+            document.getElementById('intelUrl').value = '';
+            document.getElementById('intelCategory').value = 'market';
+            document.getElementById('intelSummary').value = '';
+            openModal('intelModal');
+        }
+
+        function editIntel(index) {
+            const intel = getStorageData('intel', []);
+            const item = intel[index];
+            
+            currentIntel = index;
+            document.getElementById('intelModalTitle').textContent = 'Edit Intel';
+            document.getElementById('deleteIntelBtn').style.display = 'inline-block';
+            document.getElementById('intelTitle').value = item.title;
+            document.getElementById('intelUrl').value = item.url || '';
+            document.getElementById('intelCategory').value = item.category;
+            document.getElementById('intelSummary').value = item.summary;
+            openModal('intelModal');
+        }
+
+        function saveIntel(event) {
+            event.preventDefault();
+            
+            const title = document.getElementById('intelTitle').value;
+            const url = document.getElementById('intelUrl').value;
+            const category = document.getElementById('intelCategory').value;
+            const summary = document.getElementById('intelSummary').value;
+            
+            const intel = getStorageData('intel', []);
+            
+            const intelData = {
+                title: title,
+                url: url,
+                category: category,
+                summary: summary,
+                dateAdded: new Date().toISOString()
+            };
+
+            if (currentIntel !== null) {
+                // Edit existing intel
+                intel[currentIntel] = intelData;
+            } else {
+                // Add new intel
+                intel.push(intelData);
+            }
+
+            setStorageData('intel', intel);
+            loadIntel();
+            closeModal('intelModal');
+        }
+
+        function deleteIntel() {
+            if (!confirm('Delete this intel item?')) return;
+            
+            const intel = getStorageData('intel', []);
+            intel.splice(currentIntel, 1);
+            setStorageData('intel', intel);
+            loadIntel();
+            closeModal('intelModal');
+        }
+
+        // Modal Functions
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Storage Functions
+        function getStorageData(key, defaultValue) {
+            try {
+                const data = localStorage.getItem(`missionControl_${key}`);
+                return data ? JSON.parse(data) : defaultValue;
+            } catch (error) {
+                console.error('Error reading from localStorage:', error);
+                return defaultValue;
+            }
+        }
+
+        function setStorageData(key, value) {
+            try {
+                localStorage.setItem(`missionControl_${key}`, JSON.stringify(value));
+            } catch (error) {
+                console.error('Error writing to localStorage:', error);
+            }
+        }
+
+        // Utility Functions
+        function formatDate(dateString) {
+            if (!dateString) return 'Never';
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins}m ago`;
+            if (diffHours < 24) return `${diffHours}h ago`;
+            if (diffDays < 7) return `${diffDays}d ago`;
+            
+            return date.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric',
+                year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
+            });
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        function performSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            if (!query) return;
+
+            // Simple search implementation - could be enhanced
+            console.log('Searching for:', query);
+            // This could search across all data and highlight results
+        }
+
+        // Close modals and panels when clicking outside
+        document.addEventListener('click', function(event) {
+            // Close modals when clicking outside
+            const modals = document.querySelectorAll('.modal.active');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+
+            // Close agent panel when clicking outside
+            const panel = document.getElementById('agentPanel');
+            if (panel.classList.contains('active') && !panel.contains(event.target) && !event.target.closest('.agent-card')) {
+                panel.classList.remove('active');
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(event) {
+            // Escape key closes modals and panels
+            if (event.key === 'Escape') {
+                document.querySelectorAll('.modal.active').forEach(modal => {
+                    modal.classList.remove('active');
+                });
+                document.getElementById('agentPanel').classList.remove('active');
+            }
+
+            // Ctrl/Cmd + K opens search
+            if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
+                event.preventDefault();
+                document.getElementById('searchInput').focus();
+            }
+        });
+    </script>
+</body>
+</html>

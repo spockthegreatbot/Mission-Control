@@ -4110,6 +4110,19 @@
             // Load tab-specific data
             if (tabName === 'projects' && serverConnected) {
                 loadGitHubRepos();
+            } else if (tabName === 'command-center') {
+                loadCommandCenter();
+            } else if (tabName === 'dashboard') {
+                loadDashboardData();
+                if (serverConnected) updateSystemStats();
+            } else if (tabName === 'revenue') {
+                loadRevenue();
+            } else if (tabName === 'notes') {
+                loadNotes();
+            } else if (tabName === 'meetings') {
+                loadMeetings();
+            } else if (tabName === 'intel') {
+                loadIntel();
             }
         }
 

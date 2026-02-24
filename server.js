@@ -454,44 +454,27 @@ app.post('/mc/data', async (req, res) => {
     }
 });
 
-// GET /mc/weather - Fetch from wttr.in API
+// GET /mc/weather - Fetch from Open-Meteo API (Gold Coast: -28.0, 153.4)
 app.get('/mc/weather', async (req, res) => {
     try {
-        const city = req.query.city || 'Gold+Coast';
-        const url = `https://wttr.in/${city.replace(/\s+/g, '_')}?format=j1`;
+        const url = 'https://api.open-meteo.com/v1/forecast?latitude=-28.0&longitude=153.4&current=temperature_2m,apparent_temperature,weather_code,relative_humidity_2m,wind_speed_10m&timezone=Australia/Brisbane';
+        const response = await axios.get(url, { timeout: 5000 });
+        const current = response.data.current;
         
-        const response = await axios.get(url, {
-            timeout: 5000,
-            headers: {
-                'User-Agent': 'Mission-Control-Dashboard/1.0'
-            }
+        // Map WMO weather codes to conditions
+        const codes = {0:'Clear',1:'Mostly Clear',2:'Partly Cloudy',3:'Overcast',45:'Foggy',48:'Fog',51:'Light Drizzle',53:'Drizzle',55:'Heavy Drizzle',61:'Light Rain',63:'Rain',65:'Heavy Rain',71:'Light Snow',73:'Snow',75:'Heavy Snow',80:'Light Showers',81:'Showers',82:'Heavy Showers',95:'Thunderstorm',96:'Thunderstorm + Hail',99:'Severe Thunderstorm'};
+        
+        res.json({
+            temp: Math.round(current.temperature_2m),
+            condition: codes[current.weather_code] || 'Unknown',
+            feels_like: Math.round(current.apparent_temperature),
+            humidity: current.relative_humidity_2m,
+            windSpeed: Math.round(current.wind_speed_10m),
+            city: 'Gold Coast'
         });
-        
-        if (response.data && response.data.current_condition && response.data.current_condition[0]) {
-            const current = response.data.current_condition[0];
-            const weather = {
-                temp: current.temp_C,
-                tempF: current.temp_F,
-                condition: current.weatherDesc[0].value,
-                feels_like: current.FeelsLikeC,
-                feels_likeF: current.FeelsLikeF,
-                humidity: current.humidity,
-                windSpeed: current.windspeedKmph,
-                city: city.replace(/\+/g, ' ')
-            };
-            
-            res.json(weather);
-        } else {
-            throw new Error('Invalid weather data format');
-        }
     } catch (error) {
-        console.error('Error fetching weather:', error);
-        res.status(500).json({ 
-            error: 'Failed to fetch weather',
-            temp: '--',
-            condition: 'Unavailable',
-            feels_like: '--'
-        });
+        console.error('Error fetching weather:', error.message);
+        res.status(500).json({ temp: '--', condition: 'Unavailable', feels_like: '--' });
     }
 });
 

@@ -1677,40 +1677,8 @@
     </style>
 </head>
 <body>
-    <!-- PWA Install Banner -->
-    <div class="install-banner" id="installBanner">
-        <div class="install-banner-content">
-            <div class="install-banner-icon">📱</div>
-            <div class="install-banner-text">
-                <div class="install-banner-title">Install Mission Control</div>
-                <div class="install-banner-subtitle">Get the full app experience</div>
-            </div>
-        </div>
-        <div class="install-banner-actions">
-            <button class="install-btn" id="installBtn">Install</button>
-            <button class="install-btn dismiss" id="dismissInstallBtn">Not now</button>
-        </div>
-    </div>
-
-    <!-- Pomodoro Timer Widget -->
-    <div class="pomodoro-timer" id="pomodoroTimer">
-        <div class="pomodoro-header">
-            <div class="pomodoro-title">🍅 Pomodoro</div>
-            <button class="pomodoro-minimize" onclick="togglePomodoroTimer()">−</button>
-        </div>
-        <div class="pomodoro-display">
-            <div class="pomodoro-time" id="pomodoroTime">25:00</div>
-            <div class="pomodoro-session" id="pomodoroSession">Work Session</div>
-        </div>
-        <div class="pomodoro-controls">
-            <button class="pomodoro-btn" id="pomodoroStart" onclick="startPomodoro()">Start</button>
-            <button class="pomodoro-btn secondary" onclick="pausePomodoro()">Pause</button>
-            <button class="pomodoro-btn secondary" onclick="resetPomodoro()">Reset</button>
-        </div>
-        <div class="pomodoro-stats" id="pomodoroStats">
-            Sessions today: <span id="dailySessions">0</span>
-        </div>
-    </div>
+    <!-- PWA Install Banner (hidden) -->
+    <div class="install-banner" id="installBanner" style="display:none !important;"></div>
 
     <header class="header">
         <a href="#" class="logo">
@@ -3842,6 +3810,7 @@
 
         // Notification Functions
         function showNotification(message, type = 'info', duration = 5000) {
+            return; // Disabled - no popup notifications
             const notification = {
                 id: Date.now(),
                 message,

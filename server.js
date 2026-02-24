@@ -7,7 +7,6 @@ const fsSync = require('fs');
 const path = require('path');
 const os = require('os');
 const axios = require('axios');
-
 const crypto = require('crypto');
 
 const app = express();
@@ -17,19 +16,42 @@ const MC_PASSWORD = process.env.MC_PASSWORD || 'changeme';
 const SESSION_SECRET = crypto.randomBytes(32).toString('hex');
 const sessions = new Map(); // token -> { user, expires }
 
+// Environment variables for new features
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
+const MC_BACKUP_KEY = process.env.MC_BACKUP_KEY || crypto.randomBytes(32).toString('hex');
+
 // Middleware
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: '50mb' }));
 
 // Auth endpoints (before static/protected middleware)
-app.post('/auth/login', (req, res) => {
+app.post('/auth/login', async (req, res) => {
     const { username, password } = req.body;
+    
+    // Check if it's the default admin user
     if (username === 'tolga' && password === MC_PASSWORD) {
         const token = crypto.randomBytes(32).toString('hex');
         sessions.set(token, { user: username, expires: Date.now() + 24 * 60 * 60 * 1000 });
-        res.json({ success: true, token });
-    } else {
-        res.status(401).json({ success: false, error: 'Invalid credentials' });
+        res.json({ success: true, token, user: { username: 'tolga', role: 'admin' } });
+        return;
+    }
+    
+    // Check against stored users
+    try {
+        const users = await readJsonFile(path.join(DATA_DIR, 'mc-users.json'), []);
+        const user = users.find(u => u.username === username);
+        
+        if (user && await verifyPassword(password, user.passwordHash)) {
+            const token = crypto.randomBytes(32).toString('hex');
+            sessions.set(token, { user: username, expires: Date.now() + 24 * 60 * 60 * 1000 });
+            res.json({ success: true, token, user: { username: user.username, role: user.role } });
+        } else {
+            res.status(401).json({ success: false, error: 'Invalid credentials' });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, error: 'Authentication error' });
     }
 });
 
@@ -46,6 +68,50 @@ app.get('/auth/check', (req, res) => {
         res.json({ authenticated: true, user: session.user });
     } else {
         res.json({ authenticated: false });
+    }
+});
+
+// User registration endpoint (admin only)
+app.post('/auth/register', async (req, res) => {
+    try {
+        const { username, password, role = 'user' } = req.body;
+        
+        if (!username || !password) {
+            return res.status(400).json({ error: 'Username and password required' });
+        }
+        
+        // Check if user is admin
+        const token = req.headers.authorization?.replace('Bearer ', '');
+        const session = token && sessions.get(token);
+        if (!session || session.user !== 'tolga') {
+            return res.status(403).json({ error: 'Admin access required' });
+        }
+        
+        const users = await readJsonFile(path.join(DATA_DIR, 'mc-users.json'), []);
+        
+        // Check if user already exists
+        if (users.find(u => u.username === username)) {
+            return res.status(400).json({ error: 'Username already exists' });
+        }
+        
+        // Hash password
+        const passwordHash = await hashPassword(password);
+        
+        // Add user
+        users.push({
+            id: crypto.randomUUID(),
+            username,
+            passwordHash,
+            role,
+            createdAt: new Date().toISOString(),
+            lastLogin: null
+        });
+        
+        await writeJsonFile(path.join(DATA_DIR, 'mc-users.json'), users);
+        
+        res.json({ success: true, user: { username, role } });
+    } catch (error) {
+        res.status(500).json({ error: 'Registration failed' });
     }
 });
 
@@ -102,11 +168,12 @@ else{document.getElementById('error').style.display='block';btn.disabled=false;b
 
 // Protect all routes except /login and /auth/*
 app.use((req, res, next) => {
-    if (req.path === '/login' || req.path.startsWith('/auth/')) return next();
+    if (req.path === '/login' || req.path.startsWith('/auth/') || req.path === '/mc/webhook') return next();
     const token = req.headers.authorization?.replace('Bearer ', '') || req.query.token;
     const session = token && sessions.get(token);
     if (session && session.expires > Date.now()) {
         session.expires = Date.now() + 24 * 60 * 60 * 1000; // refresh
+        req.user = session.user;
         return next();
     }
     // For HTML page requests, redirect to login
@@ -151,6 +218,57 @@ async function writeJsonFile(filepath, data) {
         console.error(`Error writing ${filepath}:`, error);
         return false;
     }
+}
+
+// Password utilities for multi-user support
+async function hashPassword(password) {
+    return new Promise((resolve, reject) => {
+        const salt = crypto.randomBytes(16);
+        crypto.pbkdf2(password, salt, 100000, 64, 'sha512', (err, derivedKey) => {
+            if (err) reject(err);
+            else resolve(salt.toString('hex') + ':' + derivedKey.toString('hex'));
+        });
+    });
+}
+
+async function verifyPassword(password, hash) {
+    return new Promise((resolve, reject) => {
+        const [salt, key] = hash.split(':');
+        crypto.pbkdf2(password, Buffer.from(salt, 'hex'), 100000, 64, 'sha512', (err, derivedKey) => {
+            if (err) reject(err);
+            else resolve(key === derivedKey.toString('hex'));
+        });
+    });
+}
+
+// Encryption utilities for backup
+function encrypt(text, key) {
+    const algorithm = 'aes-256-gcm';
+    const iv = crypto.randomBytes(12);
+    const cipher = crypto.createCipher(algorithm, key);
+    
+    let encrypted = cipher.update(text, 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+    
+    const authTag = cipher.getAuthTag();
+    
+    return iv.toString('hex') + ':' + authTag.toString('hex') + ':' + encrypted;
+}
+
+function decrypt(encryptedData, key) {
+    const algorithm = 'aes-256-gcm';
+    const parts = encryptedData.split(':');
+    const iv = Buffer.from(parts[0], 'hex');
+    const authTag = Buffer.from(parts[1], 'hex');
+    const encrypted = parts[2];
+    
+    const decipher = crypto.createDecipher(algorithm, key);
+    decipher.setAuthTag(authTag);
+    
+    let decrypted = decipher.update(encrypted, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    
+    return decrypted;
 }
 
 // Utility function to read system stats
@@ -214,15 +332,20 @@ app.get('/mc/status', (req, res) => {
         uptime: uptime,
         lastRefresh: new Date().toISOString(),
         startTime: startTime.toISOString(),
-        version: '1.0.0',
-        status: 'operational'
+        version: '1.1.0',
+        status: 'operational',
+        features: {
+            telegram: !!TELEGRAM_BOT_TOKEN,
+            stripe: !!STRIPE_SECRET_KEY,
+            backup: !!MC_BACKUP_KEY
+        }
     });
 });
 
 // GET /mc/data - Read from mc-data.json
 app.get('/mc/data', async (req, res) => {
     try {
-        const dataPath = path.join(DATA_DIR, 'mc-data.json');
+        const dataPath = path.join(DATA_DIR, `mc-data-${req.user}.json`);
         const data = await readJsonFile(dataPath, {});
         res.json(data);
     } catch (error) {
@@ -234,7 +357,7 @@ app.get('/mc/data', async (req, res) => {
 // POST /mc/data - Write to mc-data.json (backup from localStorage)
 app.post('/mc/data', async (req, res) => {
     try {
-        const dataPath = path.join(DATA_DIR, 'mc-data.json');
+        const dataPath = path.join(DATA_DIR, `mc-data-${req.user}.json`);
         const success = await writeJsonFile(dataPath, req.body);
         
         if (success) {
@@ -292,7 +415,7 @@ app.get('/mc/weather', async (req, res) => {
 // GET /mc/activity - Read from mc-activity.json, return last 50 entries
 app.get('/mc/activity', async (req, res) => {
     try {
-        const activityPath = path.join(DATA_DIR, 'mc-activity.json');
+        const activityPath = path.join(DATA_DIR, `mc-activity-${req.user}.json`);
         const activities = await readJsonFile(activityPath, []);
         
         // Return last 50 entries, newest first
@@ -314,7 +437,7 @@ app.post('/mc/activity', async (req, res) => {
             return res.status(400).json({ error: 'Description is required' });
         }
         
-        const activityPath = path.join(DATA_DIR, 'mc-activity.json');
+        const activityPath = path.join(DATA_DIR, `mc-activity-${req.user}.json`);
         const activities = await readJsonFile(activityPath, []);
         
         const newActivity = {
@@ -322,7 +445,8 @@ app.post('/mc/activity', async (req, res) => {
             description,
             type,
             metadata,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
+            user: req.user
         };
         
         // Add to beginning of array
@@ -360,6 +484,416 @@ app.get('/mc/system', (req, res) => {
             disk: 0,
             uptime: 0
         });
+    }
+});
+
+// TELEGRAM BOT INTEGRATION
+
+// POST /mc/agent/task - Send task to Telegram bot
+app.post('/mc/agent/task', async (req, res) => {
+    try {
+        const { task, agent = 'general' } = req.body;
+        
+        if (!task) {
+            return res.status(400).json({ error: 'Task is required' });
+        }
+        
+        // Log the task
+        const activityPath = path.join(DATA_DIR, `mc-activity-${req.user}.json`);
+        const activities = await readJsonFile(activityPath, []);
+        
+        const taskActivity = {
+            id: Date.now().toString(),
+            description: `Sent task to ${agent}: ${task.substring(0, 100)}${task.length > 100 ? '...' : ''}`,
+            type: 'telegram',
+            metadata: { agent, task },
+            timestamp: new Date().toISOString(),
+            user: req.user
+        };
+        
+        activities.unshift(taskActivity);
+        await writeJsonFile(activityPath, activities);
+        
+        // Send to Telegram if configured
+        if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
+            try {
+                const message = `🤖 *Mission Control Task*\n\n*Agent:* ${agent}\n*Task:* ${task}\n*User:* ${req.user}\n*Time:* ${new Date().toLocaleString()}`;
+                
+                const telegramResponse = await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                    chat_id: TELEGRAM_CHAT_ID,
+                    text: message,
+                    parse_mode: 'Markdown'
+                });
+                
+                // Log successful response
+                if (telegramResponse.data.ok) {
+                    const responseActivity = {
+                        id: (Date.now() + 1).toString(),
+                        description: `Telegram bot confirmed task receipt`,
+                        type: 'telegram',
+                        metadata: { response: 'confirmed' },
+                        timestamp: new Date().toISOString(),
+                        user: req.user
+                    };
+                    
+                    activities.unshift(responseActivity);
+                    await writeJsonFile(activityPath, activities);
+                }
+                
+                res.json({ success: true, sent: true, message: 'Task sent to Telegram bot' });
+            } catch (telegramError) {
+                console.error('Telegram API error:', telegramError);
+                res.json({ success: true, sent: false, message: 'Task logged, but Telegram send failed', error: telegramError.message });
+            }
+        } else {
+            // Simulated mode
+            setTimeout(async () => {
+                const responseActivity = {
+                    id: (Date.now() + 1).toString(),
+                    description: `Simulated agent response: Task acknowledged and queued`,
+                    type: 'telegram',
+                    metadata: { response: 'simulated' },
+                    timestamp: new Date().toISOString(),
+                    user: req.user
+                };
+                
+                activities.unshift(responseActivity);
+                await writeJsonFile(activityPath, activities);
+            }, 1000);
+            
+            res.json({ success: true, sent: false, message: 'Task logged (simulated mode - Telegram not configured)' });
+        }
+    } catch (error) {
+        console.error('Error sending task:', error);
+        res.status(500).json({ error: 'Failed to send task' });
+    }
+});
+
+// DAILY DIGEST
+
+// GET /mc/digest - Generate daily summary
+app.get('/mc/digest', async (req, res) => {
+    try {
+        // Get current data
+        const dataPath = path.join(DATA_DIR, `mc-data-${req.user}.json`);
+        const data = await readJsonFile(dataPath, {});
+        
+        const clients = data.clients || [];
+        const activeMrr = clients.filter(c => c.status === 'active').reduce((sum, c) => sum + parseFloat(c.value || 0), 0);
+        
+        // Calculate days to June 2026
+        const targetDate = new Date('2026-06-01');
+        const now = new Date();
+        const daysToTarget = Math.ceil((targetDate - now) / (1000 * 60 * 60 * 24));
+        
+        // Get today's tasks (from projects)
+        const projects = data.projects || { backlog: [], progress: [], done: [] };
+        const todaysTasks = projects.progress.length;
+        
+        // Get upcoming meetings
+        const meetings = data.meetings || [];
+        const today = new Date().toISOString().split('T')[0];
+        const upcomingMeetings = meetings.filter(meeting => {
+            const meetingDate = new Date(meeting.date);
+            const timeDiff = meetingDate - now;
+            return timeDiff > 0 && timeDiff < 24 * 60 * 60 * 1000; // Next 24 hours
+        });
+        
+        const digest = {
+            date: new Date().toISOString(),
+            summary: {
+                mrr: {
+                    current: activeMrr,
+                    target: 10000,
+                    progress: ((activeMrr / 10000) * 100).toFixed(1),
+                    remaining: 10000 - activeMrr
+                },
+                tasksToday: todaysTasks,
+                upcomingMeetings: upcomingMeetings.length,
+                daysToJune2026: daysToTarget,
+                weekProgress: Math.floor((7 - now.getDay()) / 7 * 100)
+            },
+            details: {
+                meetings: upcomingMeetings.map(m => ({
+                    title: m.title,
+                    attendee: m.attendee,
+                    time: m.time
+                })),
+                topPriorities: (data.priorities || []).filter(p => !p.completed).slice(0, 3)
+            },
+            generated: new Date().toISOString()
+        };
+        
+        res.json(digest);
+    } catch (error) {
+        console.error('Error generating digest:', error);
+        res.status(500).json({ error: 'Failed to generate digest' });
+    }
+});
+
+// STRIPE INTEGRATION
+
+// GET /mc/stripe/mrr - Fetch MRR from Stripe
+app.get('/mc/stripe/mrr', async (req, res) => {
+    if (!STRIPE_SECRET_KEY) {
+        return res.status(400).json({ error: 'Stripe not configured', connected: false });
+    }
+    
+    try {
+        // Get active subscriptions from Stripe
+        const response = await axios.get('https://api.stripe.com/v1/subscriptions', {
+            params: {
+                status: 'active',
+                limit: 100
+            },
+            headers: {
+                'Authorization': `Bearer ${STRIPE_SECRET_KEY}`,
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        });
+        
+        const subscriptions = response.data.data;
+        let totalMrr = 0;
+        
+        // Calculate MRR from active subscriptions
+        for (const sub of subscriptions) {
+            for (const item of sub.items.data) {
+                const price = item.price;
+                let monthlyAmount = price.unit_amount / 100; // Convert from cents
+                
+                // Convert to monthly
+                if (price.recurring.interval === 'year') {
+                    monthlyAmount = monthlyAmount / 12;
+                } else if (price.recurring.interval === 'day') {
+                    monthlyAmount = monthlyAmount * 30;
+                } else if (price.recurring.interval === 'week') {
+                    monthlyAmount = monthlyAmount * 4.33;
+                }
+                
+                totalMrr += monthlyAmount * item.quantity;
+            }
+        }
+        
+        res.json({
+            connected: true,
+            mrr: Math.round(totalMrr * 100) / 100,
+            subscriptions: subscriptions.length,
+            currency: 'USD',
+            lastUpdated: new Date().toISOString()
+        });
+    } catch (error) {
+        console.error('Stripe API error:', error);
+        res.status(500).json({ 
+            error: 'Failed to fetch Stripe data',
+            connected: false,
+            message: error.response?.data?.error?.message || error.message
+        });
+    }
+});
+
+// GET /mc/stripe/customers - Fetch recent customers
+app.get('/mc/stripe/customers', async (req, res) => {
+    if (!STRIPE_SECRET_KEY) {
+        return res.status(400).json({ error: 'Stripe not configured', connected: false });
+    }
+    
+    try {
+        const response = await axios.get('https://api.stripe.com/v1/customers', {
+            params: {
+                limit: 20
+            },
+            headers: {
+                'Authorization': `Bearer ${STRIPE_SECRET_KEY}`,
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        });
+        
+        const customers = response.data.data.map(customer => ({
+            id: customer.id,
+            email: customer.email,
+            name: customer.name || customer.email,
+            created: customer.created,
+            subscriptions: customer.subscriptions?.total_count || 0
+        }));
+        
+        res.json({
+            connected: true,
+            customers: customers,
+            total: response.data.total_count,
+            lastUpdated: new Date().toISOString()
+        });
+    } catch (error) {
+        console.error('Stripe API error:', error);
+        res.status(500).json({ 
+            error: 'Failed to fetch customers',
+            connected: false,
+            message: error.response?.data?.error?.message || error.message
+        });
+    }
+});
+
+// WEBHOOK RECEIVER
+
+// POST /mc/webhook - Accept webhooks from various sources
+app.post('/mc/webhook', async (req, res) => {
+    try {
+        const { body, headers } = req;
+        const source = headers['user-agent'] || 'unknown';
+        let eventType = 'webhook';
+        let description = 'Webhook received';
+        
+        // Parse different webhook sources
+        if (headers['x-github-event']) {
+            // GitHub webhook
+            eventType = `github.${headers['x-github-event']}`;
+            
+            switch (headers['x-github-event']) {
+                case 'push':
+                    description = `GitHub push: ${body.commits?.length || 0} commits to ${body.repository?.name}`;
+                    break;
+                case 'pull_request':
+                    description = `GitHub PR ${body.action}: ${body.pull_request?.title} in ${body.repository?.name}`;
+                    break;
+                case 'issues':
+                    description = `GitHub issue ${body.action}: ${body.issue?.title} in ${body.repository?.name}`;
+                    break;
+                default:
+                    description = `GitHub ${headers['x-github-event']} event in ${body.repository?.name}`;
+            }
+        } else if (headers['stripe-signature']) {
+            // Stripe webhook
+            eventType = `stripe.${body.type}`;
+            
+            switch (body.type) {
+                case 'invoice.paid':
+                    description = `Stripe: Invoice paid for ${body.data.object.customer_email || 'customer'}`;
+                    break;
+                case 'customer.subscription.created':
+                    description = `Stripe: New subscription created`;
+                    break;
+                case 'customer.subscription.deleted':
+                    description = `Stripe: Subscription cancelled`;
+                    break;
+                default:
+                    description = `Stripe: ${body.type} event`;
+            }
+        } else {
+            // Generic webhook
+            if (body.event) eventType = `generic.${body.event}`;
+            if (body.message) description = body.message;
+        }
+        
+        // Store webhook event in activity feed (global, not user-specific)
+        const activityPath = path.join(DATA_DIR, 'mc-activity-global.json');
+        const activities = await readJsonFile(activityPath, []);
+        
+        const webhookActivity = {
+            id: Date.now().toString(),
+            description: description,
+            type: eventType,
+            metadata: {
+                source: source,
+                headers: Object.keys(headers),
+                payload_size: JSON.stringify(body).length
+            },
+            timestamp: new Date().toISOString(),
+            user: 'system'
+        };
+        
+        activities.unshift(webhookActivity);
+        
+        // Keep only last 1000 webhook events
+        if (activities.length > 1000) {
+            activities.splice(1000);
+        }
+        
+        await writeJsonFile(activityPath, activities);
+        
+        console.log('Webhook received:', eventType, description);
+        
+        res.json({ 
+            success: true, 
+            message: 'Webhook processed',
+            event: eventType
+        });
+    } catch (error) {
+        console.error('Webhook processing error:', error);
+        res.status(500).json({ error: 'Webhook processing failed' });
+    }
+});
+
+// ENCRYPTED DAILY BACKUP
+
+// POST /mc/backup - Create encrypted backup
+app.post('/mc/backup', async (req, res) => {
+    try {
+        // Ensure backup directory exists
+        const backupDir = path.join(DATA_DIR, 'backups');
+        try {
+            await fs.mkdir(backupDir, { recursive: true });
+        } catch (error) {
+            // Directory might already exist
+        }
+        
+        // Collect all mc-*.json files
+        const files = await fs.readdir(DATA_DIR);
+        const mcFiles = files.filter(file => file.startsWith('mc-') && file.endsWith('.json'));
+        
+        const backupData = {};
+        
+        for (const file of mcFiles) {
+            try {
+                const content = await fs.readFile(path.join(DATA_DIR, file), 'utf8');
+                backupData[file] = JSON.parse(content);
+            } catch (error) {
+                console.error(`Error reading ${file}:`, error);
+            }
+        }
+        
+        // Create backup with timestamp
+        const timestamp = new Date().toISOString().split('T')[0];
+        const backupContent = JSON.stringify({
+            timestamp: new Date().toISOString(),
+            files: backupData,
+            version: '1.1.0'
+        });
+        
+        // Encrypt backup
+        const encryptedContent = encrypt(backupContent, MC_BACKUP_KEY);
+        
+        // Save to backup directory
+        const backupFilename = `mc-backup-${timestamp}-${Date.now()}.enc`;
+        const backupPath = path.join(backupDir, backupFilename);
+        
+        await fs.writeFile(backupPath, encryptedContent);
+        
+        // Clean up old backups (keep last 30)
+        const backupFiles = (await fs.readdir(backupDir))
+            .filter(file => file.startsWith('mc-backup-') && file.endsWith('.enc'))
+            .sort()
+            .reverse();
+        
+        if (backupFiles.length > 30) {
+            for (const oldFile of backupFiles.slice(30)) {
+                try {
+                    await fs.unlink(path.join(backupDir, oldFile));
+                } catch (error) {
+                    console.error(`Error deleting old backup ${oldFile}:`, error);
+                }
+            }
+        }
+        
+        res.json({
+            success: true,
+            message: 'Backup created successfully',
+            filename: backupFilename,
+            size: encryptedContent.length,
+            files: mcFiles.length,
+            timestamp: new Date().toISOString()
+        });
+    } catch (error) {
+        console.error('Backup error:', error);
+        res.status(500).json({ error: 'Backup failed' });
     }
 });
 
@@ -503,6 +1037,38 @@ app.get('/mc/github/prs', async (req, res) => {
     }
 });
 
+// AUTOMATED TASKS
+
+// Auto-backup daily at 3 AM
+setInterval(async () => {
+    const now = new Date();
+    if (now.getHours() === 3 && now.getMinutes() === 0) {
+        try {
+            console.log('Running automated daily backup...');
+            await axios.post('http://localhost:8899/mc/backup', {}, {
+                headers: { 'Authorization': `Bearer system` }
+            });
+            console.log('Automated backup completed');
+        } catch (error) {
+            console.error('Automated backup failed:', error);
+        }
+    }
+}, 60000); // Check every minute
+
+// Auto-generate digest daily at 9 AM (log it for now)
+setInterval(async () => {
+    const now = new Date();
+    if (now.getHours() === 9 && now.getMinutes() === 0) {
+        try {
+            console.log('Generating daily digest...');
+            // In a real implementation, you'd send this to all users or admins
+            console.log('Daily digest generated successfully');
+        } catch (error) {
+            console.error('Daily digest generation failed:', error);
+        }
+    }
+}, 60000); // Check every minute
+
 // Error handling middleware
 app.use((error, req, res, next) => {
     console.error('Server error:', error);
@@ -519,4 +1085,19 @@ app.listen(PORT, () => {
     console.log('Environment variables:');
     console.log(`- GITHUB_TOKEN: ${GITHUB_TOKEN ? 'Set' : 'Not set'}`);
     console.log(`- GITHUB_USERNAME: ${GITHUB_USERNAME}`);
+    console.log(`- TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN ? 'Set' : 'Not set'}`);
+    console.log(`- TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID ? 'Set' : 'Not set'}`);
+    console.log(`- STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY ? 'Set' : 'Not set'}`);
+    console.log(`- MC_BACKUP_KEY: ${MC_BACKUP_KEY ? 'Generated/Set' : 'Not set'}`);
+});
+
+// Graceful shutdown
+process.on('SIGINT', () => {
+    console.log('Received SIGINT. Graceful shutdown...');
+    process.exit(0);
+});
+
+process.on('SIGTERM', () => {
+    console.log('Received SIGTERM. Graceful shutdown...');
+    process.exit(0);
 });

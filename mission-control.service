@@ -1,0 +1,46 @@
+[Unit]
+Description=Mission Control Dashboard Server
+Documentation=https://github.com/ryojindev/mission-control
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=%i
+Group=%i
+WorkingDirectory=%h/.openclaw/workspace/dev/Mission Control
+ExecStart=/usr/bin/node server.js
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=mission-control
+
+# Environment variables
+Environment=NODE_ENV=production
+Environment=PORT=8899
+Environment=GITHUB_USERNAME=ryojindev
+# Set GITHUB_TOKEN via systemctl --user set-environment GITHUB_TOKEN=your_token
+
+# Security settings
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=no
+ReadWritePaths=%h/.openclaw/workspace/dev/Mission Control
+MemoryMax=512M
+CPUQuota=50%
+
+# Logging
+LimitNOFILE=65536
+
+[Install]
+WantedBy=default.target
+
+# Installation instructions:
+# 1. Install the service: systemctl --user enable %h/.openclaw/workspace/dev/Mission\ Control/mission-control.service
+# 2. Set GitHub token: systemctl --user set-environment GITHUB_TOKEN=your_github_token_here
+# 3. Start the service: systemctl --user start mission-control.service
+# 4. Check status: systemctl --user status mission-control.service
+# 5. View logs: journalctl --user -u mission-control.service -f
+# 6. Enable on boot: sudo loginctl enable-linger $(whoami)

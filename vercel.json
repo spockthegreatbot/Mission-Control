@@ -1,4 +1,12 @@
 {
+    "headers": [
+        {
+            "source": "/(.*)",
+            "headers": [
+                { "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive" }
+            ]
+        }
+    ],
     "functions": {
         "api/proxy.js": { "memory": 128, "maxDuration": 10 },
         "api/auth.js": { "memory": 128, "maxDuration": 10 }

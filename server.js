@@ -24,6 +24,10 @@ const MC_BACKUP_KEY = process.env.MC_BACKUP_KEY || crypto.randomBytes(32).toStri
 
 // Middleware
 app.use(cors({ origin: true, credentials: true }));
+app.use((req, res, next) => {
+    res.setHeader('X-Robots-Tag', 'noindex, nofollow');
+    next();
+});
 app.use(express.json({ limit: '50mb' }));
 
 // Auth endpoints (before static/protected middleware)

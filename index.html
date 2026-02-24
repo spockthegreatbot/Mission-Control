@@ -2453,13 +2453,9 @@
         ];
 
         // Initialize App
+        let appInitialized = false;
         document.addEventListener('DOMContentLoaded', function() {
-            // Only auto-init if already authenticated
-            const token = localStorage.getItem('mc_token');
-            if (token && IS_LOCAL) {
-                initializeApp();
-            }
-            // On Vercel, initializeApp is called after auth gate unlocks
+            // Don't auto-init — wait for auth gate to unlock
         });
 
         async function initializeApp() {
@@ -4720,7 +4716,10 @@
         function unlock() {
             gate.style.display = 'none';
             app.style.display = 'block';
-            if (typeof initializeApp === 'function') initializeApp();
+            if (!appInitialized && typeof initializeApp === 'function') {
+                appInitialized = true;
+                initializeApp();
+            }
         }
 
         // Check existing token

@@ -8,13 +8,114 @@ const path = require('path');
 const os = require('os');
 const axios = require('axios');
 
+const crypto = require('crypto');
+
 const app = express();
 const PORT = 8899;
 const DATA_DIR = __dirname;
+const MC_PASSWORD = process.env.MC_PASSWORD || 'changeme';
+const SESSION_SECRET = crypto.randomBytes(32).toString('hex');
+const sessions = new Map(); // token -> { user, expires }
 
 // Middleware
-app.use(cors());
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: '50mb' }));
+
+// Auth endpoints (before static/protected middleware)
+app.post('/auth/login', (req, res) => {
+    const { username, password } = req.body;
+    if (username === 'tolga' && password === MC_PASSWORD) {
+        const token = crypto.randomBytes(32).toString('hex');
+        sessions.set(token, { user: username, expires: Date.now() + 24 * 60 * 60 * 1000 });
+        res.json({ success: true, token });
+    } else {
+        res.status(401).json({ success: false, error: 'Invalid credentials' });
+    }
+});
+
+app.post('/auth/logout', (req, res) => {
+    const token = req.headers.authorization?.replace('Bearer ', '');
+    if (token) sessions.delete(token);
+    res.json({ success: true });
+});
+
+app.get('/auth/check', (req, res) => {
+    const token = req.headers.authorization?.replace('Bearer ', '');
+    const session = token && sessions.get(token);
+    if (session && session.expires > Date.now()) {
+        res.json({ authenticated: true, user: session.user });
+    } else {
+        res.json({ authenticated: false });
+    }
+});
+
+// Login page served without auth
+app.get('/login', (req, res) => {
+    res.send(`<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Mission Control — Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#050508;color:#fff;display:flex;align-items:center;justify-content:center;min-height:100vh}
+.login-card{background:rgba(255,255,255,0.03);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:3rem;width:100%;max-width:400px;animation:fadeIn .5s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+h1{font-size:1.5rem;font-weight:600;margin-bottom:.5rem;text-align:center}
+p.sub{color:rgba(255,255,255,0.4);font-size:.85rem;text-align:center;margin-bottom:2rem}
+label{display:block;font-size:.8rem;color:rgba(255,255,255,0.5);margin-bottom:.4rem;margin-top:1rem}
+input{width:100%;padding:.75rem 1rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#fff;font-size:.9rem;font-family:inherit;outline:none;transition:border .2s}
+input:focus{border-color:#6C63FF}
+button{width:100%;padding:.75rem;background:#6C63FF;color:#fff;border:none;border-radius:8px;font-size:.95rem;font-weight:600;font-family:inherit;cursor:pointer;margin-top:1.5rem;transition:opacity .2s}
+button:hover{opacity:.9}
+button:disabled{opacity:.5;cursor:not-allowed}
+.error{color:#ff4757;font-size:.8rem;text-align:center;margin-top:1rem;display:none}
+.logo{text-align:center;margin-bottom:1.5rem;font-size:2rem}
+</style></head><body>
+<div class="login-card">
+<div class="logo">🚀</div>
+<h1>Mission Control</h1>
+<p class="sub">Enter credentials to continue</p>
+<form id="loginForm">
+<label>Username</label>
+<input type="text" id="username" autocomplete="username" required autofocus>
+<label>Password</label>
+<input type="password" id="password" autocomplete="current-password" required>
+<button type="submit" id="btn">Sign In</button>
+<div class="error" id="error">Invalid username or password</div>
+</form>
+</div>
+<script>
+document.getElementById('loginForm').addEventListener('submit',async e=>{
+e.preventDefault();
+const btn=document.getElementById('btn');btn.disabled=true;btn.textContent='Signing in...';
+document.getElementById('error').style.display='none';
+try{
+const r=await fetch('/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:document.getElementById('username').value,password:document.getElementById('password').value})});
+const d=await r.json();
+if(d.success){localStorage.setItem('mc_token',d.token);window.location.href='/';}
+else{document.getElementById('error').style.display='block';btn.disabled=false;btn.textContent='Sign In';}
+}catch(err){document.getElementById('error').textContent='Connection error';document.getElementById('error').style.display='block';btn.disabled=false;btn.textContent='Sign In';}
+});
+</script></body></html>`);
+});
+
+// Protect all routes except /login and /auth/*
+app.use((req, res, next) => {
+    if (req.path === '/login' || req.path.startsWith('/auth/')) return next();
+    const token = req.headers.authorization?.replace('Bearer ', '') || req.query.token;
+    const session = token && sessions.get(token);
+    if (session && session.expires > Date.now()) {
+        session.expires = Date.now() + 24 * 60 * 60 * 1000; // refresh
+        return next();
+    }
+    // For HTML page requests, redirect to login
+    if (req.accepts('html') && !req.path.startsWith('/mc/')) {
+        return res.redirect('/login');
+    }
+    res.status(401).json({ error: 'Unauthorized' });
+});
+
 app.use(express.static(__dirname));
 
 // Server start time for uptime calculation

@@ -1770,6 +1770,19 @@
 
         // Server API base URL
         const SERVER_URL = window.location.hostname === 'localhost' || window.location.hostname === '45.76.125.57' ? '' : 'http://45.76.125.57';
+        
+        // Auth helper
+        function getAuthHeaders() {
+            const token = localStorage.getItem('mc_token');
+            return token ? { 'Authorization': 'Bearer ' + token } : {};
+        }
+        function authFetch(url, opts = {}) {
+            opts.headers = { ...getAuthHeaders(), ...(opts.headers || {}) };
+            return fetch(url, opts).then(r => {
+                if (r.status === 401) { localStorage.removeItem('mc_token'); window.location.href = '/login'; }
+                return r;
+            });
+        }
 
         // Metric card configurations
         const METRIC_CONFIGS = {
@@ -1883,7 +1896,7 @@
         // Server Integration Functions
         async function checkServerConnection() {
             try {
-                const response = await fetch(`${SERVER_URL}/mc/status`);
+                const response = await authFetch(`${SERVER_URL}/mc/status`);
                 const data = await response.json();
                 
                 if (data.health === 'online') {
@@ -1924,7 +1937,7 @@
             if (!serverConnected) return;
             
             try {
-                const response = await fetch(`${SERVER_URL}/mc/weather?city=Gold+Coast`);
+                const response = await authFetch(`${SERVER_URL}/mc/weather?city=Gold+Coast`);
                 const weather = await response.json();
                 
                 const weatherInfo = document.getElementById('weatherInfo');
@@ -1948,7 +1961,7 @@
             
             try {
                 // Try to load data from server
-                const response = await fetch(`${SERVER_URL}/mc/data`);
+                const response = await authFetch(`${SERVER_URL}/mc/data`);
                 if (response.ok) {
                     const serverData = await response.json();
                     
@@ -1981,7 +1994,7 @@
                 });
                 
                 // Send to server
-                await fetch(`${SERVER_URL}/mc/data`, {
+                await authFetch(`${SERVER_URL}/mc/data`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -2012,7 +2025,7 @@
             // Log to server if connected
             if (serverConnected) {
                 try {
-                    await fetch(`${SERVER_URL}/mc/activity`, {
+                    await authFetch(`${SERVER_URL}/mc/activity`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -2035,7 +2048,7 @@
             if (!serverConnected) return;
             
             try {
-                const response = await fetch(`${SERVER_URL}/mc/system`);
+                const response = await authFetch(`${SERVER_URL}/mc/system`);
                 const stats = await response.json();
                 
                 const statsContainer = document.getElementById('systemStats');
@@ -2116,7 +2129,7 @@
 
         async function loadGitHubRepos() {
             try {
-                const response = await fetch(`${SERVER_URL}/mc/github/repos`);
+                const response = await authFetch(`${SERVER_URL}/mc/github/repos`);
                 if (!response.ok) throw new Error('Failed to fetch repos');
                 
                 const repos = await response.json();
@@ -2155,7 +2168,7 @@
 
         async function loadGitHubCommits() {
             try {
-                const response = await fetch(`${SERVER_URL}/mc/github/commits`);
+                const response = await authFetch(`${SERVER_URL}/mc/github/commits`);
                 if (!response.ok) throw new Error('Failed to fetch commits');
                 
                 const commits = await response.json();

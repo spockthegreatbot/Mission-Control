@@ -324,6 +324,83 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// GET /mc/openclaw/agents - Real agent status from OpenClaw gateway
+const OPENCLAW_TOKEN = process.env.OPENCLAW_GATEWAY_TOKEN || 'e7b2f7acd7ad812952ba65e17137199a68e9ca6c6f467d80';
+const OPENCLAW_WS_URL = 'ws://127.0.0.1:18789';
+
+app.get('/mc/openclaw/agents', async (req, res) => {
+    try {
+        const { execSync } = require('child_process');
+        const raw = execSync(`openclaw gateway call status --token "${OPENCLAW_TOKEN}" --json 2>/dev/null`, { timeout: 10000 }).toString();
+        const data = JSON.parse(raw);
+        
+        // Parse agent configs
+        const configRaw = execSync(`cat /home/linuxuser/.openclaw/openclaw.json`, { timeout: 5000 }).toString();
+        const config = JSON.parse(configRaw);
+        const agentList = config.agents?.list || [];
+        const defaultModel = config.agents?.defaults?.model?.primary || 'gpt-4o-mini';
+        
+        // Build agent map from config
+        const agentConfigs = {};
+        agentConfigs['main'] = { id: 'main', name: 'Spock', role: 'Unified AI Operator', model: defaultModel };
+        for (const a of agentList) {
+            if (a.id === 'main') {
+                agentConfigs['main'].model = a.model || defaultModel;
+            } else {
+                agentConfigs[a.id] = { id: a.id, name: a.name || a.id, model: a.model || defaultModel };
+            }
+        }
+        // Add roles
+        if (agentConfigs['dev']) agentConfigs['dev'].role = 'Full Stack Developer';
+        if (agentConfigs['research']) agentConfigs['research'].role = 'Intelligence & Research';
+        
+        // Get session activity per agent
+        const sessions = data.sessions?.recent || [];
+        const agentActivity = {};
+        for (const s of sessions) {
+            const aid = s.agentId || 'unknown';
+            if (!agentActivity[aid] || s.age < agentActivity[aid].age) {
+                agentActivity[aid] = { age: s.age, model: s.model, key: s.key };
+            }
+        }
+        
+        // Build response
+        const agents = Object.entries(agentConfigs).map(([id, cfg]) => {
+            const activity = agentActivity[id];
+            const ageMs = activity?.age || null;
+            let status = 'offline';
+            if (ageMs !== null) {
+                if (ageMs < 120000) status = 'online';       // active < 2min
+                else if (ageMs < 600000) status = 'idle';    // < 10min
+                else status = 'offline';
+            }
+            return {
+                id,
+                name: cfg.name,
+                role: cfg.role || cfg.name,
+                model: activity?.model || cfg.model,
+                defaultModel: cfg.model,
+                status,
+                lastActive: ageMs !== null ? new Date(Date.now() - ageMs).toISOString() : null,
+                lastActiveAgo: ageMs
+            };
+        });
+        
+        // Heartbeat info
+        const heartbeats = data.heartbeat?.agents || [];
+        for (const agent of agents) {
+            const hb = heartbeats.find(h => h.agentId === agent.id);
+            if (hb) {
+                agent.heartbeat = { enabled: hb.enabled, every: hb.every };
+            }
+        }
+        
+        res.json({ agents, sessions: sessions.length, defaultModel });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to query OpenClaw gateway', detail: err.message });
+    }
+});
+
 // GET /mc/status - Server uptime, last refresh timestamp, health
 app.get('/mc/status', (req, res) => {
     const uptime = Math.floor((Date.now() - startTime.getTime()) / 1000);

@@ -4514,7 +4514,30 @@
             // Implementation similar to other sections
         }
 
-        function loadCommandCenter() {
+        async function loadCommandCenter() {
+            // Try to fetch real agent data from OpenClaw gateway
+            try {
+                const response = await authFetch(`${SERVER_URL}/mc/openclaw/agents`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.agents && data.agents.length > 0) {
+                        const agents = data.agents.map(a => ({
+                            name: a.name.charAt(0).toUpperCase() + a.name.slice(1),
+                            role: a.role,
+                            model: a.model,
+                            status: a.status,
+                            lastActive: a.lastActive || new Date().toISOString(),
+                            heartbeat: a.heartbeat
+                        }));
+                        setStorageData('agents', agents);
+                        renderAgentGrid(agents);
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.log('OpenClaw gateway not available, using cached/default agents');
+            }
+            // Fallback to cached or defaults
             const agents = getStorageData('agents', getDefaultAgents());
             renderAgentGrid(agents);
         }
@@ -4525,22 +4548,22 @@
                     name: 'Spock',
                     role: 'Unified AI Operator',
                     model: 'gpt-4o-mini',
-                    status: 'online',
-                    lastActive: new Date().toISOString()
+                    status: 'offline',
+                    lastActive: null
                 },
                 {
                     name: 'Dev',
                     role: 'Full Stack Developer',
-                    model: 'claude-opus-4-6',
-                    status: 'busy',
-                    lastActive: new Date(Date.now() - 1800000).toISOString()
+                    model: 'gpt-4o',
+                    status: 'offline',
+                    lastActive: null
                 },
                 {
                     name: 'Research',
                     role: 'Intelligence & Research',
                     model: 'gpt-4o-mini',
-                    status: 'online',
-                    lastActive: new Date(Date.now() - 900000).toISOString()
+                    status: 'offline',
+                    lastActive: null
                 }
             ];
         }
@@ -4558,8 +4581,9 @@
                         </div>
                         <div class="agent-status-dot status-${agent.status}"></div>
                     </div>
-                    <div class="agent-model">${agent.model}</div>
-                    <div class="agent-last-active">Last active: ${formatDate(agent.lastActive)}</div>
+                    <div class="agent-model">🧠 ${agent.model}</div>
+                    <div class="agent-last-active">${agent.lastActive ? 'Last active: ' + formatDate(agent.lastActive) : 'No recent activity'}</div>
+                    ${agent.heartbeat ? `<div class="agent-last-active">Heartbeat: ${agent.heartbeat.enabled ? '✅ ' + agent.heartbeat.every : '❌ disabled'}</div>` : ''}
                     <div class="mt-2">
                         <button class="btn" onclick="event.stopPropagation(); sendTaskToSpecificAgent('${agent.name}')">Send Task</button>
                     </div>

@@ -1,0 +1,11 @@
+{
+    "functions": {
+        "api/proxy.js": { "memory": 128, "maxDuration": 10 },
+        "api/auth.js": { "memory": 128, "maxDuration": 10 }
+    },
+    "rewrites": [
+        { "source": "/api/proxy", "destination": "/api/proxy.js" },
+        { "source": "/api/auth", "destination": "/api/auth.js" },
+        { "source": "/auth/:action", "destination": "/api/auth.js?action=:action" }
+    ]
+}

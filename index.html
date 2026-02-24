@@ -2357,7 +2357,8 @@
         let audioContext = null;
 
         // Server API base URL
-        const SERVER_URL = window.location.hostname === 'localhost' || window.location.hostname === '45.76.125.57' ? '' : 'http://45.76.125.57';
+        const IS_LOCAL = window.location.hostname === 'localhost' || window.location.hostname === '45.76.125.57';
+        const SERVER_URL = IS_LOCAL ? '' : '';
         
         // Auth helper
         function getAuthHeaders() {
@@ -2365,9 +2366,14 @@
             return token ? { 'Authorization': 'Bearer ' + token } : {};
         }
         function authFetch(url, opts = {}) {
+            // On Vercel, route server calls through the serverless proxy
+            if (!IS_LOCAL && (url.startsWith('/mc/') || url.startsWith(`${SERVER_URL}/mc/`))) {
+                const path = url.replace(SERVER_URL, '');
+                url = '/api/proxy?path=' + encodeURIComponent(path);
+            }
             opts.headers = { ...getAuthHeaders(), ...(opts.headers || {}) };
             return fetch(url, opts).then(r => {
-                if (r.status === 401) { 
+                if (r.status === 401 && IS_LOCAL) { 
                     localStorage.removeItem('mc_token'); 
                     window.location.href = '/login'; 
                 }

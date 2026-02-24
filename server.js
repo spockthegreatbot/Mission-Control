@@ -457,13 +457,11 @@ app.post('/mc/data', async (req, res) => {
 // GET /mc/weather - Fetch from Open-Meteo API (Gold Coast: -28.0, 153.4)
 app.get('/mc/weather', async (req, res) => {
     try {
-        const url = 'https://api.open-meteo.com/v1/forecast?latitude=-28.0&longitude=153.4&current=temperature_2m,apparent_temperature,weather_code,relative_humidity_2m,wind_speed_10m&timezone=Australia/Brisbane';
-        const response = await axios.get(url, { timeout: 5000 });
-        const current = response.data.current;
-        
-        // Map WMO weather codes to conditions
+        const { execSync } = require('child_process');
+        const raw = execSync('curl -s --max-time 5 "https://api.open-meteo.com/v1/forecast?latitude=-28.0&longitude=153.4&current=temperature_2m,apparent_temperature,weather_code,relative_humidity_2m,wind_speed_10m&timezone=Australia/Brisbane"', { timeout: 8000 }).toString();
+        const data = JSON.parse(raw);
+        const current = data.current;
         const codes = {0:'Clear',1:'Mostly Clear',2:'Partly Cloudy',3:'Overcast',45:'Foggy',48:'Fog',51:'Light Drizzle',53:'Drizzle',55:'Heavy Drizzle',61:'Light Rain',63:'Rain',65:'Heavy Rain',71:'Light Snow',73:'Snow',75:'Heavy Snow',80:'Light Showers',81:'Showers',82:'Heavy Showers',95:'Thunderstorm',96:'Thunderstorm + Hail',99:'Severe Thunderstorm'};
-        
         res.json({
             temp: Math.round(current.temperature_2m),
             condition: codes[current.weather_code] || 'Unknown',

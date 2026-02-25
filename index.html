@@ -935,6 +935,11 @@
         }
 
         function authFetch(url, opts = {}) {
+            // On Vercel, route /mc/* calls through the serverless proxy
+            if (!IS_LOCAL && (url.startsWith('/mc/') || url.startsWith(`${SERVER_URL}/mc/`))) {
+                const path = url.replace(SERVER_URL, '');
+                url = '/api/proxy?path=' + encodeURIComponent(path);
+            }
             opts.headers = { ...getAuthHeaders(), ...(opts.headers || {}) };
             return fetch(url, opts).then(r => {
                 if (r.status === 401 && IS_LOCAL) { 
@@ -1150,6 +1155,10 @@
             document.getElementById(tabName).classList.add('active');
             
             currentTab = tabName;
+            
+            // Refresh data on tab switch
+            if (tabName === 'command-center') loadAgents();
+            if (tabName === 'dashboard') { refreshActivityFeed(); refreshCosts(); }
         }
 
         // Date/Time Functions
